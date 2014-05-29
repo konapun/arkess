@@ -1,7 +1,7 @@
 package Arkess::Component::Mortal;
 
 use strict;
-use base qw(Cobsy::Component);
+use base qw(Arkess::Component);
 
 sub require {
   return [
@@ -35,8 +35,10 @@ sub exportMethods {
       my ($cob, $damage) = @_;
 
       $damage = 1 unless defined $damage;
-      $cob->set('hp', $cob->get('hp') - $damage);
-      return $cob->get('hp');
+      my $hp = $cob->get('hp') - $damage;
+      $cob->set('hp', $hp);
+      $cob->trigger('die') if $hp <= 0;
+      return $hp;
     }
   }
 }

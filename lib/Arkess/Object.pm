@@ -3,10 +3,11 @@ package Arkess::Object;
 use strict;
 use base qw(Cobsy::Object);
 
-# An Arkess object is a Cobsy object with a few default components
 sub new {
-  my $self = shift->SUPER::new(@_)->extend([
+  my $self = shift->SUPER::new([
     'Arkess::Component::Observable',
+    'Arkess::Component::Getter',
+    'Arkess::Component::Setter',
     'Arkess::Component::AttributeChecker',
     'Arkess::Component::MethodChecker'
   ]);
@@ -15,3 +16,8 @@ sub new {
 }
 
 1;
+
+__END__
+=head1 NAME
+Arkess::Object - A Cobsy object initialized with some components to be inherited
+by all other Arkess::Objects

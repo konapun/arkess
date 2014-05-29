@@ -1,7 +1,7 @@
 package Arkess::Component::MethodChecker;
 
 use strict;
-use base qw(Cobsy::Component);
+use base qw(Arkess::Component);
 
 sub exportMethods {
   return {

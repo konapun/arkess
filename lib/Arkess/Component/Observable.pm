@@ -1,7 +1,7 @@
 package Arkess::Component::Observable;
 
 use strict;
-use base qw(Cobsy::Component);
+use base qw(Arkess::Component);
 
 sub afterInstall {
   my ($self, $owner) = @_;

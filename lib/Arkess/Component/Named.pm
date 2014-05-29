@@ -1,7 +1,7 @@
 package Arkess::Component::Named;
 
 use strict;
-use base qw(Cobsy::Component);
+use base qw(Arkess::Component);
 
 sub requires {
   return [

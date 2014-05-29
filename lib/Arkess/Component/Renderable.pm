@@ -1,7 +1,7 @@
 package Arkess::Component::Renderable;
 
 use strict;
-use base qw(Cobsy::Component);
+use base qw(Arkess::Component);
 
 sub initialize {
   my ($self, $spriteSheet) = @_;

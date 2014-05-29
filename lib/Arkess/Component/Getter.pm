@@ -1,7 +1,7 @@
 package Arkess::Component::Getter;
 
 use strict;
-use base qw(Cobsy::Component);
+use base qw(Arkess::Component);
 
 sub exportActions {
   return {

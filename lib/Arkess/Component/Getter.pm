@@ -3,7 +3,7 @@ package Arkess::Component::Getter;
 use strict;
 use base qw(Arkess::Component);
 
-sub exportActions {
+sub exportMethods {
   return {
     get => sub {
       my ($obj, $key) = @_;

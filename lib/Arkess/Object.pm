@@ -4,15 +4,19 @@ use strict;
 use base qw(Cobsy::Object);
 
 sub new {
-  my $self = shift->SUPER::new([
+  my $package = shift;
+  my $additional = shift;
+
+  my $base = $package->SUPER::new([
     'Arkess::Component::Observable',
     'Arkess::Component::Getter',
     'Arkess::Component::Setter',
     'Arkess::Component::AttributeChecker',
-    'Arkess::Component::MethodChecker'
+    'Arkess::Component::MethodChecker',
+    'Arkess::Component::Positioned'
   ]);
-
-  return $self;
+  
+  return $base->extend($additional);
 }
 
 1;

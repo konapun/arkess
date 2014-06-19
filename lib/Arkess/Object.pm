@@ -10,12 +10,11 @@ sub new {
   my $base = $package->SUPER::new([
     'Arkess::Component::Observable',
     'Arkess::Component::Getter',
-    'Arkess::Component::Setter',
     'Arkess::Component::AttributeChecker',
     'Arkess::Component::MethodChecker',
     'Arkess::Component::Positioned'
   ]);
-  
+
   return $base->extend($additional);
 }
 

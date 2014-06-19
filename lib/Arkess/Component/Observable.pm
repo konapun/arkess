@@ -31,6 +31,17 @@ sub exportMethods {
   my $self = shift;
 
   return {
+
+    # Observable property changes for Cobs
+    set => sub {
+      my ($cob, $key, $value) = @_;
+
+      my $ret = $cob->attributes->set($key, $value);
+      $cob->trigger('change', $key, $value);
+      return $ret;
+    },
+
+    # Register a callback for an event
     on => sub {
       my ($cob, $event, $callback) = @_;
 
@@ -38,6 +49,8 @@ sub exportMethods {
       push(@{$self->{events}->{$event}}, $callback);
       return $callback; # so it can be used to unregister (more on this later)
     },
+
+    # Trigger an event with given args
     trigger => sub {
       my ($cob, $event, @args) = @_;
 
@@ -46,6 +59,7 @@ sub exportMethods {
         $cb->(@args);
       }
     }
+
   };
 }
 

@@ -26,11 +26,20 @@ sub exportMethods {
   my $self = shift;
 
   return {
+
+    # Return 0 or 1 depending on whether the Cob is alive
     isAlive => sub {
       my $cob = shift;
 
       return $cob->get('hp') > 0;
     },
+
+    # Return HP for this Cob
+    getHP => sub {
+      return shift->get('hp');
+    },
+
+    # Inflict damage upon this Cob
     takeDamage => sub {
       my ($cob, $damage) = @_;
 
@@ -40,6 +49,7 @@ sub exportMethods {
       $cob->trigger('die') if $hp <= 0;
       return $hp;
     }
+
   }
 }
 1;

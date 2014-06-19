@@ -36,8 +36,9 @@ sub exportMethods {
     set => sub {
       my ($cob, $key, $value) = @_;
 
+      my $oldValue = $cob->attributes->has($key) ? $cob->attributes->get($key) : undef;
       my $ret = $cob->attributes->set($key, $value);
-      $cob->trigger('change', $key, $value);
+      $cob->trigger('change', $key, $value, $oldValue);
       return $ret;
     },
 

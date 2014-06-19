@@ -11,7 +11,7 @@ sub requires {
 
 sub exportAttributes {
   return {
-    name => '(unknown')
+    name => '(unknown)'
   };
 }
 

@@ -4,23 +4,30 @@ use strict;
 use lib '../lib';
 use Arkess;
 
-my $char = Arkess::Character->new();
-print "Character has name attribute\n" if $char->hasAttribute('name');
-print "Here1\n";
+my $char = Arkess::Character->new('Kiddo');
+print "Character has name attribute: " . $char->getName() . "\n" if $char->hasAttribute('name');
 
-my $obj = Arkess::Object->new();
-print "Here2\n";
+my $obj = $char;
 $obj->set('test', 'GOT IT!');
-print "Here3\n";
 print "TEST: " . $obj->get('test') . "\n";
 
 $obj->on('change', sub {
-  my ($event, $val) = @_;
-
-  print "GOT CHANGE: $event set val $val\n";
+  my ($prop, $val, $oldval) = @_;
+  
+  print "GOT CHANGE: $prop set val $val\n" if $prop eq 'watch';
 });
 
 $obj->set('test', 'CHANGED YEAH');
+$obj->set('watch', 'VISIBLE IF WORKING');
 
-#print "Character is facing " . $char->getDirection() . "\n";
+print "Character is facing " . $char->getDirection() . "\n";
+
+$obj->on('die', sub {
+  print "Oh no! " . $obj->getName() . " has died!\n";
+});
+while ($obj->isAlive()) {
+  print "Alive: HP at " . $obj->getHP() . "\n";
+  $obj->takeDamage();
+}
+
 print "DONE!\n";

@@ -3,12 +3,12 @@ package Arkess::Direction;
 use strict;
 use base qw(Exporter);
 
-use constant UP    => 0;
-use constant DOWN  => 1;
-use constant LEFT  => 2;
-use constant RIGHT => 3;
+use constant UP    => 'up';
+use constant DOWN  => 'down';
+use constant LEFT  => 'left';
+use constant RIGHT => 'right';
 
-our @EXPORT = qw(UP DOWN RIGHT LEFT);
+our @EXPORT = qw(UP DOWN LEFT RIGHT);
 
 1;
 

@@ -2,6 +2,7 @@ package Arkess::Component::Positioned;
 
 use strict;
 use base qw(Arkess::Component);
+use Arkess::Direction;
 
 sub initialize {
   my ($self, $tile, $direction) = @_;

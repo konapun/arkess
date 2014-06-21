@@ -7,7 +7,7 @@ use Arkess::Direction;
 use Arkess::IO::Controller;
 
 my $textTile = Arkess::Tile->new({ # prototype for all tiles
-  'Arkess::Component::Describable' => "An undescribable area"
+  'Arkess::Component::TextBased::Describable' => "An undescribable area"
 });
 
 # Create tiles
@@ -24,7 +24,7 @@ my $ciderHouse = $textTile->clone();
 $ciderHouse->setDescription("a red wooden building with white trim");
 
 # Create entities
-my $scarecrow = Arkess::Character->new([ 'Arkess::Component::Describable' ], 'Scarecrow');
+my $scarecrow = Arkess::Character->new([ 'Arkess::Component::TextBased::Describable' ], 'Scarecrow');
 $scarecrow->setDescription("A gaunt, sullen looking scarecrow");
 
 # Piece tiles together
@@ -35,6 +35,7 @@ print "\tup\n" if $startingTile->hasLink(UP);
 print "\tdown\n" if $startingTile->hasLink(DOWN);
 print "DONE\n";
 $startingTile->setLink(UP, $valley);
+$valley->setLink(RIGHT, $ciderHouse);
 print "After setting link UP: startingTile:\n";
 print "\tleft\n" if $startingTile->hasLink(LEFT);
 print "\tright\n" if $startingTile->hasLink(RIGHT);
@@ -48,7 +49,7 @@ print "DONE\n";
 $startingTile->addEntity($scarecrow);
 
 # Start!
-my $player = Arkess::Character->new([ 'Arkess::Component::Looker' ]);
+my $player = Arkess::Character->new([ 'Arkess::Component::TextBased::Looker' ]);
 $player->setPosition($startingTile);
 
 $player->look();

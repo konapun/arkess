@@ -1,4 +1,4 @@
-package Arkess::Component::Renderable;
+package Arkess::Component::Graphical::Renderable;
 
 use strict;
 use base qw(Arkess::Component);

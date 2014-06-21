@@ -1,4 +1,4 @@
-package Arkess::Component::Looker;
+package Arkess::Component::TextBased::Looker;
 
 use strict;
 use Arkess::Direction;

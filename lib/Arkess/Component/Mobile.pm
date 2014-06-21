@@ -21,7 +21,7 @@ sub initialize {
 
 sub exportAttributes {
   my $self = shift;
-  
+
   return {
     position => {
       tile      => $self->{tile},
@@ -31,6 +31,8 @@ sub exportAttributes {
 }
 
 sub exportMethods {
+
+  # TODO: Also use addEntity/removeEntity for tiles
   return {
 
     getPosition => sub {

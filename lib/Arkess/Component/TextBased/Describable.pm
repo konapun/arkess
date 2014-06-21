@@ -1,4 +1,4 @@
-package Arkess::Component::Describable;
+package Arkess::Component::TextBased::Describable;
 
 use strict;
 use base qw(Arkess::Component);

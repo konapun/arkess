@@ -16,3 +16,8 @@ sub new {
 }
 
 1;
+
+__END__
+=head1 NAME
+Arkess::Tile - The object which defines the basis for movement in all Arkess
+games

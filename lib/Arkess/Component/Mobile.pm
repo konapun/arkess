@@ -1,41 +1,107 @@
 package Arkess::Component::Mobile;
 
 use strict;
+#use Arkess::Direction;
 use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Positioned'
-  ]
+    'Arkess::Component::Getter',
+    'Arkess::Component::Observable'
+  ];
 }
 
 sub initialize {
-  my ($self, $tile) = @_;
+  my ($self, $tile, $direction) = @_;
 
+  $direction = 'down' unless defined $direction;
   $self->{tile} = $tile;
+  $self->{direction} = $direction;
 }
 
 sub exportAttributes {
+  my $self = shift;
+  
   return {
-    tile => $self->{tile}
+    position => {
+      tile      => $self->{tile},
+      direction => $self->{direction}
+    }
   };
 }
 
 sub exportMethods {
   return {
-    setPosition => sub {
-      my ($self, $tile, $direction) = @_;
-    },
+
     getPosition => sub {
-      #TODO
+      my $cob = shift;
+
+      return $cob->get('position');
     },
+
+    getTile => sub {
+      my $cob = shift;
+
+      my $position = $cob->getPosition();
+      return $position->{tile};
+    },
+
+    getDirection => sub {
+      my $cob = shift;
+
+      my $position = $cob->getPosition();
+      return $position->{direction};
+    },
+
+    setPosition => sub {
+      my ($cob, $tile, $direction) = @_;
+
+      $direction = 'down' unless defined $direction;
+      $cob->set('position', {
+        tile      => $tile,
+        direction => $direction
+      });
+    },
+
+    setTile => sub {
+      my ($cob, $tile) = @_;
+
+      $cob->setPosition($tile);
+    },
+
+    setDirection => sub {
+      my ($cob, $direction) = @_;
+
+      my $tile = $cob->getTile();
+      $cob->setPosition($tile, $direction);
+    },
+
+    # Move without changing direction
+    # Return true or false depending on whether or not the cob was able to move
+    strafe => sub {
+      my ($cob, $direction, $facing) = @_;
+
+      my $position = $cob->getPosition();
+      my $tile = $position->{tile};
+      $facing = $position->{direction} unless defined $facing;
+      return 0 if $tile eq undef; # Cob not positioned
+      my $newTile = $tile->getLink($direction);
+      return 0 unless $newTile; # No link to tile in direction
+      $cob->setPosition($newTile, $facing);
+      return 1;
+    },
+
+    # Move while changing position
     move => sub {
       my ($cob, $direction) = @_;
 
-      my $curpos = $cob->getPosition();
-
-      #TODO
+      return $cob->strafe($direction, $direction);
     }
   }
 }
+
 1;
+
+__END__
+=head1 NAME
+Arkess::Component::Mobile - A component for objects that can move around

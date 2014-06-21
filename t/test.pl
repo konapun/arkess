@@ -7,13 +7,14 @@ use Arkess;
 my $char = Arkess::Character->new('Kiddo');
 print "Character has name attribute: " . $char->getName() . "\n" if $char->hasAttribute('name');
 
+### Test propertiees
 my $obj = $char;
 $obj->set('test', 'GOT IT!');
 print "TEST: " . $obj->get('test') . "\n";
 
 $obj->on('change', sub {
   my ($prop, $val, $oldval) = @_;
-  
+
   print "GOT CHANGE: $prop set val $val\n" if $prop eq 'watch';
 });
 
@@ -31,3 +32,10 @@ while ($obj->isAlive()) {
 }
 
 print "DONE!\n";
+
+### Test moving
+my $tile = Arkess::Tile->new();
+my $mover = Arkess::Character->new('Konapun');
+
+$mover->setTile($tile);
+print "TILE: " . $mover->getTile() . "\n";

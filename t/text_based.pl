@@ -12,17 +12,37 @@ my $textTile = Arkess::Tile->new({ # prototype for all tiles
 
 # Create tiles
 my $startingTile = $textTile->clone();
-$startingTile->setDescription("a small clearing");
+$startingTile->setDescription("the top of a long, rolling hill");
 
-my $field = $textTile->clone();
-$field->setDescription("a mostly barren field");
+my $valley = $textTile->clone();
+$valley->setDescription("a shallow valley");
+
+my $parkingLot = $textTile->clone();
+$parkingLot->setDescription("a white gravel parking lot filled with dusty cars");
+
+my $ciderHouse = $textTile->clone();
+$ciderHouse->setDescription("a red wooden building with white trim");
 
 # Create entities
 my $scarecrow = Arkess::Character->new([ 'Arkess::Component::Describable' ], 'Scarecrow');
 $scarecrow->setDescription("A gaunt, sullen looking scarecrow");
 
 # Piece tiles together
-$startingTile->setLink(RIGHT, $field);
+print "Before link: startingTile:\n";
+print "\tleft\n" if $startingTile->hasLink(LEFT);
+print "\tright\n" if $startingTile->hasLink(RIGHT);
+print "\tup\n" if $startingTile->hasLink(UP);
+print "\tdown\n" if $startingTile->hasLink(DOWN);
+print "DONE\n";
+$startingTile->setLink(UP, $valley);
+print "After setting link UP: startingTile:\n";
+print "\tleft\n" if $startingTile->hasLink(LEFT);
+print "\tright\n" if $startingTile->hasLink(RIGHT);
+print "\tup\n" if $startingTile->hasLink(UP);
+print "\tdown\n" if $startingTile->hasLink(DOWN);
+print "DONE\n";
+#$startingTile->setLink(DOWN, $parkingLot);
+#$startingTile->setLink(RIGHT, $ciderHouse);
 
 # Add entities to tiles
 $startingTile->addEntity($scarecrow);

@@ -10,6 +10,29 @@ use constant RIGHT => 'right';
 
 our @EXPORT = qw(UP DOWN LEFT RIGHT);
 
+sub reverse {
+  my $direction = shift;
+
+  return DOWN if $direction eq UP;
+  return UP if $direction eq DOWN;
+  return RIGHT if $direction eq LEFT;
+  return LEFT if $direction eq RIGHT;
+}
+
+sub rotate {
+  my ($direction, $clockwise) = @_;
+
+  $direction = RIGHT if $direction eq UP;
+  $direction = LEFT if $direction eq DOWN;
+  $direction = UP if $direction eq LEFT;
+  $direction = DOWN if $direction eq RIGHT;
+  
+  if (!$clockwise) {
+    $direction = Arkess::Direction::reverse($direction);
+  }
+  return $direction;
+}
+
 1;
 
 __END__

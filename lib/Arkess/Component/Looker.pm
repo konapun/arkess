@@ -20,36 +20,26 @@ sub exportMethods {
         if ($tile->hasAttribute('description')) {
           print "You are in " . $tile->getDescription() . "\n"; # Current location
 
-          my @entities = $tile->getEntities();
-          if (scalar(@entities) > 0) {
+          my $entities = $tile->getEntities();
+          if (scalar(@$entities) > 0) {
             print "You see:\n";
-            foreach my $entity (@entities) {
+            foreach my $entity (@$entities) {
               print "\t" . $entity->getDescription() . "\n"; # if $entity->hasAttribute('description');
             }
           }
 
-          if ($tile->hasLink(UP)) {
-            my $link = tile->getLink(UP);
-
-            print "To the north you see " . $link->getDescription() . "\n";
-          }
-          if ($tile->hasLink(LEFT)) {
-            my $link = $tile->getLink(LEFT);
-
-            print "To the west you see " . $link->getDescription() . "\n";
-          }
-          if ($tile->hasLink(RIGHT)) {
-            my $link = $tile->getLink(RIGHT);
-
-            print "To the east you see " . $link->getDescription() . "\n";
-          }
-          if ($tile->hasLink(DOWN)) {
-            my $link = $tile->getLink(DOWN);
-
-            print "To the south you see " . $link->getDescription() . "\n";
-          }
+          print "To the north you see " . $tile->getLink(UP)->getDescription() . "\n" if ($tile->hasLink(UP));
+          print "To the west you see " . $tile->getLink(LEFT)->getDescription() . "\n" if ($tile->hasLink(LEFT));
+          print "To the east you see " . $tile->getLink(RIGHT)->getDescription() . "\n" if ($tile->hasLink(RIGHT));
+          print "To the south you see " . $tile->getLink(DOWN)->getDescription() . "\n" if ($tile->hasLink(DOWN));
         }
       }
     }
   }
 }
+
+1;
+
+__END__
+=head1 NAME
+Arkess::Component::Looker - Component for a Cob that can examine descriptions

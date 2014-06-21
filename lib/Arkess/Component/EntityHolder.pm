@@ -31,30 +31,32 @@ sub exportMethods {
     getEntities => sub {
       my $cob = shift;
 
-      return @{$cob->get('entities')};
+      return $cob->get('entities');
     },
 
-    removeEntities => sub {
+    clearEntities => sub {
       my $cob = shift;
 
       $cob->set('entities', []);
     },
 
+    removeEntity => sub {
+        my ($cob, $entitiy) = @_;
+
+        # TODO
+    },
+
     addEntity => sub { # FIXME
       my ($cob, $entity) = @_;
 
-      my @entities = $cob->getEntities();
-      print "BEFORE: " . scalar(@entities) . "\n";
-      print "Pushing " . Dumper($entity) . "\n";
-      push(@entities, $entity);
-      $cob->set('entities', [@entities]);
-
-      use Data::Dumper;
-      print "ENTITIES: " . Dumper($cob->get('entities'));
+      my $entities = $cob->getEntities();
+      push(@$entities, $entity);
+      $cob->set('entities', $entities);
     }
 
   }
 }
+
 1;
 
 __END__

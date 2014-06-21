@@ -26,10 +26,17 @@ sub exportAttributes {
 
 sub exportMethods {
   return {
+
     getDescription => sub {
       my $cob = shift;
 
       return $cob->get('description');
+    },
+
+    setDescription => sub {
+      my ($cob, $description) = @_;
+
+      $cob->set('description', $description);
     }
   }
 }

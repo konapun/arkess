@@ -7,13 +7,19 @@ sub new {
   my $package = shift;
   my $name = shift;
 
-  my $self = $package->SUPER::new([
+  my $base = $package->SUPER::new([
     'Arkess::Component::Named',
     'Arkess::Component::Mortal',
     'Arkess::Component::Mobile',
   ]);
-  $self->set('name', $name);
-  return $self;
+
+  if (ref $name eq 'ARRAY') { # name is an array of additional components to extend character with
+    $base = $base->extend($name);
+    $name = shift; # See if there's a second argument to the constructor
+  }
+
+  $base->set('name', $name) if defined $name;
+  return $base;
 }
 
 1;

@@ -7,13 +7,28 @@ sub new {
   my $character = shift;
 
   return bless {
-    character => $character
+    character => $character,
+    bindings  => {}
   }, $package;
 }
 
-sub process {
-  my ($self, $event) = @_;
+sub bind {
+  my ($self, $key, $sub) = @_;
 
-
+  $self->{bindings}->{$key} = $sub;
 }
+
+sub process {
+  my ($self, $key) = @_;
+
+  if (!defined $key) { # wait for keypress
+    # TODO
+  }
+
+  my $cb = $self->{bindings}->{$key};
+  if (defined $cb) {
+    return $cb->($self->{character});
+  }
+}
+
 1;

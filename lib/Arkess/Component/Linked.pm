@@ -4,6 +4,13 @@ use strict;
 use Arkess::Direction;
 use base qw(Arkess::Component);
 
+sub requires {
+  return [
+    'Arkess::Component::Observable',
+    'Arkess::Component::Getter'
+  ];
+}
+
 sub exportAttributes {
   return {
     links => {
@@ -36,9 +43,10 @@ sub exportMethods {
     hasLink => sub {
       my ($cob, $direction) = @_;
 
-      return defined $cob->get('links')->{$direction};
+      my $ret = defined($cob->get('links')->{$direction});
+      return $ret ? 1 : 0;
     }
-    
+
   };
 }
 

@@ -3,6 +3,7 @@
 use strict;
 use lib '../lib';
 use Arkess;
+use Arkess::IO::Controller;
 use Arkess::Direction;
 
 my $char = Arkess::Character->new('Kiddo');
@@ -49,3 +50,22 @@ else {
 }
 
 print "Can move right? " . $tile->hasLink(RIGHT) . "\n";
+print "Can move left? " . $tile->hasLink(LEFT) . "\n";
+
+### Test controller
+my $controller = Arkess::IO::Controller->new($mover);
+$controller->bind('W', sub {
+  print "Mooving up\n";
+  shift->move(UP);
+});
+$controller->bind('A', sub {
+  shift->move(LEFT);
+});
+$controller->bind('S', sub {
+  shift->move(DOWN);
+});
+$controller->bind('D', sub {
+  shift->move(RIGHT);
+});
+
+$controller->process('W');

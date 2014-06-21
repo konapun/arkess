@@ -38,6 +38,7 @@ sub exportMethods {
 
       return defined $cob->get('links')->{$direction};
     }
+    
   };
 }
 

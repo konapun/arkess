@@ -34,8 +34,9 @@ sub exportMethods {
 
     # Observable property changes for Cobs
     set => sub {
-      my ($cob, $key, $value) = @_;
+      my ($cob, $key, $value, $observable) = @_;
 
+      $observable = 1 unless defined $observable; # automatically trigger change event on set
       my $oldValue = $cob->attributes->has($key) ? $cob->attributes->get($key) : undef;
       my $ret = $cob->attributes->set($key, $value);
       $cob->trigger('change', $key, $value, $oldValue);

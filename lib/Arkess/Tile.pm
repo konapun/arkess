@@ -5,7 +5,8 @@ use base qw(Arkess::Object);
 
 sub new {
   return shift->SUPER::new([
-    'Arkess::Component::EntityHolder'
+    'Arkess::Component::EntityHolder',
+    'Arkess::Component::Linked'
   ]);
 }
 

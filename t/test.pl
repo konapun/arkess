@@ -3,6 +3,7 @@
 use strict;
 use lib '../lib';
 use Arkess;
+use Arkess::Direction;
 
 my $char = Arkess::Character->new('Kiddo');
 print "Character has name attribute: " . $char->getName() . "\n" if $char->hasAttribute('name');
@@ -36,6 +37,15 @@ print "DONE!\n";
 ### Test moving
 my $tile = Arkess::Tile->new();
 my $mover = Arkess::Character->new('Konapun');
+$tile->setLink(RIGHT, Arkess::Tile->new());
 
 $mover->setTile($tile);
 print "TILE: " . $mover->getTile() . "\n";
+if ($mover->move(RIGHT)) {
+  print "Was able to move!\n";
+}
+else {
+  print "Unable to move right\n";
+}
+
+print "Can move right? " . $tile->hasLink(RIGHT) . "\n";

@@ -10,10 +10,11 @@ sub new {
   my $base = $package->SUPER::new([
     'Arkess::Component::Named',
     'Arkess::Component::Mortal',
-    'Arkess::Component::Mobile',
+    'Arkess::Component::Mobile'
   ]);
 
-  if (ref $name eq 'ARRAY') { # name is an array of additional components to extend character with
+  my $ref = ref $name;
+  if ($ref eq 'ARRAY' || $ref eq 'HASH') { # name is an array of additional components to extend character with
     $base = $base->extend($name);
     $name = shift; # See if there's a second argument to the constructor
   }

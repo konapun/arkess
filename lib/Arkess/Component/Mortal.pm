@@ -29,9 +29,7 @@ sub exportMethods {
 
     # Return 0 or 1 depending on whether the Cob is alive
     isAlive => sub {
-      my $cob = shift;
-
-      return $cob->get('hp') > 0;
+      return shift->get('hp') > 0;
     },
 
     # Return HP for this Cob

@@ -4,10 +4,12 @@ use strict;
 use base qw(Arkess::Component);
 
 sub exportMethods {
+  my $self = shift;
+  my $owner = $self->{owner};
+
   return {
     get => sub {
       my ($obj, $key) = @_;
-
       return $obj->attributes->get($key);
     }
   };

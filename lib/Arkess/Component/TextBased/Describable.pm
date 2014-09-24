@@ -5,7 +5,8 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Getter'
+    'Arkess::Component::Getter',
+    'Arkess::Component::Observable'
   ];
 }
 
@@ -28,14 +29,11 @@ sub exportMethods {
   return {
 
     getDescription => sub {
-      my $cob = shift;
-
-      return $cob->get('description');
+      return shift->get('description');
     },
 
     setDescription => sub {
       my ($cob, $description) = @_;
-
       $cob->set('description', $description);
     }
   }

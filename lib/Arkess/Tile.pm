@@ -11,7 +11,6 @@ sub new {
     'Arkess::Component::EntityHolder',
     'Arkess::Component::Linked'
   ]);
-
   return $base->extend($additional);
 }
 

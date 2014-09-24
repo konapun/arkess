@@ -90,6 +90,7 @@ sub exportMethods {
       my $newTile = $tile->getLink($direction);
       return 0 unless $newTile; # No link to tile in direction
       $cob->setPosition($newTile, $facing);
+      $cob->trigger('strafe', [$direction, $facing]);
       return 1;
     },
 
@@ -97,7 +98,9 @@ sub exportMethods {
     move => sub {
       my ($cob, $direction) = @_;
 
-      return $cob->strafe($direction, $direction);
+      my $success = $cob->strafe($direction, $direction);
+      $cob->trigger('move', [$direction]) if $success;
+      return $success;
     }
   }
 }

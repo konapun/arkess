@@ -1,6 +1,7 @@
 package Arkess::Runtime;
 
 use strict;
+use Arkess::Graphics::Renderer;
 use Arkess::Timer;
 
 sub new {
@@ -9,7 +10,8 @@ sub new {
     return bless {
       controllers => [],
       running     => 0,
-      timer       => Arkess::Timer->new(60) # 60 fps
+      timer       => Arkess::Timer->new(60), # 60 fps
+      renderer    => undef, # TODO
     }, $package;
 }
 
@@ -27,12 +29,14 @@ sub run {
   my $self = shift;
 
   my $timer = $self->{timer};
+  my $renderer = $self->{renderer};
   $timer->set();
   while ($self->{running}) {
     foreach my $controller (@{$self->{controllers}}) {
       $controller->process();
     }
-
+    
+    $renderer->render(); # ->render($screen)
     $timer->tick();
   }
 }

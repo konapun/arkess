@@ -1,12 +1,14 @@
 package Arkess::Game;
 
 use strict;
+use Arkess::Runtime;
 
 sub new {
   my $package = shift;
-  my $runtime = shift;
 
-
+  return bless {
+    runtime => Arkess::Runtime->new()
+  }, $package;
 }
 
 sub createController {
@@ -16,7 +18,7 @@ sub createController {
 }
 
 sub run {
-
+  
 }
 
 1;

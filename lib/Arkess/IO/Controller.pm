@@ -12,6 +12,10 @@ sub new {
   }, $package;
 }
 
+sub getPlayer {
+  return shift->{character};
+}
+
 sub bind {
   my ($self, $key, $sub) = @_;
 

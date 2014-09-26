@@ -54,5 +54,6 @@ $player->on('move', sub {
 });
 $player->move(LEFT);
 print "Move done\n";
+$player->look();
 
 print "Starting tile: " . $startingTile->getDescription() . "\n";

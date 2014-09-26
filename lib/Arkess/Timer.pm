@@ -1,7 +1,7 @@
 package Arkess::Timer;
 
 use strict;
-use Time::HiRes wq(gettimeofday tv_interval usleep);
+use Time::HiRes qw(gettimeofday tv_interval usleep);
 
 sub new {
   my $package = shift;

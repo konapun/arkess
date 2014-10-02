@@ -50,6 +50,8 @@ sub tick {
     $self->{lastInterval} = $interval;
     my $sleep = $self->{sleepTime} - $interval;
     $sleep = 0 unless $sleep > 0; # Timer lag - can't negative sleep
+
+    usleep($sleep);
   }
 
   $self->{lastTick} = [gettimeofday()];
@@ -66,3 +68,7 @@ sub _calculateSleepTime {
 }
 
 1;
+
+__END__
+=head1 NAME
+Arkess::Timer - Game main loop control

@@ -98,6 +98,7 @@ sub exportMethods {
     move => sub {
       my ($cob, $direction) = @_;
 
+print "MOVE $direction\n";
       my $success = $cob->strafe($direction, $direction);
       $cob->trigger('move', [$direction]) if $success;
       return $success;

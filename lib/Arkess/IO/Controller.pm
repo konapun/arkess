@@ -4,12 +4,18 @@ use strict;
 
 sub new {
   my $package = shift;
-  my $character = shift;
+  my ($character, $bindings) = @_;
 
   return bless {
     character => $character,
-    bindings  => {}
+    bindings  => $bindings || {}
   }, $package;
+}
+
+sub setPlayer {
+  my ($self, $player) = @_;
+
+  shift->{character} = $player;
 }
 
 sub getPlayer {
@@ -19,20 +25,43 @@ sub getPlayer {
 sub bind {
   my ($self, $key, $sub) = @_;
 
-  $self->{bindings}->{$key} = $sub;
+  if (ref $key eq 'HASH') { # Bind multiple as a hash
+    while (my ($k, $s) = each %{$key}) {
+      $self->bind($k, $s)
+    }
+  }
+  else {
+    $self->{bindings}->{$key} = $sub;
+  }
 }
 
 sub process {
-  my ($self, $key) = @_;
+  my ($self, $event) = @_;
 
-  if (!defined $key) { # wait for keypress
-    # TODO
-  }
+  return if $self->_processKeypress($event);
+  return $self->_processType($event);
+}
 
+sub _processKeypress {
+  my ($self, $event) = @_;
+
+  my $key = $event->key_sym;
   my $cb = $self->{bindings}->{$key};
   if (defined $cb) {
     return $cb->($self->{character});
   }
+  return undef;
+}
+
+sub _processType {
+  my ($self, $event) = @_;
+
+  my $type = $event->type;
+  my $cb = $self->{bindings}->{$type};
+  if (defined $cb) {
+    return $cb->($self->{character});
+  }
+  return undef;
 }
 
 1;

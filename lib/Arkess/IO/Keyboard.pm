@@ -1,9 +1,15 @@
 package Arkess::IO::Keyboard;
+#
+# An abstraction for the keyboard
+# See full list here: http://falconpl.org/project_docs/sdl/class_SDLK.html
+#
+#TODO: Optionally export all symbols (:all)
 
 use strict;
 use SDL::Events;
 use base qw(Exporter);
 
+# Automatically export all symbols
 our @EXPORT = qw(
 	KB_RETURN
 	KB_SPACE
@@ -36,6 +42,7 @@ our @EXPORT = qw(
 	KB_RSUPER
 	KB_LSUPER
 );
+our %EXPORT_TAGS = ('all' => \@EXPORT);
 
 use constant KB_RETURN => SDLK_RETURN;
 use constant KB_SPACE  => SDLK_SPACE;

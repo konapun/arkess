@@ -9,7 +9,8 @@ sub new {
 
   my $base = $package->SUPER::new([
     'Arkess::Component::EntityHolder',
-    'Arkess::Component::Linked'
+    'Arkess::Component::Linked',
+    'Arkess::Component::Sprite'
   ]);
   return $base->extend($additional);
 }

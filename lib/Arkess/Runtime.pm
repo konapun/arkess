@@ -82,6 +82,7 @@ sub run {
   $eventBus->trigger(Arkess::Event::RUNTIME_START);
   $timer->set();
   $self->{running} = 1;
+  $renderer->initialize();
   while ($self->{running}) {
     $eventBus->trigger(Arkess::Event::LOOP_START);
     DEQ: while (my $event = $eventQueue->dequeue()) { # process SDL events

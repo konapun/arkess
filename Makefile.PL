@@ -21,6 +21,7 @@ WriteMakefile(
   PREREQ_PM => {
     'IOC' => '0.29',
     'Time::HiRes' => '1.9726',
+    'Image::Size' => '3.232',
     'SDL' => '2.544'
   },
   EXE_FILES => {

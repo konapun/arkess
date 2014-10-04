@@ -15,13 +15,19 @@ $runtime->setWindowOptions({
 });
 my $bus = $runtime->getEventBus();
 my $controller = $runtime->createController(undef);
+my $background = $runtime->createEntity({
+  'Arkess::Component::Image' => 'img/map.gif'
+});
 my $character = $runtime->createEntity({
-  'Arkess::Component::Sprite' => [],
+  'Arkess::Component::Image' => 'img/link.jpg',
   'Arkess::Component::D4' => $controller
 });
+
 my $loopIndex = 0;
 $bus->bind(Arkess::Event::LOOP_START, sub {
-  print "Start of loop ($loopIndex)\n";
   $runtime->stop() if ($loopIndex++ >= 1800);
+});
+$bus->bind(Arkess::Event::RUNTIME_STOP, sub {
+  print "STOPPING\n";
 });
 $runtime->run();

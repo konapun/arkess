@@ -7,7 +7,8 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Getter',
-    'Arkess::Component::Observable'
+    'Arkess::Component::Observable',
+    #'Arkess::Component::Positioned'
   ];
 }
 

@@ -15,12 +15,22 @@ sub initialize {
 
 sub exportAttributes {
   return {
-    spriteSheet => undef
+    spriteSheet => undef,
+    sequences => {}, # map of names to frameseqs
   };
 }
 
 sub exportMethods {
   return {
+    setSequences => sub {
+      
+    },
+    
+    sub setSequence => sub {
+      my ($cob, $name, $frames) = @_;
+      
+    },
+    
     render => sub {
       my $cob = shift;
 

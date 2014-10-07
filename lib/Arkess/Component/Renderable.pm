@@ -39,6 +39,8 @@ sub exportMethods {
     getScreenCoordinates => sub {
       my $cob = shift;
       
+      
+      print "Returning coords (" . $cob->get('screenX') . ", " . $cob->get('screenY') . ")\n";
       return ($cob->get('screenX'), $cob->get('screenY'));
     },
     

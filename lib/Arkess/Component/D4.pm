@@ -27,13 +27,7 @@ sub initialize {
       shift->move('down');
     },
     Arkess::IO::Keyboard::KB_D => sub {
-      my $cob = shift;
-      
-      # FIXME: This won't go here but is here for testing
-      my ($x, $y) = $cob->getScreenCoordinates();
-      $cob->move('right');
-      $cob->setScreenCoordinates($x+10, $y+1);
-      print "moved to (" . ($x+10) . ", $y) FIXME\n";
+      shift->move('right');
     },
     Arkess::IO::Keyboard::KB_RIGHT => sub {
       shift->move('right');

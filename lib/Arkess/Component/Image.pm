@@ -1,5 +1,7 @@
 package Arkess::Component::Image;
 
+# http://search.cpan.org/~kthakore/SDL_Perl-v2.2.6/lib/SDL/Tutorial/Images.pm
+
 use strict;
 use SDL::Image;
 use SDL::Rect;
@@ -39,13 +41,28 @@ sub exportMethods {
       my ($x, $y) = $cob->getScreenCoordinates();
       my ($width, $height) = $cob->getDimensions();
       my $image = $self->{image};
-      my $rect = SDL::Rect->new($x, $y, $width, $height);
+      my $rect = $self->{rect};
       
       SDL::Video::blit_surface($image, $self->{rect}, $renderer, $rect);
       SDL::Video::update_rects($renderer, $rect);
       $self->{rect} = $rect;
     }
   };
+}
+
+sub afterInstall {
+  my ($self, $cob) = @_;
+  
+  # FIXME
+  $cob->on('strafe', sub {
+    my ($moveDir, $faceDir) = @_;
+    
+    print "STRAFING!\n";
+  });
+  
+  my ($x, $y) = $cob->getScreenCoordinates(;
+  my ($width, $height) = $cob->getDimensions();
+  $self->{rect} = SDL::Rect->new($x, $y, $width, $height);
 }
 
 1;

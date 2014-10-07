@@ -3,8 +3,6 @@ package Arkess;
 use Arkess::Object;
 use Arkess::Component;
 use Arkess::Direction;
-use Arkess::Character;
-use Arkess::Tile;
 
 1;
 

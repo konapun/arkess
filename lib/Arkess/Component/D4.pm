@@ -48,7 +48,7 @@ sub initialize {
 sub afterInstall {
   my $self = shift;
 
-  my $owner = $self->{owner};
+  my $owner = $self->getObject();
   $self->{controller}->setPlayer($owner);
 }
 

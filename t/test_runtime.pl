@@ -23,6 +23,11 @@ my $character = $runtime->createEntity({
   'Arkess::Component::D4' => $controller
 });
 
+$character->setEventBus($bus);
+$character->on(Arkess::Event::RUNTIME_START, sub {
+  print "Character caught start of runtime event!\n";
+});
+
 my $loopIndex = 0;
 $bus->bind(Arkess::Event::LOOP_START, sub {
   $runtime->stop() if ($loopIndex++ >= 1800);

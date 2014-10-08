@@ -3,12 +3,22 @@ package Arkess::Event;
 use strict;
 
 use constant {
-  BEFORE_RENDER  => 0,
-  AFTER_RENDER   => 1,
-  LOOP_START     => 2,
-  RUNTIME_START  => 3,
-  RUNTIME_STOP   => 4,
+  BEFORE_RENDER  => 'rt_before_render',
+  AFTER_RENDER   => 'rt_after_render',
+  LOOP_START     => 'rt_loop_start',
+  RUNTIME_START  => 'rt_runtime_start',
+  RUNTIME_STOP   => 'rt_runtime_stop',
 };
+
+sub getAll {
+  return (
+    Arkess::Event::BEFORE_RENDER,
+    Arkess::Event::AFTER_RENDER,
+    Arkess::Event::LOOP_START,
+    Arkess::Event::RUNTIME_START,
+    Arkess::Event::RUNTIME_STOP,
+  );
+}
 
 1;
 

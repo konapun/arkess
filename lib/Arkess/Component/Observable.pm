@@ -1,7 +1,15 @@
 package Arkess::Component::Observable;
 
 use strict;
+use Arkess::Event;
 use base qw(Arkess::Component);
+
+# (Optionally) Make runtime event bus's events observable from the Cobsy object
+sub initialize {
+  my ($self, $eventBus) = @_;
+
+  $self->_registerRuntimeEvents($self->getObject(), $eventBus) if $eventBus;
+}
 
 sub afterInstall {
   my ($self, $owner) = @_;
@@ -43,6 +51,13 @@ sub exportMethods {
       return $ret;
     },
 
+    # Register this cob with all events triggered by the runtime
+    setEventBus => sub {
+      my ($cob, $bus) = @_;
+
+      $self->_registerRuntimeEvents($cob, $bus);
+    },
+
     # Register a callback for an event
     on => sub {
       my ($cob, $event, $callback) = @_;
@@ -63,6 +78,16 @@ sub exportMethods {
     }
 
   };
+}
+
+sub _registerRuntimeEvents {
+  my ($self, $cob, $eventBus) = @_;
+
+  foreach my $event (Arkess::Event::getAll()) {
+    $eventBus->bind($event, sub {
+      $cob->trigger($event, @_);
+    });
+  }
 }
 
 1;

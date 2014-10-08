@@ -5,7 +5,7 @@ use base qw(Arkess::Component);
 
 sub exportMethods {
   my $self = shift;
-  my $owner = $self->{owner};
+  my $owner = $self->getObject();
 
   return {
     get => sub {

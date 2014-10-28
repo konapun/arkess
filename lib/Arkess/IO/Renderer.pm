@@ -43,7 +43,7 @@ sub render {
   foreach my $entity (@{$self->{entities}}) {
     $entity->render();
   }
-  
+
 }
 
 # Destroy the window
@@ -60,7 +60,7 @@ sub _initializeEnvironment {
   $args->{exit_on_quit} = 1; # Don't allow this to be overridden
   my $app = SDLx::App->new(%{$args});
   $self->{app} = $app;
-  
+
   foreach my $entity (@{$self->{entities}}) {
     $entity->setRenderer($app);
   }

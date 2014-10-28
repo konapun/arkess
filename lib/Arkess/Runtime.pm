@@ -38,13 +38,19 @@ sub setFPS {
   $self->{timer}->setFPS($fps);
 }
 
+sub getEntities {
+  return @{shift->{entities}};
+}
+
 sub addEntity {
   my ($self, $entity) = @_;
 
+  $entity->setRuntime($self);
   push(@{$self->{entities}}, $entity);
   if ($entity->attributes->has('renderable')) {
     $self->{renderer}->addEntity($entity);
   }
+  $self->getEventBus()->trigger(Arkess::Event::ENTITY_ADDED);
 }
 
 sub createEntity {

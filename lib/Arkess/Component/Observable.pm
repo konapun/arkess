@@ -4,15 +4,30 @@ use strict;
 use Arkess::Event;
 use base qw(Arkess::Component);
 
+sub requires {
+  return [
+    'Arkess::Component::AttributeChecker'
+  ];
+}
+
 # (Optionally) Make runtime event bus's events observable from the Cobsy object
 sub initialize {
   my ($self, $eventBus) = @_;
 
-  $self->_registerRuntimeEvents($self->getObject(), $eventBus) if $eventBus;
+  $self->{eventBus} = $eventBus;
 }
 
 sub afterInstall {
   my ($self, $owner) = @_;
+
+  my $eventBus = $self->{eventBus};
+  if (!$eventBus) { # See if event bus can be found through another component
+    if ($owner->hasAttribute('runtimeAware')) {
+      $eventBus = $owner->getEventBus();
+    }
+  }
+
+  $self->_registerRuntimeEvents($owner, $eventBus) if $eventBus;
 
   # Need to make sure this doesn't alter the "base" object...
   $owner->methods->each(sub {

@@ -3,9 +3,15 @@ package Arkess::Component::Getter;
 use strict;
 use base qw(Arkess::Component);
 
+sub afterInstall {
+  my ($self, $owner) = @_;
+
+  $self->{owner} = $owner;
+}
+
 sub exportMethods {
   my $self = shift;
-  my $owner = $self->getObject();
+  my $owner = $self->{owner};
 
   return {
     get => sub {

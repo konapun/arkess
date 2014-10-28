@@ -14,13 +14,14 @@ $runtime->setWindowOptions({
   title => 'My Game'
 });
 my $bus = $runtime->getEventBus();
-my $controller = $runtime->createController(undef);
+my $controller = $runtime->createController();
 my $background = $runtime->createEntity({
   'Arkess::Component::Image' => 'img/map.gif'
 });
 my $character = $runtime->createEntity({
   'Arkess::Component::Image' => 'img/link.jpg',
-  'Arkess::Component::D4' => $controller
+  'Arkess::Component::D4' => $controller,
+  'Arkess::Component::Collidable'
 });
 
 $character->setEventBus($bus);

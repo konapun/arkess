@@ -11,7 +11,8 @@ sub new {
     'Arkess::Component::Observable',
     'Arkess::Component::Getter',
     'Arkess::Component::AttributeChecker',
-    'Arkess::Component::MethodChecker'
+    'Arkess::Component::MethodChecker',
+    'Arkess::Component::RuntimeAware'
   ]);
 
   return $base->extend($additional);

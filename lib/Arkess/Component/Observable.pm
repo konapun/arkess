@@ -20,15 +20,6 @@ sub initialize {
 sub afterInstall {
   my ($self, $owner) = @_;
 
-  my $eventBus = $self->{eventBus};
-  if (!$eventBus) { # See if event bus can be found through another component
-    if ($owner->hasAttribute('runtimeAware')) {
-      $eventBus = $owner->getEventBus();
-    }
-  }
-
-  $self->_registerRuntimeEvents($owner, $eventBus) if $eventBus;
-
   # Need to make sure this doesn't alter the "base" object...
   $owner->methods->each(sub {
     my ($key, $val) = @_;
@@ -41,6 +32,10 @@ sub afterInstall {
       $owner->trigger($key, $return);
       return $return;
     });
+  });
+
+  $owner->on('setRuntime', sub {
+    $self->_registerRuntimeEvents($owner, shift->getEventBus());
   });
 }
 

@@ -24,16 +24,17 @@ sub exportMethods {
       my ($cob, $runtime) = @_;
 
       die "Runtime already set" if defined $self->{runtime};
-      print "Setting runtime\n";
       $self->{runtime} = $runtime;
     },
 
     getRuntime => sub {
+      print "Getting runtime\n";
       die "No runtime set" unless defined $self->{runtime};
       return $self->{runtime};
     },
 
     getEventBus => sub {
+      print "Getting event bus\n";
       die "No runtime set" unless defined $self->{runtime};
       return $self->{runtime}->getEventBus();
     },

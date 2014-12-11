@@ -21,7 +21,7 @@ my $background = $runtime->createEntity({
 my $character = $runtime->createEntity({
   'Arkess::Component::Image' => 'img/link.jpg',
   'Arkess::Component::D4' => $controller,
-  'Arkess::Component::Collidable'
+  #'Arkess::Component::Collidable'
 });
 
 $character->setEventBus($bus);

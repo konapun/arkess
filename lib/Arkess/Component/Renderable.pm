@@ -23,6 +23,7 @@ sub exportAttributes {
 
 sub exportMethods {
   return {
+    
     setRenderer => sub {
       my ($cob, $renderer) = @_;
 

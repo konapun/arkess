@@ -19,11 +19,11 @@ sub initialize {
 
 sub afterInstall {
   my ($self, $cob) = @_;
-  
+
   my $runtime = $self->{runtime};
   if (!$runtime) {
     if ($cob->hasAttribute('runtimeAware')) {
-      $runtime = $cob->getRuntime();
+      $runtime = $cob->getRuntime(); # FIXME: runtime hasn't been set yet; need to defer this
     }
     else {
       die "Runtime needed for component Collidable";

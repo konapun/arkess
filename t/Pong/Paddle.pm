@@ -2,12 +2,13 @@ package Pong::Paddle;
 
 use strict;
 use Arkess::Direction;
+use Arkess::IO::Keyboard;
 use SDL::Rect;
 use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Rectangle',
+#    'Arkess::Component::Rectangle', # FIXME: Allow initializing in require
     'Arkess::Component::Collidable'
   ];
 }
@@ -17,7 +18,7 @@ sub initialize {
 
   die "Must provide controller for component Paddle" unless defined $controller;
   die "Must provide position for component Paddle" unless defined $position;
-  if ($position == Direction::LEFT) {
+  if ($position eq Arkess::Direction::LEFT) {
     $controller->bind({
       Arkess::IO::Keyboard::KB_W => sub {
         shift->move('up');
@@ -28,7 +29,7 @@ sub initialize {
     });
   }
   else {
-    $position = Direction::RIGHT;
+    $position = Arkess::Direction::RIGHT;
     $controller->bind({
       Arkess::IO::Keyboard::KB_UP => sub {
         shift->move('up');
@@ -49,14 +50,15 @@ sub exportMethods {
 
   my $position = $self->{position};
   my $rect = $self->{rect};
+
   return {
 
     move => sub {
       my ($cob, $dir) = @_;
 
       my $ypos = $rect->y();
-      if ($position == Direction::RIGHT) {
-        $rect->x($re)
+      if ($position eq Arkess::Direction::RIGHT) {
+        $rect->x(); # TODO
       }
       else {
 
@@ -65,11 +67,11 @@ sub exportMethods {
     },
 
     render => sub {
-      if ($position == Direction::RIGHT) {
-
+      if ($position eq Arkess::Direction::RIGHT) {
+        print "Rendering paddle right!\n";
       }
       else {
-
+        print "Rendering paddle left!\n";
       }
     }
   }
@@ -77,7 +79,7 @@ sub exportMethods {
 
 sub afterInstall {
   my ($self, $owner) = @_;
-  
+
   $self->{controller}->setPlayer($owner);
 }
 

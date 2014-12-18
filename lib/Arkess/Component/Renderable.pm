@@ -23,7 +23,7 @@ sub exportAttributes {
 
 sub exportMethods {
   return {
-    
+
     setRenderer => sub {
       my ($cob, $renderer) = @_;
 
@@ -40,8 +40,7 @@ sub exportMethods {
     getScreenCoordinates => sub {
       my $cob = shift;
 
-
-      print "Returning coords (" . $cob->get('screenX') . ", " . $cob->get('screenY') . ")\n";
+#      print "Returning coords (" . $cob->get('screenX') . ", " . $cob->get('screenY') . ")\n";
       return ($cob->get('screenX'), $cob->get('screenY'));
     },
 

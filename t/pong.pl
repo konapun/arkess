@@ -12,10 +12,14 @@ my $game = Arkess::Runtime->new();
 $game->setWindowOptions({ title => 'Pong' });
 
 my $paddle1 = $game->createEntity({
-  'Pong::Paddle' => $game->createController()
+  'Pong::Paddle' => [$game->createController(), Arkess::Direction::LEFT]
 });
 my $paddle2 = $game->createEntity({
-  'Pong::Paddle' => $game->createController()
+  'Pong::Paddle' => [$game->createController(), Arkess::Direction::RIGHT]
 });
+my $ball = $game->createEntity([
+  'Pong::Ball'
+]);
 
+$game->run();
 print "Entities created\n";

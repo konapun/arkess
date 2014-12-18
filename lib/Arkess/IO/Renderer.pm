@@ -36,6 +36,7 @@ sub setWindowOptions {
   $appArgs->{height} ||= 600;
   $self->{appArgs} = $appArgs;
 }
+
 sub render {
   my $self = shift;
 
@@ -46,10 +47,10 @@ sub render {
 
 }
 
-# Destroy the window
 sub DESTROY {
   my $self = shift;
 
+  # TODO: Mr. Gorbachev, tear down this window!
 }
 
 # Create the window

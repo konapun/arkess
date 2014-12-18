@@ -6,6 +6,7 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
+    'Arkess::Component::Observable',
     'Arkess::Component::Renderable' # needed to get screen coordinates to check for collisions
   ];
 }
@@ -22,26 +23,24 @@ sub afterInstall {
 
   my $runtime = $self->{runtime};
   if (!$runtime) {
-    if ($cob->hasAttribute('runtimeAware')) {
-      $runtime = $cob->getRuntime(); # FIXME: runtime hasn't been set yet; need to defer this
-    }
-    else {
-      die "Runtime needed for component Collidable";
-    }
+    $cob->on('setRuntime', sub {
+      my $runtime = shift;
+
+      $runtime->getEventBus()->bind(Arkess::Event::BEFORE_RENDER, sub {
+        my ($x, $y) = $cob->getScreenCoordinates();
+        my ($width, $height) = $cob->getDimensions();
+
+        foreach my $entity ($runtime->getEntities()) {
+          if ($entity->hasAttribute('collidable')) {
+            my ($x2, $y2) = $entity->getScreenCoordinates();
+            my ($width2, $height2) = $entity->getDimensions();
+
+#            print "Got coords (" . $x2 . ", ". $y2 . ")\n";
+          }
+        }
+      });
+    });
   }
-
-  $runtime->getEventBus()->register(Arkess::Event::BEFORE_RENDER, sub { # Check for collisions
-    my ($x, $y) = $self->getScreenCoordinates();
-    my ($width, $height) = $self->getDimensions();
-    foreach my $entity ($runtime->getEntities()) {
-      if ($entity->hasAttribute('collidable')) { # check coordinates
-        my ($x2, $y2) = $entity->getScreenCoordinates();
-        my ($width2, $height2) = $entity->getDimensions();
-
-        print "Got coords (" . $x2 . ", " . $y2 . ")\n";
-      }
-    }
-  });
 }
 
 sub exportAttributes {

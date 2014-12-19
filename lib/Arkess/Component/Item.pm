@@ -3,12 +3,24 @@ package Arkess::Component::Item;
 use strict;
 use base qw(Arkess::Component);
 
-sub requires {
-  return [
-  
-  ];
+sub exportAttributes {
+  return {
+    owner => undef
+  };
 }
 
+sub exportMethods {
+
+  setOwner => sub {
+    my ($cob, $owner) = @_;
+
+    $cob->set('owner', $owner);
+  },
+
+  use => sub {
+    die "Arkess::Component::Item does not implement `use`";
+  }
+}
 1;
 
 __END__

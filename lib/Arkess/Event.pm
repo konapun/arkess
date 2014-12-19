@@ -27,7 +27,6 @@ sub getAll {
 }
 
 1;
-
 __END__
 =head1 NAME
 Arkess::Event - An enumeration of all standard events fired by the Arkess

@@ -11,6 +11,10 @@ use Pong::Paddle;
 my $game = Arkess::Runtime->new();
 $game->setWindowOptions({ title => 'Pong' });
 
+my $background = $game->createEntity({
+  'Arkess::Component::Background' => [0, 0, 0, 255]
+});
+
 my $paddle1 = $game->createEntity({
   'Pong::Paddle' => [$game->createController(), Arkess::Direction::LEFT]
 });

@@ -8,8 +8,7 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Renderable',
-#    'Arkess::Component::Rectangle', # FIXME: Allow initializing in require
+    'Arkess::Component::Renderable', # FIXME: Allow initializing in require
     'Arkess::Component::Collidable'
   ];
 }
@@ -19,6 +18,7 @@ sub initialize {
 
   die "Must provide controller for component Paddle" unless defined $controller;
   die "Must provide position for component Paddle" unless defined $position;
+
   if ($position eq Arkess::Direction::LEFT) {
     $controller->bind({
       Arkess::IO::Keyboard::KB_W => sub {
@@ -41,7 +41,10 @@ sub initialize {
     });
   }
 
-  $self->{rect} = SDL::Rect->new(10, 10, 10, 40);
+  $self->{color} = [255, 255, 0, 255];
+  $self->{thickness} = 10;
+  $self->{width} = 100;
+  $self->{pos_y} = 0;
   $self->{controller} = $controller;
   $self->{position} = $position;
 }
@@ -57,23 +60,31 @@ sub exportMethods {
     move => sub {
       my ($cob, $dir) = @_;
 
-      my $ypos = $rect->y();
-      if ($position eq Arkess::Direction::RIGHT) {
-        $rect->x(); # TODO
+      if ($dir eq Arkess::Direction::UP) {
+        $self->{pos_y} = $self->{pos_y}-1;
       }
-      else {
+      elsif ($dir eq Arkess::Direction::DOWN) {
+        $self->{pos_y} = $self->{pos_y}+1;
+      }
 
-      }
-      $rect->y()
+      $self->{color} = [int(rand(256)), int(rand(256)), int(rand(256)), 255]
     },
 
     render => sub {
+      my $cob = shift;
+      my $app = $cob->getRenderer();
+
+      my $x;
+      my $y = $self->{pos_y};
       if ($position eq Arkess::Direction::RIGHT) {
-        print "Rendering paddle right!\n";
+        $x = $app->w - $self->{thickness};
       }
       else {
-        print "Rendering paddle left!\n";
+        $x = 0;
       }
+
+      my $width = $self->{width};
+      $app->draw_rect([$x, $y + $width, $self->{thickness}, $width], $self->{color});
     }
   }
 }

@@ -1,7 +1,6 @@
 package Arkess::Component::Line;
 
 use strict;
-use SDL::Rect;
 use base qw(Arkess::Component);
 
 sub requires {

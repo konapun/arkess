@@ -8,6 +8,7 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
+    'Arkess::Component::Renderable',
 #    'Arkess::Component::Rectangle', # FIXME: Allow initializing in require
     'Arkess::Component::Collidable'
   ];

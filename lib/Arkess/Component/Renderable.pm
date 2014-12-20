@@ -10,6 +10,12 @@ sub requires {
   ];
 }
 
+sub initialize {
+  my ($self, $renderer) = @_;
+
+  $self->{renderer} = $renderer;
+}
+
 sub exportAttributes {
   return {
     renderable => 1, # needed in order to be picked up by the rendering engine
@@ -17,17 +23,18 @@ sub exportAttributes {
     screenY    => 0,
     width      => 160, #FIXME
     height     => 160,
-    renderer   => undef # set by the rendering engine
   };
 }
 
 sub exportMethods {
+  my $self = shift;
+
   return {
 
     setRenderer => sub {
       my ($cob, $renderer) = @_;
 
-      return $cob->set('renderer', $renderer);
+      $self->{renderer} = $renderer;
     },
 
     setScreenCoordinates => sub {
@@ -58,7 +65,7 @@ sub exportMethods {
     },
 
     getRenderer => sub {
-      return shift->get('renderer');
+      return $self->{renderer};
     },
 
     render => sub {

@@ -8,7 +8,7 @@ use Arkess::Runtime;
 my $game = Arkess::Runtime->new();
 
 my $timedEntity = $game->createEntity({
-  'Arkess::Component::Timed' => 5000, # run every 5 seconds
+  'Arkess::Component::Timed' => [5000, 0] # run every 5 seconds, but don't run immediately
 });
 
 my $event;

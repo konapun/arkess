@@ -6,9 +6,10 @@ use Arkess::Event;
 use base qw(Arkess::Component);
 
 sub initialize {
-  my ($self, $interval) = @_;
+  my ($self, $interval, $runImmediately) = @_;
 
   $self->{interval} = $interval;
+  $self->{immediate} = defined($runImmediately) ? $runImmediately : 1; # Whether or not to run before interval
 }
 
 sub requires {
@@ -35,7 +36,7 @@ sub exportMethods {
       }
 
       my $lastTick = [gettimeofday];
-      my $elapsed = $interval; # So timed event executes before waiting for a timeout the first time
+      my $elapsed = $self->{immediate} ? $interval : 0; # So timed event executes before waiting for a timeout the first time
       my $timedEvent = $cob->getEventBus()->bind(Arkess::Event::LOOP_START, sub {
         if ($elapsed >= $interval) {
           $callback->();

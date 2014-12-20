@@ -1,7 +1,6 @@
 package Arkess::Component::Rectangle;
 
 use strict;
-use SDL::Rect;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -11,9 +10,12 @@ sub requires {
 }
 
 sub initialize {
-  my ($self, $width, $height) = @_;
+  my ($self, $dimensions, $color) = @_;
 
-  die "Must provide width and height" unless defined $width && defined $height;
+  $dimensions = [0, 0, 100, 100] unless defined $dimensions;
+  $color = [255,255, 0, 255] unless defined $color;
+  $self->{dimensions} = $dimensions;
+  $self->{color} = $color;
 }
 
 sub exportMethods {
@@ -21,10 +23,17 @@ sub exportMethods {
 
   return {
 
+    setColor => sub {
+      my ($cob, $color) = @_;
+
+      $self->{color} = $color;
+    },
+    
     render => sub {
       my $cob = shift;
 
-      print "RENDERING RECT\n";
+      my $app = $cob->getRenderer();
+      $app->draw_rect($self->{dimensions}, $self->{color});
     }
 
   };

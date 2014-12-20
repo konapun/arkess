@@ -44,7 +44,7 @@ sub render {
   foreach my $entity (@{$self->{entities}}) {
     $entity->render();
   }
-
+  $self->{app}->update();
 }
 
 sub DESTROY {

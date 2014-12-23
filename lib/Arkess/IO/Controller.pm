@@ -22,7 +22,13 @@ sub getPlayer {
   return shift->{character};
 }
 
-sub bind {
+sub hold {
+  my ($self, $key, $sub) = @_;
+
+  return $self->bind($key, $sub);
+}
+
+sub press {
   my ($self, $key, $sub) = @_;
 
   if (ref $key eq 'HASH') { # Bind multiple as a hash
@@ -33,6 +39,12 @@ sub bind {
   else {
     $self->{bindings}->{$key} = $sub;
   }
+}
+
+sub bind {
+  my ($self, $key, $sub) = @_;
+
+
 }
 
 sub process {

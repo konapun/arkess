@@ -14,6 +14,8 @@ sub initialize {
 
   die "Must provide from and to coordinates" unless defined $from && defined $to;
   $color = [255, 255, 0, 255] unless defined $color;
+  $from = [0, 0] unless defined $from;
+  $to = [100, 100] unless defined $to;
   $self->{from} = $from;
   $self->{to} = $to;
   $self->{color} = $color;
@@ -25,11 +27,13 @@ sub exportMethods {
   return {
 
     getFrom => sub {
-      return shift->{from};
+      my $from = $self->{from};
+      return ($from->[0], $from->[1]);
     },
 
     getTo => sub {
-      return shift->{to};
+      my $to = $self->{to};
+      return ($to->[0], $to->[1]);
     },
 
     setFrom => sub {

@@ -47,6 +47,7 @@ sub initialize {
   $self->{pos_y} = 0;
   $self->{controller} = $controller;
   $self->{position} = $position;
+  $self->{moveIncrement} = 20;
 }
 
 sub exportMethods {
@@ -60,11 +61,12 @@ sub exportMethods {
     move => sub {
       my ($cob, $dir) = @_;
 
+      my $moveIncrement = $self->{moveIncrement};
       if ($dir eq Arkess::Direction::UP) {
-        $self->{pos_y} = $self->{pos_y}-1;
+        $self->{pos_y} = $self->{pos_y}-$moveIncrement;
       }
       elsif ($dir eq Arkess::Direction::DOWN) {
-        $self->{pos_y} = $self->{pos_y}+1;
+        $self->{pos_y} = $self->{pos_y}+$moveIncrement;
       }
 
       $self->{color} = [int(rand(256)), int(rand(256)), int(rand(256)), 255]

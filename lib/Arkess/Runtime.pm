@@ -2,22 +2,21 @@ package Arkess::Runtime;
 
 use strict;
 use Arkess::IO::Controller;
+use Arkess::IO::Controller::Hub;
 use Arkess::IO::Window;
 use Arkess::IO::Renderer;
-use Arkess::Event::Bus;
-use Arkess::Event::Queue;
 use Arkess::Event;
+use Arkess::Event::Bus;
 use Arkess::Timer;
 
 sub new {
     my $package = shift;
 
     my $self = bless {
-      controllers => [], # FIXME use object instead for easy removes (Take from Cobsy::Core)
       entities    => [], # FIXME use object instead for easy removes
       running     => 0,
       eventBus    => Arkess::Event::Bus->new(),
-      eventQueue  => Arkess::Event::Queue->new(),
+      eventHub    => Arkess::IO::Controller::Hub->new(),
       timer       => Arkess::Timer->new(60), # 60 fps
       renderer    => Arkess::IO::Renderer->new(), # TODO
     }, $package;
@@ -65,7 +64,7 @@ sub createController {
   my ($self, $character, $bindings) = @_;
 
   my $controller = Arkess::IO::Controller->new($character, $bindings);
-  push(@{$self->{controllers}}, $controller);
+  $self->{eventHub}->addController($controller);
   return $controller;
 }
 
@@ -82,7 +81,7 @@ sub run {
 
   my $timer = $self->{timer};
   my $eventBus = $self->{eventBus};
-  my $eventQueue = $self->{eventQueue};
+  my $eventHub = $self->{eventHub};
   my $renderer = $self->{renderer};
 
   $eventBus->trigger(Arkess::Event::RUNTIME_START);
@@ -91,17 +90,11 @@ sub run {
   $renderer->initialize();
   while ($self->{running}) {
     $eventBus->trigger(Arkess::Event::LOOP_START);
-    DEQ: while (my $event = $eventQueue->dequeue()) { # process SDL events
-      foreach my $controller (@{$self->{controllers}}) {
-        next DEQ if $controller->process($event); # first controller to accept event consumes it
-      }
-    }
-
+    $eventHub->processEvents();
     $eventBus->trigger(Arkess::Event::BEFORE_RENDER);
     $renderer->render();
     $eventBus->trigger(Arkess::Event::AFTER_RENDER);
 
-    $eventQueue->refresh();
     $timer->tick();
   }
   $eventBus->trigger(Arkess::Event::RUNTIME_STOP);

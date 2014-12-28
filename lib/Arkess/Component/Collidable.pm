@@ -28,15 +28,17 @@ sub afterInstall {
 
       $runtime->getEventBus()->bind(Arkess::Event::BEFORE_RENDER, sub {
         my ($x, $y) = $cob->getCoordinates();
-        print "COLLIDABLE: ($x, $y)\n";
         my ($width, $height) = $cob->getDimensions();
 
         foreach my $entity ($runtime->getEntities()) {
+          next if $entity == $cob;
           if ($entity->hasAttribute('collidable')) {
             my ($x2, $y2) = $entity->getCoordinates();
             my ($width2, $height2) = $entity->getDimensions();
 
-            print "Got coords (" . $x2 . ", ". $y2 . ") vs ($x, $y)\n";
+            if ($x2 >= $x && $x2 <= $x + $width && $y2 >= $y && $y2 <= $y + $width) {
+              print "COLLIDE (" . $x2 . ", ". $y2 . ") vs ($x, $y)\n";
+            }
           }
         }
       });

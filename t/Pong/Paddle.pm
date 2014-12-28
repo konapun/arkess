@@ -88,6 +88,7 @@ sub exportMethods {
 
       my $width = $self->{width};
       $app->draw_rect([$x, $y + $width, $self->{thickness}, $width], $self->{color});
+      print "Rendering paddle at ($x, $y)\n";
     }
   }
 }

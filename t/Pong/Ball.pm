@@ -6,7 +6,8 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Collidable'
+    'Arkess::Component::Collidable',
+    'Arkess::Component::Renderable'
   ];
 }
 
@@ -36,10 +37,12 @@ sub exportMethods {
 
       my $app = $cob->getRenderer();
       $self->{origin} = [$app->w/2, $app->h/2] unless defined $self->{origin};
+      $cob->setCoordinates(@{$self->{origin}});
       $app->draw_circle_filled($self->{origin}, $self->{radius}, $self->{color});
 
       my ($x, $y) = @{$self->{origin}};
       $self->{origin} = [$x-$self->{v_y}, $y];
+      print "Rendering ball at ($x, $y)\n";
     }
   }
 }

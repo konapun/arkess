@@ -8,7 +8,9 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
+    'Arkess::Component::Positioned',
     'Arkess::Component::Renderable', # FIXME: Allow initializing in require
+    'Arkess::Component::Mobile',
     'Arkess::Component::Collidable'
   ];
 }
@@ -44,7 +46,6 @@ sub initialize {
   $self->{color} = [255, 255, 0, 255];
   $self->{thickness} = 10;
   $self->{width} = 100;
-  $self->{pos_y} = 0;
   $self->{controller} = $controller;
   $self->{position} = $position;
   $self->{moveIncrement} = 20;
@@ -63,10 +64,10 @@ sub exportMethods {
 
       my $moveIncrement = $self->{moveIncrement};
       if ($dir eq Arkess::Direction::UP) {
-        $self->{pos_y} = $self->{pos_y}-$moveIncrement;
+        $cob->setY($cob->getY() - $moveIncrement);
       }
       elsif ($dir eq Arkess::Direction::DOWN) {
-        $self->{pos_y} = $self->{pos_y}+$moveIncrement;
+        $cob->setY($cob->getY() + $moveIncrement);
       }
 
       $self->{color} = [int(rand(256)), int(rand(256)), int(rand(256)), 255]
@@ -77,7 +78,7 @@ sub exportMethods {
       my $app = $cob->getRenderer();
 
       my $x;
-      my $y = $self->{pos_y};
+      my $y = $cob->getY();
       if ($position eq Arkess::Direction::RIGHT) {
         $x = $app->w - $self->{thickness};
       }

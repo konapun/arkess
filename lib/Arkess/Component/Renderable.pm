@@ -7,6 +7,7 @@ sub requires {
   return [
     'Arkess::Component::Getter',
     'Arkess::Component::Observable',
+    'Arkess::Component::Positioned'
   ];
 }
 
@@ -14,15 +15,13 @@ sub initialize {
   my ($self, $renderer) = @_;
 
   $self->{renderer} = $renderer;
+  $self->{width} = 160;
+  $self->{height} = 160;
 }
 
 sub exportAttributes {
   return {
-    renderable => 1, # needed in order to be picked up by the rendering engine
-    screenX    => 0,
-    screenY    => 0,
-    width      => 160, #FIXME
-    height     => 160,
+    renderable => 1 # needed in order to be picked up by the rendering engine
   };
 }
 
@@ -37,31 +36,15 @@ sub exportMethods {
       $self->{renderer} = $renderer;
     },
 
-    setScreenCoordinates => sub {
-      my ($cob, $x, $y) = @_;
-
-      $cob->set('screenX', $x);
-      $cob->set('screenY', $y);
-    },
-
-    getScreenCoordinates => sub {
-      my $cob = shift;
-
-#      print "Returning coords (" . $cob->get('screenX') . ", " . $cob->get('screenY') . ")\n";
-      return ($cob->get('screenX'), $cob->get('screenY'));
-    },
-
     setDimensions => sub {
       my ($cob, $width, $height) = @_;
 
-      $cob->set('width', $width);
-      $cob->set('height', $height);
+      $self->{width} = $width;
+      $self->{height} = $height;
     },
 
     getDimensions => sub {
-      my $cob = shift;
-
-      return ($cob->get('width'), $cob->get('height'));
+      return ($self->{width}, $self->{height});
     },
 
     getRenderer => sub {
@@ -71,6 +54,7 @@ sub exportMethods {
     render => sub {
       # pass - not implemented here
     }
+    
   }
 }
 

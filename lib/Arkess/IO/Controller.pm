@@ -41,10 +41,10 @@ sub press {
   }
 }
 
-sub bind {
+sub bind { # FIXME: HOLD
   my ($self, $key, $sub) = @_;
 
-
+  return $self->press($key, $sub);
 }
 
 sub process {

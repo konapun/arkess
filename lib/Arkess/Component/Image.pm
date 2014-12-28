@@ -38,7 +38,7 @@ sub exportMethods {
       my $renderer = $cob->getRenderer();
 
       die "Renderer not set" unless defined $renderer;
-      my ($x, $y) = $cob->getScreenCoordinates();
+      my ($x, $y) = $cob->getCoordinates();
       my ($width, $height) = $cob->getDimensions();
       my $image = $self->{image};
       my $rect = $self->{rect};
@@ -53,7 +53,7 @@ sub exportMethods {
 sub afterInstall {
   my ($self, $cob) = @_;
 
-  my ($x, $y) = $cob->getScreenCoordinates();
+  my ($x, $y) = $cob->getCoordinates();
   my ($width, $height) = $cob->getDimensions();
   $self->{rect} = SDL::Rect->new($x, $y, $width, $height);
 }

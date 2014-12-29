@@ -12,10 +12,14 @@ sub requires {
 }
 
 sub initialize {
-  my ($self, $runtime) = @_;
+  my ($self, $runtime, $collisionTag) = @_;
 
   $self->{didCollide} = 0;
   $self->{runtime} = $runtime;
+  $self->{collisionTag} = $collisionTag;
+  $self->{collisionEvents} = {
+    ALL => [] # default collision actions to run when no collideWith tag is given
+  };
 }
 
 sub afterInstall {
@@ -28,16 +32,28 @@ sub afterInstall {
 
       $runtime->getEventBus()->bind(Arkess::Event::BEFORE_RENDER, sub {
         my ($x, $y) = $cob->getCoordinates();
+        my $thisTag = $cob->getCollisionTag();
         my ($width, $height) = $cob->getDimensions();
 
         foreach my $entity ($runtime->getEntities()) {
           next if $entity == $cob;
           if ($entity->hasAttribute('collidable')) {
+            my $compareTag = $entity->getCollisionTag();
             my ($x2, $y2) = $entity->getCoordinates();
             my ($width2, $height2) = $entity->getDimensions();
 
             if ($x2 >= $x && $x2 <= $x + $width && $y2 >= $y && $y2 <= $y + $width) {
-              print "COLLIDE (" . $x2 . ", ". $y2 . ") vs ($x, $y)\n";
+              print "Colliding $thisTag with $compareTag\n";
+              foreach my $callback (@{$self->{collisionEvents}->{ALL}}) {
+                die "COLLIDE callback!\n";
+                $callback->($entity);
+              }
+              foreach my $callback (@{$self->{collisionEvents}->{$thisTag}}) {
+                die "COLLIDE tag $thisTag\n";
+              }
+              foreach my $callback (@{$self->{collisionEvents}->{$compareTag}}) {
+                die "COLLIDE TAG $compareTag\n";
+              }
             }
           }
         }
@@ -49,18 +65,40 @@ sub afterInstall {
 sub exportAttributes {
   return {
     collidable => 1
-  }
+  };
 }
 
 sub exportMethods {
+  my $self = shift;
+
   return {
 
-    collideOnce => sub {
-      # Event called only the first time a collision happens
+    # Callback triggered each time a collision happens
+    collide => sub {
+      my ($cob, $callback, $collisionTag) = @_;
+
+      $collisionTag = 'ALL' unless defined $collisionTag;
+      return $cob->collideWith($collisionTag, $callback);
     },
 
-    collide => sub {
-      # Callback triggered each time a collision happens
+    collideWith => sub {
+      my ($cob, $collisionTag, $callback) = @_;
+
+      $self->{collisionEvents}->{$collisionTag} = [] unless ref $self->{collisionEvents}->{$collisionTag} eq 'ARRAY';
+      push(@{$self->{collisionEvents}->{$collisionTag}}, $callback);
+    },
+
+    # Tag for collideWith
+    setCollisionTag => sub {
+      my ($cob, $tag) = @_;
+
+      die "Collision tag 'ALL' is reserved" if $tag eq 'ALL';
+      $self->{collisionTag} = $tag;
+      $self->{collisionEvents}->{$tag} = [] unless ref $self->{collisionEvents}->{$tag} eq 'ARRAY';
+    },
+
+    getCollisionTag => sub {
+      return $self->{collisionTag};
     }
 
   };

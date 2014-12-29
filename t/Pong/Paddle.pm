@@ -42,7 +42,7 @@ sub initialize {
       },
     });
   }
-
+  
   $self->{color} = [255, 255, 0, 255];
   $self->{thickness} = 10;
   $self->{width} = 100;
@@ -87,16 +87,20 @@ sub exportMethods {
       }
 
       my $width = $self->{width};
-      $app->draw_rect([$x, $y + $width, $self->{thickness}, $width], $self->{color});
-      print "Rendering paddle at ($x, $y)\n";
+      my $thickness = $self->{thickness};
+      $app->draw_rect([$x, $y + $width, $thickness, $width], $self->{color});
+      $cob->setCoordinates($x, $y);
+      $cob->setDimensions($width, $thickness);
+      print "Rendering paddle at ($x, $y) ($cob)\n";
     }
   }
 }
 
 sub afterInstall {
-  my ($self, $owner) = @_;
+  my ($self, $cob) = @_;
 
-  $self->{controller}->setPlayer($owner);
+  $self->{controller}->setPlayer($cob);
+  $cob->setCollisionTag('paddle');
 }
 
 1;

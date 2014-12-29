@@ -14,11 +14,25 @@ sub requires {
 sub initialize {
   my $self = shift;
 
+  $self->{maxVelocity} = 10;
   $self->{v_x} = -2.7;
   $self->{v_y} = 1.8;
   $self->{origin} = undef;
   $self->{color} = [255, 255, 255, 255];
   $self->{radius} = 5;
+  $self->{angle} = 0;
+}
+
+sub afterInstall {
+  my ($self, $cob) = @_;
+
+  $cob->setCollisionTag('ball');
+  $cob->collideWith('paddle', sub {
+    die "BALL COLLIDED WITH PADDLE!\n";
+  });
+  $cob->collideWith('ball', sub {
+    die "BALL COLLIDED WITH BALL!\n";
+  });
 }
 
 sub exportMethods {
@@ -26,11 +40,6 @@ sub exportMethods {
 
   my $position = $self->{position};
   return {
-
-    move => sub {
-      my ($cob, $dir) = @_;
-
-    },
 
     render => sub {
       my $cob = shift;
@@ -41,10 +50,31 @@ sub exportMethods {
       $app->draw_circle_filled($self->{origin}, $self->{radius}, $self->{color});
 
       my ($x, $y) = @{$self->{origin}};
-      $self->{origin} = [$x-$self->{v_y}, $y];
-      print "Rendering ball at ($x, $y)\n";
+      if ($x <= 0) {
+        $self->{v_x} += 2 unless $self->{v_x} >= $self->{maxVelocity};
+        $self->{v_x} *= -1;
+        $self->{angle} = rand(10);
+        $self->{angle} *= -1 if rand(10) > 5;
+      }
+      if ($x >= $app->w) {
+        $self->{v_x} -= 2 unless $self->{v_x} >= $self->{maxVelocity};
+        $self->{v_x} *= -1;
+        $self->{angle} = rand(10);
+        $self->{angle} *= -1 if rand(10) > 5;
+      }
+      if ($y <= 0) {
+        $self->{v_y} = 0;
+        $self->{angle} *= -1;
+      }
+      if ($y >= $app->h) {
+        $self->{v_y} = $app->h;
+        $self->{angle} *= -1;
+      }
+      $self->{origin} = [$x-$self->{v_x}, $y+$self->{angle}];
+      print "Rendering ball at ($x, $y) ($cob)\n";
     }
-  }
+    
+  };
 }
 
 1;

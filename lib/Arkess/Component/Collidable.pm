@@ -42,18 +42,16 @@ sub afterInstall {
             my $compareTag = $entity->getCollisionTag();
             my ($x2, $y2) = $entity->getCoordinates();
             my ($width2, $height2) = $entity->getDimensions();
-#print "($x2, $y2, $width2, $height2)\n";
+#  print "($x, $y, $width, $height) vs ($x2, $y2, $width2, $height2)\n";
             if ($x2 >= $x && $x2 <= $x + $width && $y2 >= $y && $y2 <= $y + $width) {
-              print "Colliding $thisTag with $compareTag\n";
               foreach my $callback (@{$self->{collisionEvents}->{ALL}}) {
-                die "COLLIDE callback!\n";
                 $callback->($entity);
               }
               foreach my $callback (@{$self->{collisionEvents}->{$thisTag}}) {
-                die "COLLIDE tag $thisTag\n";
+                $callback->($entity);
               }
               foreach my $callback (@{$self->{collisionEvents}->{$compareTag}}) {
-                die "COLLIDE TAG $compareTag\n";
+                $callback->($entity);
               }
             }
           }
@@ -71,7 +69,7 @@ sub exportAttributes {
 
 sub exportMethods {
   my $self = shift;
-print "COLLIDABLE exporting ($self)\n";
+
   return {
 
     # Callback triggered each time a collision happens

@@ -24,7 +24,7 @@ sub exportMethods {
     # Move while changing position
     move => sub {
       my ($cob, $direction, $units) = @_;
-
+      
       my ($x, $y) = $cob->getCoordinates();
       $units = $self->{units} unless defined $units;
       if ($direction eq Arkess::Direction::RIGHT) {

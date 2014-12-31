@@ -23,12 +23,17 @@ my $collider2 = Arkess::Object->new({ # TODO: Fix clone
   'Arkess::Component::Rectangle' => undef,
 });
 $collider1->setColor([0,255,0,255]);
-$collider2->setColor([255, 0, 0, 255]);
+$collider2->setColor([0, 0, 255, 255]);
 
-#$collider1->setCollisionTag('collider1');
-#$collider2->setCollisionTag('collider2');
-
+$collider1->setCollisionTag('collider1');
+$collider2->setCollisionTag('collider2');
 $collider2->setCoordinates(200, 0);
+
+$collider1->collideWith('collider2', sub {
+  $collider1->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
+  $collider2->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
+});
+
 $game->createController($collider1, {
   Arkess::IO::Keyboard::KB_W => sub {
     $collider1->move(Arkess::Direction::UP);

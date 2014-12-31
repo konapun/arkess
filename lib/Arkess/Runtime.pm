@@ -11,6 +11,7 @@ use Arkess::Timer;
 
 sub new {
     my $package = shift;
+    my $windowArgs = shift;
 
     my $self = bless {
       entities    => [], # FIXME use object instead for easy removes
@@ -18,7 +19,7 @@ sub new {
       eventBus    => Arkess::Event::Bus->new(),
       eventHub    => Arkess::IO::Controller::Hub->new(),
       timer       => Arkess::Timer->new(60), # 60 fps
-      renderer    => Arkess::IO::Renderer->new(), # TODO
+      renderer    => Arkess::IO::Renderer->new($windowArgs),
     }, $package;
 
     $self->_configure();

@@ -21,12 +21,23 @@ sub exportMethods {
 
   return {
 
+    setColor => sub {
+      my ($cob, $color) = @_;
+
+      $self->{color} = $color;
+    },
+
+    getColor => sub {
+      return $self->{color};
+    },
+
     render => sub {
       my $cob = shift;
 
       my $app = $cob->getRenderer();
       $app->draw_rect([0, 0, $app->w, $app->h], $self->{color});
     }
+
   };
 }
 

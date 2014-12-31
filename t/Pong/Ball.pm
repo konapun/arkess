@@ -7,7 +7,9 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Collidable',
-    'Arkess::Component::Renderable'
+    'Arkess::Component::Renderable',
+    'Arkess::Component::Timed',
+    'Arkess::Component::Observable'
   ];
 }
 
@@ -32,6 +34,12 @@ sub afterInstall {
   });
   $cob->collideWith('ball', sub {
     die "BALL COLLIDED WITH BALL!\n";
+  });
+
+  $cob->on('setRuntime', sub {
+    $cob->registerTimedEvent(sub {
+      $self->{color} = [int(rand(256)), int(rand(256)), int(rand(256)), 255];
+    }, 500);
   });
 }
 
@@ -73,7 +81,7 @@ sub exportMethods {
       $self->{origin} = [$x-$self->{v_x}, $y+$self->{angle}];
       print "Rendering ball at ($x, $y) ($cob)\n";
     }
-    
+
   };
 }
 

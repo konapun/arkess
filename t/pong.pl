@@ -13,6 +13,20 @@ use Pong::Ball;
 my $game = Arkess::Runtime->new();
 $game->setWindowOptions({ title => 'Pong' });
 
+# Example of creating your own enity
+# NOTE: Do not uncomment this if you're epileptic
+#my $background2 = Arkess::Object->new({
+#  'Arkess::Component::Background' => [0, 0, 0, 255],
+#  'Arkess::Component::Timed' => 50,
+#  'Arkess::Component::Observable'
+#});
+#$background2->on('setRuntime', sub {
+#  $background2->registerTimedEvent(sub {
+#    $background2->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
+#  });
+#});
+#$game->addEntity($background2);
+
 my $background = $game->createEntity({
   'Arkess::Component::Background' => [0, 0, 0, 255]
 });

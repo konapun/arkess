@@ -43,6 +43,14 @@ sub exportMethods {
       $self->{height} = $height;
     },
 
+    getWidth => sub {
+      return $self->{width};
+    },
+
+    getHeight => sub {
+      return $self->{height};
+    },
+    
     getDimensions => sub {
       return ($self->{width}, $self->{height});
     },
@@ -54,7 +62,7 @@ sub exportMethods {
     render => sub {
       # pass - not implemented here
     }
-    
+
   }
 }
 

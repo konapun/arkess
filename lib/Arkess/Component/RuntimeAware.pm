@@ -22,7 +22,6 @@ sub exportMethods {
 
     setRuntime => sub {
       my ($cob, $runtime) = @_;
-      die "Runtime already set" if defined $self->{runtime};
       $self->{runtime} = $runtime;
     },
 

@@ -5,17 +5,26 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Renderable'
+    'Arkess::Component::Renderable',
+    'Arkess::Component::Positioned'
   ];
 }
 
 sub initialize {
   my ($self, $dimensions, $color) = @_;
-
-  $dimensions = [0, 0, 100, 100] unless defined $dimensions;
+print "Rect init!\n";
+  $dimensions = [0, 0, 100, 100] unless defined $dimensions; # (x, y, width, height)
   $color = [255,255, 0, 255] unless defined $color;
   $self->{dimensions} = $dimensions;
   $self->{color} = $color;
+}
+
+sub afterInstall {
+  my ($self, $cob) = @_;
+
+  my ($x, $y, $width, $height) = @{$self->{dimensions}};
+  $cob->setCoordinates($x, $y);
+  $cob->setDimensions($width, $height);
 }
 
 sub exportMethods {
@@ -28,12 +37,12 @@ sub exportMethods {
 
       $self->{color} = $color;
     },
-    
+
     render => sub {
       my $cob = shift;
 
       my $app = $cob->getRenderer();
-      $app->draw_rect($self->{dimensions}, $self->{color});
+      $app->draw_rect([$cob->getX(), $cob->getY(), $cob->getWidth(), $cob->getHeight()], $self->{color});
     }
 
   };

@@ -12,6 +12,7 @@ sub requires {
 }
 
 sub initialize {
+  print "Collidable init!\n";
   my ($self, $runtime, $collisionTag) = @_;
 
   $self->{didCollide} = 0;
@@ -41,7 +42,7 @@ sub afterInstall {
             my $compareTag = $entity->getCollisionTag();
             my ($x2, $y2) = $entity->getCoordinates();
             my ($width2, $height2) = $entity->getDimensions();
-
+#print "($x2, $y2, $width2, $height2)\n";
             if ($x2 >= $x && $x2 <= $x + $width && $y2 >= $y && $y2 <= $y + $width) {
               print "Colliding $thisTag with $compareTag\n";
               foreach my $callback (@{$self->{collisionEvents}->{ALL}}) {
@@ -70,7 +71,7 @@ sub exportAttributes {
 
 sub exportMethods {
   my $self = shift;
-
+print "COLLIDABLE exporting ($self)\n";
   return {
 
     # Callback triggered each time a collision happens

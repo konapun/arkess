@@ -11,7 +11,9 @@ sub requires {
     'Arkess::Component::Positioned',
     'Arkess::Component::Renderable', # FIXME: Allow initializing in require
     'Arkess::Component::Mobile',
-    'Arkess::Component::Collidable'
+    'Arkess::Component::Collidable',
+    'Arkess::Component::Timed', # so we can register a color pulse callback
+    'Arkess::Component::Observable'
   ];
 }
 
@@ -42,7 +44,7 @@ sub initialize {
       },
     });
   }
-  
+
   $self->{color} = [255, 255, 0, 255];
   $self->{thickness} = 10;
   $self->{width} = 100;
@@ -70,7 +72,7 @@ sub exportMethods {
         $cob->setY($cob->getY() + $moveIncrement);
       }
 
-      $self->{color} = [int(rand(256)), int(rand(256)), int(rand(256)), 255]
+      #$self->{color} = [int(rand(256)), int(rand(256)), int(rand(256)), 255]
     },
 
     render => sub {
@@ -101,6 +103,12 @@ sub afterInstall {
 
   $self->{controller}->setPlayer($cob);
   $cob->setCollisionTag('paddle');
+
+  $cob->on('setRuntime', sub {
+    $cob->registerTimedEvent(sub {
+      $self->{color} = [int(rand(256)), int(rand(256)), int(rand(256)), 255];
+    }, 1000);
+  });
 }
 
 1;

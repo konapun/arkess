@@ -21,42 +21,27 @@ sub exportMethods {
 
   return {
 
-    # Move without changing direction
-    # Return true or false depending on whether or not the cob was able to move
-    strafe => sub {
-      my ($cob, $direction, $facing) = @_;
-
-      my ($x, $y) = $cob->getCoordinates();
-      my $units = $self->{units};
-      my $facing = $cob->getDirection() unless defined $facing;
-      if ($direction eq Arkess::Direction::DOWN) {
-        $y += $units;
-      }
-      elsif ($direction eq Arkess::Direction::UP) {
-        $y -= $units;
-      }
-      elsif ($direction eq Arkess::Direction::LEFT) {
-        $x -= $units;
-      }
-      elsif ($diretion eq Arkess::Direction::RIGHT) {
-        $x += $units;
-      }
-      else {
-        die "Unknown direction";
-      }
-
-      $cob->setCoordinates($x, $y);
-      $cob->setDirection($facing);
-      return 1;
-    },
-
     # Move while changing position
     move => sub {
-      my ($cob, $direction) = @_;
+      my ($cob, $direction, $units) = @_;
 
-      my $success = $cob->strafe($direction, $direction);
-      $cob->trigger('move', [$direction]) if $success;
-      return $success;
+      my ($x, $y) = $cob->getCoordinates();
+      $units = $self->{units} unless defined $units;
+      if ($direction eq Arkess::Direction::RIGHT) {
+        $cob->setCoordinates($x+$units, $y);
+      }
+      elsif ($direction eq Arkess::Direction::LEFT) {
+        $cob->setCoordinates($x-$units, $y);
+      }
+      elsif ($direction eq Arkess::Direction::UP) {
+        $cob->setCoordinates($x, $y-$units);
+      }
+      elsif ($direction eq Arkess::Direction::DOWN) {
+        $cob->setCoordinates($x, $y+$units);
+      }
+      else {
+        die "Bad direction '$direction'";
+      }
     }
   }
 }

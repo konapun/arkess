@@ -35,26 +35,7 @@ sub exportMethods {
 
       $self->{renderer} = $renderer;
     },
-
-    setDimensions => sub {
-      my ($cob, $width, $height) = @_;
-
-      $self->{width} = $width;
-      $self->{height} = $height;
-    },
-
-    getWidth => sub {
-      return $self->{width};
-    },
-
-    getHeight => sub {
-      return $self->{height};
-    },
-
-    getDimensions => sub {
-      return ($self->{width}, $self->{height});
-    },
-
+    
     getRenderer => sub {
       return $self->{renderer};
     },

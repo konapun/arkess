@@ -16,6 +16,7 @@ sub initialize {
   my ($self, $runtime, $collisionTag) = @_;
 
   $self->{didCollide} = 0;
+  $self->{colliding} = 0;
   $self->{runtime} = $runtime;
   $self->{collisionTag} = $collisionTag;
   $self->{collisionEvents} = {
@@ -44,6 +45,8 @@ sub afterInstall {
             my ($width2, $height2) = $entity->getDimensions();
 #  print "($x, $y, $width, $height) vs ($x2, $y2, $width2, $height2)\n";
             if ($x2 >= $x && $x2 <= $x + $width && $y2 >= $y && $y2 <= $y + $width) {
+              $self->{colliding} = 1; # FIXME: Do for all collisions, not just this
+
               foreach my $callback (@{$self->{collisionEvents}->{ALL}}) {
                 $callback->($entity);
               }
@@ -80,6 +83,10 @@ sub exportMethods {
       return $cob->collideWith($collisionTag, $callback);
     },
 
+    uncollide => sub {
+
+    },
+    
     collideWith => sub {
       my ($cob, $collisionTag, $callback) = @_;
 

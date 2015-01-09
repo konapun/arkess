@@ -42,3 +42,7 @@ sub exportMethods {
 }
 
 1;
+__END__
+=head1 NAME
+Arkess::Component::Background - A component which takes up all of a
+window's render space

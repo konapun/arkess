@@ -19,7 +19,7 @@ sub exportMethods {
 
     setCoordinates => sub {
       my ($cob, $x, $y) = @_;
-
+      
       $self->{x} = $x;
       $self->{y} = $y;
     },

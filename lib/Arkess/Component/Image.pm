@@ -3,15 +3,15 @@ package Arkess::Component::Image;
 # http://search.cpan.org/~kthakore/SDL_Perl-v2.2.6/lib/SDL/Tutorial/Images.pm
 
 use strict;
-use SDL::Image;
-use SDL::Rect;
-use SDL::Video;
+use SDLx::Surface;
 use Image::Size;
 use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Renderable'
+    'Arkess::Component::Renderable',
+    'Arkess::Component::Positioned',
+    'Arkess::Component::2D'
   ];
 }
 
@@ -20,12 +20,12 @@ sub initialize {
 
   $opts ||= {};
   die "Must provide image source for component Image" unless defined $src;
-  $self->{image} = SDL::Image::load($src);
+  die "Unable to read file '$src' for loading" unless -e $src;
+  $self->{image} = SDLx::Surface->load($src);
+
   my ($width, $height) = imgsize($src);
   $self->{width} = $opts->{width} || $width;
   $self->{height} = $opts->{height} || $height;
-
-  $self->{rect} = undef;
 }
 
 sub exportMethods {
@@ -37,15 +37,7 @@ sub exportMethods {
       my $cob = shift;
       my $renderer = $cob->getRenderer();
 
-      die "Renderer not set" unless defined $renderer;
-      my ($x, $y) = $cob->getCoordinates();
-      my ($width, $height) = $cob->getDimensions();
-      my $image = $self->{image};
-      my $rect = $self->{rect};
-
-#      SDL::Video::blit_surface($image, $self->{rect}, $renderer, $rect);
-#      SDL::Video::update_rects($renderer, $rect);
-      $self->{rect} = $rect;
+      $self->{image}->blit($renderer, undef, [$cob->getCoordinates()]);
     }
   };
 }
@@ -53,9 +45,7 @@ sub exportMethods {
 sub afterInstall {
   my ($self, $cob) = @_;
 
-  my ($x, $y) = $cob->getCoordinates();
-  my ($width, $height) = $cob->getDimensions();
-  $self->{rect} = SDL::Rect->new($x, $y, $width, $height);
+  $cob->setDimensions($self->{width}, $self->{height}); # via Arkess::Component::2D
 }
 
 1;

@@ -1,15 +1,21 @@
 package Arkess::IO::Controller;
 
 use strict;
+use Arkess::IO::Keyboard::EventType;
 
 sub new {
   my $package = shift;
   my ($character, $bindings) = @_;
 
-  return bless {
+  my $self = bless {
     character => $character,
-    bindings  => $bindings || {}
+    bindings  => {
+      # assigned as-needed from EventType
+    }
   }, $package;
+
+  $self->bind($bindings) if defined $bindings;
+  return $self;
 }
 
 sub setPlayer {
@@ -22,58 +28,46 @@ sub getPlayer {
   return shift->{character};
 }
 
-sub hold {
-  my ($self, $key, $sub) = @_;
+sub bind {
+  my ($self, $key, $type, $sub) = @_;
 
-  return $self->bind($key, $sub);
-}
+  return $self->_bindHash($key, $type) if ref $key eq 'HASH';
+  if (!defined $sub) { # No key was provided, probably a window event (leave off key)
+    my $tmp = $type;
+    $type = $key;
+    $sub = $tmp;
 
-sub press {
-  my ($self, $key, $sub) = @_;
-
-  if (ref $key eq 'HASH') { # Bind multiple as a hash
-    while (my ($k, $s) = each %{$key}) {
-      $self->bind($k, $s)
-    }
+    $self->{bindings}->{$type} = $sub
   }
   else {
-    $self->{bindings}->{$key} = $sub;
+    $self->{bindings}->{$type} = {} unless defined $self->{bindings}->{$type};
+    $self->{bindings}->{$type}->{$key} = $sub;
   }
-}
-
-sub bind { # FIXME: HOLD
-  my ($self, $key, $sub) = @_;
-
-  return $self->press($key, $sub);
 }
 
 sub process {
-  my ($self, $event) = @_;
+  my ($self, $event) = @_; # An SDL event
 
-  return if $self->_processKeypress($event);
-  return $self->_processType($event);
+  my $type = $event->type();
+  if (defined $self->{bindings}->{$type}) {
+    # First, check for events which fire without a keysym
+    my $action = $self->{bindings}->{$type};
+    return $action->($self->{character}) if ref $action eq 'CODE';
+
+    # Events which fire with a keysym
+    my $sym = $event->key_sym();
+    $action = $self->{bindings}->{$type}->{$sym};
+    return $action->($self->{character}) if defined $action;
+  }
 }
 
-sub _processKeypress {
-  my ($self, $event) = @_;
+sub _bindHash {
+  my ($self, $hash, $eventType) = @_;
 
-  my $key = $event->key_sym;
-  my $cb = $self->{bindings}->{$key};
-  if (defined $cb) {
-    return $cb->($self->{character});
+  my $type = Arkess::IO::Keyboard::EventType::KEY_DOWN unless defined $eventType;
+  while (my ($key, $sub) = each %{$hash}) {
+    $self->bind($key, $type, $sub);
   }
-  return undef;
-}
-
-sub _processType {
-  my ($self, $event) = @_;
-
-  my $type = $event->type;
-  my $cb = $self->{bindings}->{$type};
-  if (defined $cb) {
-    return $cb->($self->{character});
-  }
-  return undef;
 }
 
 1;

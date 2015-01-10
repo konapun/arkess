@@ -47,7 +47,7 @@ sub initialize {
 
 sub afterInstall {
   my ($self, $owner) = @_;
-  
+
   $self->{controller}->setPlayer($owner);
 }
 

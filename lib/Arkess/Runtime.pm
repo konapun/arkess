@@ -104,10 +104,9 @@ sub run {
 sub _configure {
   my $self = shift;
 
-  $self->createController(undef, { # controller to handle window events
-    Arkess::IO::Window::WIN_QUIT => sub {
-      $self->stop();
-    }
+  my $windowController = $self->createController(undef); # controller to handle window events
+  $windowController->bind(Arkess::IO::Window::WIN_QUIT, sub {
+    $self->stop();
   });
 }
 

@@ -25,8 +25,14 @@ $bgAnimations->setCoordinates(0, 0);
 
 my $fighter1 = $game->createEntity({
   'Arkess::Component::Image' => './assets/characters/ryu1.png',
-  'Arkess::Component::Mobile' => [10]
+  'Arkess::Component::Mobile' => [10],
+  'Arkess::Component::D4' => [],
+  'Arkess::Component::Observable' => []
 });
+$fighter1->on('move', sub {
+  die "MOVING!\n";
+});
+
 #my $fighter1 = $game->createEntity({
 #  'Arkess::Component::AnimatedSprite' => './assets/characters/ryu-sprite.png'
 #});
@@ -34,14 +40,14 @@ my $fighter1 = $game->createEntity({
 #$fighter1->addAnimationSequence('right', );
 #$fighter1->setAnimationSequence('right');
 
-my $controller = $game->createController($fighter1, {
-  Arkess::IO::Keyboard::KB_A => sub {
-    $fighter1->move(Arkess::Direction::LEFT);
-  },
-  Arkess::IO::Keyboard::KB_D => sub {
-    $fighter1->move(Arkess::Direction::RIGHT);
-  }
-});
+#my $controller = $game->createController($fighter1, {
+#  Arkess::IO::Keyboard::KB_A => sub {
+#    $fighter1->move(Arkess::Direction::LEFT);
+#  },
+#  Arkess::IO::Keyboard::KB_D => sub {
+#    $fighter1->move(Arkess::Direction::RIGHT);
+#  }
+#});
 
 $game->setWindowOptions({
   title  => 'Fighting Game',

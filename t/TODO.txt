@@ -1,2 +1,2 @@
 [X] Allow component `require` to provide instantiation values
-[ ] Make sure cob `clone` properly clones (check collision_test.pl)
+[ ] Make component loading order deterministic (impossible with perl hashes?)

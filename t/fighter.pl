@@ -33,6 +33,10 @@ $fighter1->on('move', sub {
   die "MOVING!\n";
 });
 
+my $fighter2 = $game->createEntity({
+  'Arkess::Component::AnimatedSprite' => './assets/characters/ryu-sprite.png'
+});
+
 #my $fighter1 = $game->createEntity({
 #  'Arkess::Component::AnimatedSprite' => './assets/characters/ryu-sprite.png'
 #});

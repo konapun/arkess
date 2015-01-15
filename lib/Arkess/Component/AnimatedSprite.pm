@@ -2,7 +2,6 @@ package Arkess::Component::AnimatedSprite;
 
 use strict;
 use Arkess::File::SpriteSheet::Inspector;
-use SDLx::Sprite::Animated;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -16,7 +15,7 @@ sub requires {
 sub initialize {
   my ($self, $src, $interval) = @_;
 
-  $self->{sprites} = $self->_loadSpriteSheet($src, 20, 20); # Individual sprites, loaded from sprite sheet and referred to by their 2D coords
+  $self->{sprites} = $self->_loadSpriteSheet($src); # Individual sprites, loaded from sprite sheet and referred to by their 2D coords
   $self->{activeSequence} = undef;
 
   $self->{interval} = $interval;
@@ -74,24 +73,11 @@ sub afterInstall {
 # Load a sprite sheet using SDLx::Sprite::Animated since it's probably a
 # dependency anyway
 sub _loadSpriteSheet {
-  my ($self, $src, $stepX, $stepY) = @_;
+  my ($self, $src) = @_;
 
   print "LOADING IT!\n";
-  die "Can't locate spritesheet '$src' for loading" unless -e $src;
-  my $sprites = SDLx::Sprite::Animated->new(
-    image => $src,
-    step_x => $stepX,
-    step_y => $stepY
-  );
-  use Data::Dumper;
-  print Dumper($sprites->next);
-  print "LOADED IT!\n";
-#  my $spriteSheet = Arkess::File::SpriteSheet->new($src);
-#  foreach my $row ($spriteSheet->getSpriteRows()) { # Row is an arrayRef
-#    foreach my $sprite (@$row) { # Each sprite here is ...
-#
-#    }
-#  }
+  my $spriteInspector = Arkess::File::SpriteSheet::Inspector->new();
+  $spriteInspector->inspect($src);
 }
 
 1;

@@ -35,6 +35,6 @@ sub getSpriteWidth {
 
 sub getSpriteHeight {
   return shift->{spriteHeight};
-}s
+}
 
 1;

@@ -4,37 +4,30 @@ use strict;
 
 sub new {
   my $package = shift;
-  my ($self, $xdim, $ydim, spriteWidth, spriteHeight) = @_;
+  my ($x, $y, $width, $height) = @_;
 
   return bless {
-    xdim => $xdim,
-    ydim => $ydim,
-    spriteWidth => $spriteWidth,
-    spriteHeight => $spriteHeight
+    x      => $x,
+    y      => $y,
+    width  => $width,
+    height => $height
   }, $package;
 }
 
-sub getXDimensions {
-  return shift->getNumberOfColumns();
+sub getX {
+  return shift->{x};
 }
 
-sub getYDimensions {
-  return shift->getNumberOfRows();
-}
-sub getNumberOfRows {
-  return shift->{ydim};
+sub getY {
+  return shift->{y};
 }
 
-sub getNumberOfColumns {
-  return shift->{xdim};
+sub getWidth {
+  return shift->{width};
 }
 
-sub getSpriteWidth {
-  return shift->{spriteWidth};
-}
-
-sub getSpriteHeight {
-  return shift->{spriteHeight};
+sub getHeight {
+  return shift->{height};
 }
 
 1;

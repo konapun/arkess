@@ -1,6 +1,7 @@
 package Arkess::Component::AnimatedSprite;
 
 use strict;
+use SDLx::Sprite;
 use Arkess::File::SpriteSheet::Inspector;
 use base qw(Arkess::Component);
 
@@ -13,9 +14,9 @@ sub requires {
 }
 
 sub initialize {
-  my ($self, $src, $interval) = @_;
+  my ($self, $src, $interval, $spritesheetBackgroundColor) = @_;
 
-  $self->{sprites} = $self->_loadSpriteSheet($src); # Individual sprites, loaded from sprite sheet and referred to by their 2D coords
+  $self->{sprites} = $self->_loadSpriteSheet($src, $spritesheetBackgroundColor); # Individual sprites, loaded from sprite sheet and referred to by their 2D coords
   $self->{activeSequence} = undef;
 
   $self->{interval} = $interval;
@@ -73,11 +74,21 @@ sub afterInstall {
 # Load a sprite sheet using SDLx::Sprite::Animated since it's probably a
 # dependency anyway
 sub _loadSpriteSheet {
-  my ($self, $src) = @_;
+  my ($self, $src, $backgroundColor) = @_;
 
-  print "LOADING IT!\n";
+  my @sprites;
   my $spriteInspector = Arkess::File::SpriteSheet::Inspector->new();
-  $spriteInspector->inspect($src);
+  my @spriteCoords = $spriteInspector->inspect($src, $backgroundColor);
+  foreach my $sprite (@spriteCoords) {
+    print "PUSHING\n";
+    push(@sprites, SDLx::Sprite->new(
+      image => $src,
+      clip => SDL::Rect->new($sprite->getX(), $sprite->getY(), $sprite->getWidth(), $sprite->getHeight()),
+#      alpha_key => $backgroundColor
+    ));
+    print "PUSHED\n";
+  }
+
 }
 
 1;

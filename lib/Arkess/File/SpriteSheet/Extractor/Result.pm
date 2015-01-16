@@ -1,4 +1,4 @@
-package Arkess::File::SpriteSheet::Inspector::Result;
+package Arkess::File::SpriteSheet::Extractor::Result;
 
 use strict;
 

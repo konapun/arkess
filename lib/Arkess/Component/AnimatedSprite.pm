@@ -2,7 +2,7 @@ package Arkess::Component::AnimatedSprite;
 
 use strict;
 use SDLx::Sprite;
-use Arkess::File::SpriteSheet::Inspector;
+use Arkess::File::SpriteSheet::Extractor;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -77,8 +77,8 @@ sub _loadSpriteSheet {
   my ($self, $src, $backgroundColor) = @_;
 
   my @sprites;
-  my $spriteInspector = Arkess::File::SpriteSheet::Inspector->new();
-  my @spriteCoords = $spriteInspector->inspect($src, $backgroundColor);
+  my $spriteExtractor = Arkess::File::SpriteSheet::Extractor->new();
+  my @spriteCoords = $spriteExtractor->extract($src, $backgroundColor);
   foreach my $sprite (@spriteCoords) {
     print "PUSHING\n";
     push(@sprites, SDLx::Sprite->new(

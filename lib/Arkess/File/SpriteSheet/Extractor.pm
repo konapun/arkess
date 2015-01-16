@@ -1,10 +1,10 @@
-package Arkess::File::SpriteSheet::Inspector;
+package Arkess::File::SpriteSheet::Extractor;
 
 use strict;
 use GD;
 use GD::Image;
 use Color::Rgb;
-use Arkess::File::SpriteSheet::Inspector::Result;
+use Arkess::File::SpriteSheet::Extractor::Result;
 
 sub new {
   my $package = shift;
@@ -28,14 +28,14 @@ sub setTolerance {
   $self->{tolerance} = $tolerance;
 }
 
-sub inspect {
+sub extract {
   my ($self, $src, $color) = @_;
 
 # FIXME: Just return this for sprite testing
   my @results;
   foreach my $x (10, 80, 150, 220, 290, 360, 430) {
     foreach my $y (10, 120) {
-      push(@results, Arkess::File::SpriteSheet::Inspector::Result->new($x, $y, 40, 90))
+      push(@results, Arkess::File::SpriteSheet::Extractor::Result->new($x, $y, 40, 90))
     }
   }
   return @results;

@@ -28,6 +28,10 @@ sub initialize {
   $self->{height} = $opts->{height} || $height;
 }
 
+sub setPriority {
+  return 0;
+}
+
 sub exportMethods {
   my $self = shift;
 

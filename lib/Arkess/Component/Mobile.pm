@@ -16,6 +16,10 @@ sub initialize {
   $self->{units} = defined $units ? $units : 1; # How many units to move on strafe or move
 }
 
+sub setPriority {
+  return 2;
+}
+
 sub exportMethods {
   my $self = shift;
 

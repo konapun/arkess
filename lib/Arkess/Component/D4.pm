@@ -20,12 +20,15 @@ sub initialize {
   $self->{direction} = undef;
 }
 
+sub setPriority {
+  return 2; # need a higher priority than Observable so we can rely on the runtime being set for us to register with
+}
+
 sub afterInstall {
   my ($self, $cob) = @_;
 
   if (!$self->{controller}) {
     $cob->on('setRuntime', sub { # FIXME: Sometimes this never gets triggered!
-      print "SET!\n";
       my $runtime = $cob->getRuntime();
       my $controller = $runtime->createController();
       $controller->setPlayer($cob);
@@ -59,19 +62,15 @@ sub _configureController {
 
   $controller->bind({
     Arkess::IO::Keyboard::KB_W => sub {
-      print "UP!\n";
       $self->{direction} = 'up';
     },
     Arkess::IO::Keyboard::KB_A => sub {
-      print "LEFT!\n";
       $self->{direction} = 'left';
     },
     Arkess::IO::Keyboard::KB_S => sub {
-      print "DOWN!\n";
       $self->{direction} = 'down';
     },
     Arkess::IO::Keyboard::KB_D => sub {
-      print "RIGHT!\n";
       $self->{direction} = 'right';
     },
     Arkess::IO::Keyboard::KB_RIGHT => sub {

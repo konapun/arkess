@@ -35,14 +35,14 @@ sub exportMethods {
 
       $self->{renderer} = $renderer;
     },
-    
+
     getRenderer => sub {
       return $self->{renderer};
     },
 
-    #render => sub {
-    #  # pass - not implemented here
-    #}
+    render => sub {
+      # pass - not implemented here
+    }
 
   }
 }

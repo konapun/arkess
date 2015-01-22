@@ -24,6 +24,10 @@ sub initialize {
   };
 }
 
+sub setPriority {
+  return 2; # needs a higher priority because observable needs to be loaded first
+}
+
 sub afterInstall {
   my ($self, $cob) = @_;
 
@@ -86,7 +90,7 @@ sub exportMethods {
     uncollide => sub {
 
     },
-    
+
     collideWith => sub {
       my ($cob, $collisionTag, $callback) = @_;
 

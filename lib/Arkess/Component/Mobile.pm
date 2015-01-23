@@ -17,7 +17,7 @@ sub initialize {
 }
 
 sub setPriority {
-  return 2;
+  return 3;
 }
 
 sub exportMethods {

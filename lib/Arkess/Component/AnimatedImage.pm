@@ -40,16 +40,20 @@ sub exportMethods {
 
   return {
 
+    getAnimationInterval => sub {
+      return $self->{interval};
+    },
+
     setAnimationInterval => sub {
       my ($cob, $interval) = @_;
 
-      $self->{interval} = $interval;
+      $self->{interval} = $interval; # FIXME need to reregister timed event with new interval
     },
 
     render => sub {
       my $cob = shift;
       my $renderer = $cob->getRenderer();
-      
+
       $self->{frame} = 0 if $self->{frame} >= $self->{frames};
       $self->{images}->[$self->{frame}]->blit($renderer, undef, [$cob->getX(), $cob->getY()]);
     }

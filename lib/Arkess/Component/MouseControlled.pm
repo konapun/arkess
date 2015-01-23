@@ -1,8 +1,8 @@
-package Arkess::Component::D4;
+package Arkess::Component::MouseControlled;
 
 use strict;
-use Arkess::IO::Keyboard;
-use Arkess::IO::Keyboard::EventType;
+use Arkess::IO::Mouse;
+use Arkess::IO::Mouse::EventType;
 use Arkess::Direction;
 use base qw(Arkess::Component);
 
@@ -15,7 +15,7 @@ sub requires {
 
 sub initialize {
   my ($self, $controller) = @_;
-
+  
   $self->{controller} = $controller;
   $self->{direction} = undef;
 }
@@ -60,34 +60,13 @@ sub exportMethods {
 sub _configureController {
   my ($self, $controller) = @_;
 
-  $controller->bind({
-    Arkess::IO::Keyboard::KB_W => sub {
-      $self->{direction} = 'up';
-    },
-    Arkess::IO::Keyboard::KB_A => sub {
-      $self->{direction} = 'left';
-    },
-    Arkess::IO::Keyboard::KB_S => sub {
-      $self->{direction} = 'down';
-    },
-    Arkess::IO::Keyboard::KB_D => sub {
-      $self->{direction} = 'right';
-    },
-    Arkess::IO::Keyboard::KB_RIGHT => sub {
-      $self->{direction} = 'right';
-    },
-    Arkess::IO::Keyboard::KB_LEFT => sub {
-      $self->{direction} = 'left';
-    },
-    Arkess::IO::Keyboard::KB_DOWN => sub {
-      $self->{direction} = 'down';
-    },
-    Arkess::IO::Keyboard::KB_UP => sub {
-      $self->{direction} = 'up';
-    }
+  print "CONFIG: $controller\n";
+  $controller->bind(Arkess::IO::Mouse::MOUSE_LCLICK, Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
+    print "MOUSE CLICK!\n";
   });
 
-  $controller->bind(Arkess::IO::Keyboard::EventType::KEY_UP, sub {
+  $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, Arkess::IO::Mouse::EventType::BTN_UP, sub {
+    print "UNCLICK!\n";
     $self->{direction} = undef;
   });
 }

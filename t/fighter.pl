@@ -27,10 +27,24 @@ my $fighter1 = $game->createEntity({
   'Arkess::Component::Image' => './assets/characters/ryu1.png',
   'Arkess::Component::Mobile' => [10],
   'Arkess::Component::D4' => [],
+#  'Arkess::Component::MouseControlled' => [], FIXME
   'Arkess::Component::Observable' => []
 });
 $fighter1->on('move', sub {
   die "MOVING!\n";
+});
+
+$fighter1->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  my $interval = $bgAnimations->getAnimationInterval()+10;
+
+  print "Setting interval to $interval\n";
+  $bgAnimations->setAnimationInterval($interval);
+});
+$fighter1->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  my $interval = $bgAnimations->getAnimationInterval()-10;
+
+  print "Setting interval to $interval\n";
+  $bgAnimations->setAnimationInterval($interval);
 });
 
 #my $fighter2 = $game->createEntity({

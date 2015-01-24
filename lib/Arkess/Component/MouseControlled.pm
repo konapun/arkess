@@ -15,7 +15,7 @@ sub requires {
 
 sub initialize {
   my ($self, $controller) = @_;
-  
+
   $self->{controller} = $controller;
   $self->{direction} = undef;
 }
@@ -60,14 +60,17 @@ sub exportMethods {
 sub _configureController {
   my ($self, $controller) = @_;
 
-  print "CONFIG: $controller\n";
-  $controller->bind(Arkess::IO::Mouse::MOUSE_LCLICK, Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
-    print "MOUSE CLICK!\n";
+  $controller->bind(Arkess::IO::Mouse::EventType::BTN_DOWN, sub { # TODO - get click coordinates
+    my ($char, $event) = @_;
+
+    print "(x, y): (" . $event->button_x() . ", " . $event->button_y() . ")\n";
+    $self->{direction} = Arkess::Direction::RIGHT;
   });
 
-  $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, Arkess::IO::Mouse::EventType::BTN_UP, sub {
-    print "UNCLICK!\n";
-    $self->{direction} = undef;
+  $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, sub {
+    my ($char, $event) = @_;
+
+    $self->{direction} = Arkess::Direction::LEFT;
   });
 }
 

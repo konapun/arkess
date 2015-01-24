@@ -52,12 +52,12 @@ sub process {
   if (defined $self->{bindings}->{$type}) {
     # First, check for events which fire without a keysym
     my $action = $self->{bindings}->{$type};
-    return $action->($self->{character}) if ref $action eq 'CODE';
+    return $action->($self->{character}, $event) if ref $action eq 'CODE';
 
     # Events which fire with a keysym
     my $sym = $event->key_sym();
     $action = $self->{bindings}->{$type}->{$sym};
-    return $action->($self->{character}) if defined $action;
+    return $action->($self->{character}, $event) if defined $action;
   }
 }
 

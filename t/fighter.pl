@@ -27,7 +27,8 @@ my $fighter1 = $game->createEntity({
   'Arkess::Component::Image' => './assets/characters/ryu1.png',
   'Arkess::Component::Mobile' => [10],
 #  'Arkess::Component::D4' => [],
-  'Arkess::Component::MouseControlled' => [], #FIXME
+#  'Arkess::Component::MouseControlled' => [],
+  'Arkess::Component::DragAndDrop' => [],
   'Arkess::Component::Observable' => []
 });
 $fighter1->on('move', sub {

@@ -6,8 +6,8 @@ use base qw(Arkess::Component);
 sub initialize {
   my ($self, $width, $height) = @_;
 
-  $self->{width} = defined $width ? $width : 0;
-  $self->{height} = defined $height ? $height : 0;
+  $self->{width} = defined $width ? $width : 100;
+  $self->{height} = defined $height ? $height : 100;
 }
 
 sub exportMethods {
@@ -45,7 +45,7 @@ sub exportMethods {
       $cob->setWidth($width);
       $cob->setHeight($height);
     }
-    
+
   };
 };
 

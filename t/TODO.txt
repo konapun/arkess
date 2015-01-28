@@ -1,2 +1,3 @@
 [X] Allow component `require` to provide instantiation values
-[ ] Make component loading order deterministic (impossible with perl hashes?)
+[X] Make component loading order deterministic (impossible with perl hashes?)
+[ ] Reorganize component packages

@@ -37,6 +37,9 @@ sub afterInstall {
       $self->_configureController($controller);
     });
   }
+  else {
+    $self->_configureController($controller);
+  }
 }
 
 sub exportMethods {
@@ -71,7 +74,7 @@ sub _configureController {
 
   $controller->bind(Arkess::IO::Mouse::EventType::MOVE, sub {
     my ($cob, $event) = @_;
-    
+
     if ($self->{dragging}) {
       my $clickX = $event->button_x;
       my $clickY = $event->button_y;

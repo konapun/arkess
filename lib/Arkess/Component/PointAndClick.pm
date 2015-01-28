@@ -1,4 +1,4 @@
-package Arkess::Component::MouseControlled;
+package Arkess::Component::PointAndClick;
 
 use strict;
 use Arkess::IO::Mouse;
@@ -9,7 +9,9 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Mobile'
+    'Arkess::Component::Positioned', # To get/set (x, y)
+    'Arkess::Component::Mobile',
+    'Arkess::Component::2D' # To get width/height
   ];
 }
 
@@ -17,7 +19,6 @@ sub initialize {
   my ($self, $controller) = @_;
 
   $self->{controller} = $controller;
-  $self->{direction} = undef;
 }
 
 sub setPriority {
@@ -36,13 +37,9 @@ sub afterInstall {
       $self->_configureController($controller);
     });
   }
-
-  $cob->on(Arkess::Event::LOOP_START, sub {
-    my $dir = $self->{direction};
-    if ($dir) {
-      $cob->move($dir);
-    }
-  });
+  else {
+    $self->_configureController($self->{controller});
+  }
 }
 
 sub exportMethods {
@@ -61,16 +58,14 @@ sub _configureController {
   my ($self, $controller) = @_;
 
   $controller->bind(Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
-    my ($char, $event) = @_;
+    my ($cob, $event) = @_;
 
-    print "(x, y): (" . $event->button_x() . ", " . $event->button_y() . ")\n";
-    $self->{direction} = Arkess::Direction::RIGHT;
-  });
-
-  $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, sub {
-    my ($char, $event) = @_;
-
-    $self->{direction} = Arkess::Direction::LEFT;
+    # Check to see if click is on a cob with drag and drop enabled
+    my $clickX = $event->button_x;
+    my $clickY = $event->button_y;
+    my ($x, $y) = $cob->getCoordinates();
+    my ($width, $height) = $cob->getDimensions();
+    $cob->setCoordinates($clickX, $clickY); # FIXME
   });
 }
 
@@ -78,4 +73,5 @@ sub _configureController {
 
 __END__
 =head1 NAME
-Arkess::Component::MouseControlled - Default keybindings for a controllable entity
+Arkess::Component::PointAndClick - A component to allow a cob to be moved with
+the mouse

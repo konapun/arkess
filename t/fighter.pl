@@ -26,14 +26,15 @@ $bgAnimations->setCoordinates(0, 0);
 my $fighter1 = $game->createEntity({
   'Arkess::Component::Image' => './assets/characters/ryu1.png',
   'Arkess::Component::Mobile' => [10],
-#  'Arkess::Component::D4' => [],
-#  'Arkess::Component::MouseControlled' => [],
-  'Arkess::Component::DragAndDrop' => [],
-  'Arkess::Component::Observable' => []
+#  'Arkess::Component::PointAndClick' => [],
+  'Arkess::Component::D4' => [],
+  'Arkess::Component::AnimatedSprite' => [],
+#  'Arkess::Component::DragAndDrop' => [],
+#  'Arkess::Component::Observable' => []
 });
-$fighter1->on('move', sub {
-  die "MOVING!\n";
-});
+#$fighter1->on('move', sub {
+#  die "MOVING!\n";
+#});
 
 $fighter1->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   my $interval = $bgAnimations->getAnimationInterval()+10;

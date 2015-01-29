@@ -25,10 +25,20 @@ sub exportMethods {
 
   return {
 
+    setSpeed => sub {
+      my ($cob, $units) = @_;
+
+      $self->{units} = $units;
+    },
+
+    getSpeed => sub {
+      return $self->{units};
+    },
+
     # Move while changing position
     move => sub {
       my ($cob, $direction, $units) = @_;
-
+      
       my ($x, $y) = $cob->getCoordinates();
       $units = $self->{units} unless defined $units;
       if ($direction eq Arkess::Direction::RIGHT) {

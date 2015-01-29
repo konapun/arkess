@@ -20,6 +20,7 @@ sub new {
 sub addEntity {
   my ($self, $entity) = @_;
 
+  # TODO: Sort entities by zlayer
   push(@{$self->{entities}}, $entity);
   $entity->setRenderer($self->{app});
 }

@@ -11,13 +11,16 @@ use Arkess::Runtime;
 my $game = Arkess::Runtime->new();
 
 my $background = $game->createEntity({
-  'Arkess::Component::Image' => './assets/backgrounds/light_world.png',
-  'Arkess::Component::D4' => []
+  'Arkess::Component::Image' => './assets/backgrounds/light_world.png'
 });
-$background->setSpeed(3);
+my $defaultUnit = $game->createEntity({
+  'Arkess::Component::Image' => './assets/characters/beetle.png',
+  'Arkess::Component::D4' => [],
+  'Arkess::Component::CameraFollow' => 'scroll'
+});
 
 $game->setWindowOptions({
-  title  => 'Sample RPG',
+  title  => 'Sample Realtime Strategy',
   width  => 800,
   height => 600
 });

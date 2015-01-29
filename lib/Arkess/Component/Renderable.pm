@@ -12,9 +12,10 @@ sub requires {
 }
 
 sub initialize {
-  my ($self, $renderer) = @_;
+  my ($self, $renderer, $zlayer) = @_;
 
   $self->{renderer} = $renderer;
+  $self->{zlayer} = defined $zlayer ? $zlayer : 1;
   $self->{width} = 160;
   $self->{height} = 160;
 }
@@ -29,6 +30,16 @@ sub exportMethods {
   my $self = shift;
 
   return {
+
+    setZLayer => sub {
+      my ($cob, $layer) = @_;
+
+      $self->{zlayer} = $layer;
+    },
+
+    getZLayer => sub {
+      return $self->{zlayer};
+    },
 
     setRenderer => sub {
       my ($cob, $renderer) = @_;

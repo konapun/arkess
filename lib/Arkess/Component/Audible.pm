@@ -1,13 +1,15 @@
 package Arkess::Component::Audible;
 
 use strict;
-use SDLx::Sound;
+use SDL::Sound;
+use SDL::Mixer;
+use SDL::Mixer::Music;
 use base qw(Arkess::Component);
 
 sub initialize {
   my ($self, $sound) = @_;
 
-  my $player = SDLx::Sound->new();
+  my $player = SDL::Sound->new();
   $self->{muted} = 0;
   $self->{player} = $player;
   $self->{sound} = $sound;

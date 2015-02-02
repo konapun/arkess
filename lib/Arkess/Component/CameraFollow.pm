@@ -18,7 +18,7 @@ sub initialize {
 }
 
 sub setPriority {
-  return 2;
+  return 1;
 }
 
 sub afterInstall {
@@ -27,14 +27,14 @@ sub afterInstall {
 print "Setting up events!\n";
 # TODO
   $cob->on('move', sub { # FIXME: this should be auto-triggered but it's not, probably because of the FIXME above
-    #print "MOVING!\n";
+    print "MOVING!\n";
   });
 
-  $cob->on('setRuntime', sub {
-    $cob->on(Arkess::Event::LOOP_START, sub { # FIXME - only for testing
-      $cob->move('down');
-    });
-  });
+#  $cob->on('setRuntime', sub {
+#    $cob->on(Arkess::Event::LOOP_START, sub { # FIXME - only for testing
+#      $cob->move('down');
+#    });
+#  });
 }
 
 1;

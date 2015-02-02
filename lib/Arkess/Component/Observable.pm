@@ -14,17 +14,19 @@ sub requires {
 sub initialize {
   my ($self, $eventBus) = @_;
 
+  $self->{events} = {};
   $self->{eventBus} = $eventBus;
 }
 
 sub afterInstall {
   my ($self, $owner) = @_;
 
-  # Need to make sure this doesn't alter the "base" object...
+  # Decorate all the owner's methods with a version which executes callbacks after the original method is called. Since an Observable
+  # could be reapplied to a cob which is already observable, make sure not to replace extant callbacks
   $owner->methods->each(sub {
     my ($key, $val) = @_;
 
-    return if $key eq 'trigger' || $key eq 'on';
+    return if $key eq 'trigger' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
     $owner->methods->set($key, sub {
       my ($cob, @args) = @_;
 
@@ -37,12 +39,6 @@ sub afterInstall {
   $owner->on('setRuntime', sub {
     $self->_registerRuntimeEvents($owner, shift->getEventBus());
   });
-}
-
-sub exportAttributes {
-  return {
-    events => {}
-  };
 }
 
 sub exportMethods {

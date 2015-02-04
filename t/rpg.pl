@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+;#!/usr/bin/perl
 use strict;
 use lib '../lib';
 use Arkess;
@@ -11,15 +11,18 @@ use Arkess::Runtime;
 my $game = Arkess::Runtime->new();
 
 my $background = $game->createEntity({
-  'Arkess::Component::Image' => './assets/backgrounds/light_world.png',
-  'Arkess::Component::D4' => []
+  'Arkess::Component::BackgroundImage' => './assets/backgrounds/light_world.png'
 });
-$background->setSpeed(3);
+my $defaultUnit = $game->createEntity({
+  'Arkess::Component::Image' => './assets/characters/beetle.png',
+  'Arkess::Component::D4' => [],
+  'Arkess::Component::CameraFollow' => [$background, 'scroll']
+});
 
 $game->setWindowOptions({
   title  => 'Sample RPG',
-  width  => 800,
-  height => 600
+  width  => 512,
+  height => 512
 });
 
 print "Running\n";

@@ -18,11 +18,18 @@ sub initialize {
   $self->{eventBus} = $eventBus;
 }
 
+sub beforeInstall {
+  my ($self, $owner) = @_;
+
+  if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
+    $self->{events} = $owner->_getEvents();
+  }
+}
+
 sub afterInstall {
   my ($self, $owner) = @_;
 
-  # Decorate all the owner's methods with a version which executes callbacks after the original method is called. Since an Observable
-  # could be reapplied to a cob which is already observable, make sure not to replace extant callbacks
+  # Decorate all the owner's methods with a version which executes callbacks after the original method is called.
   $owner->methods->each(sub {
     my ($key, $val) = @_;
 
@@ -39,6 +46,12 @@ sub afterInstall {
   $owner->on('setRuntime', sub {
     $self->_registerRuntimeEvents($owner, shift->getEventBus());
   });
+}
+
+sub exportAttributes {
+  return {
+    observable => 1
+  };
 }
 
 sub exportMethods {
@@ -81,6 +94,11 @@ sub exportMethods {
       foreach my $cb (@{$self->{events}->{$event}}) {
         $cb->(@args);
       }
+    },
+
+    # Allow this component to add new events when installing rathe rthan overwriting
+    _getEvents => sub {
+      return $self->{events};
     }
 
   };

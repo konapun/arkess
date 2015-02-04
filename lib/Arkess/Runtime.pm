@@ -69,6 +69,10 @@ sub createController {
   return $controller;
 }
 
+sub getRenderer {
+  return shift->{renderer};
+}
+
 sub getEventBus {
   return shift->{eventBus};
 }

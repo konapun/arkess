@@ -38,6 +38,10 @@ sub setWindowOptions {
   $self->{appArgs} = $appArgs;
 }
 
+sub getWindowOptions {
+  return shift->{appArgs};
+}
+
 sub render {
   my $self = shift;
 

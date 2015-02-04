@@ -1,3 +1,4 @@
 [X] Allow component `require` to provide instantiation values
 [X] Make component loading order deterministic (impossible with perl hashes?)
 [ ] Reorganize component packages
+[ ] Modify controller to queue keypresses and check released key against pressed

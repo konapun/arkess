@@ -38,7 +38,7 @@ sub exportMethods {
     # Move while changing position
     move => sub {
       my ($cob, $direction, $units) = @_;
-$cob->trigger('move'); # FIXME: shouldn't need to do since method calls autotrigger      
+      
       my ($x, $y) = $cob->getCoordinates();
       $units = $self->{units} unless defined $units;
       if ($direction eq Arkess::Direction::RIGHT) {
@@ -56,6 +56,7 @@ $cob->trigger('move'); # FIXME: shouldn't need to do since method calls autotrig
       else {
         die "Bad direction '$direction'";
       }
+      $cob->trigger('move'); # FIXME: shouldn't be necessary
     }
   }
 }

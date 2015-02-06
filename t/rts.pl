@@ -13,10 +13,14 @@ my $game = Arkess::Runtime->new();
 my $background = $game->createEntity({
   'Arkess::Component::BackgroundImage' => './assets/backgrounds/light_world.png'
 });
-my $defaultUnit = $game->createEntity({
+my $player = $game->createEntity({
   'Arkess::Component::Image' => './assets/characters/beetle.png',
   'Arkess::Component::D4' => [],
   'Arkess::Component::CameraFollow' => [$background, 'scroll']
+});
+
+my $house = $game->createEntity({
+  'RPG::Component::House' => [0, 0]
 });
 
 $game->setWindowOptions({
@@ -25,5 +29,4 @@ $game->setWindowOptions({
   height => 512
 });
 
-print "Running\n";
 $game->run();

@@ -12,7 +12,6 @@ sub requires {
 }
 
 sub initialize {
-  print "Collidable init!\n";
   my ($self, $runtime, $collisionTag) = @_;
 
   $self->{didCollide} = 0;
@@ -87,11 +86,25 @@ sub exportMethods {
       return $cob->collideWith($collisionTag, $callback);
     },
 
+    onCollide => sub {
+      my ($cob, $callback, $collisionTag) = @_;
+
+      $collisionTag = 'ALL' unless defined $collisionTag;
+      return $cob->collideWith($collisionTag, $callback);
+    },
+
     uncollide => sub {
 
     },
 
     collideWith => sub {
+      my ($cob, $collisionTag, $callback) = @_;
+
+      $self->{collisionEvents}->{$collisionTag} = [] unless ref $self->{collisionEvents}->{$collisionTag} eq 'ARRAY';
+      push(@{$self->{collisionEvents}->{$collisionTag}}, $callback);
+    },
+
+    onCollideWith => sub {
       my ($cob, $collisionTag, $callback) = @_;
 
       $self->{collisionEvents}->{$collisionTag} = [] unless ref $self->{collisionEvents}->{$collisionTag} eq 'ARRAY';

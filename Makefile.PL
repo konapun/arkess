@@ -22,6 +22,7 @@ WriteMakefile(
     'IOC' => '0.29',
     'Time::HiRes' => '1.9726',
     'Image::Size' => '3.232',
+    'File::List' => '0.3.1',
     'SDL' => '2.544',
     'Image::ParseGIF' => '0.2',
     'Color::Rgb' => '1.4',

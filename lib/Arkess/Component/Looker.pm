@@ -19,7 +19,7 @@ sub exportMethods {
 
       my $tile = $cob->getPosition();
       if ($tile) {
-        if ($tile->hasAttribute('description')) {
+#        if ($tile->hasAttribute('describable')) {
           print "You are in " . $tile->getDescription() . "\n"; # Current location
 
           my $entities = $tile->getEntities();
@@ -35,7 +35,7 @@ sub exportMethods {
           print "To the east you see " . $tile->getLink(RIGHT)->getDescription() . "\n" if ($tile->hasLink(RIGHT));
           print "To the south you see " . $tile->getLink(DOWN)->getDescription() . "\n" if ($tile->hasLink(DOWN));
         }
-      }
+#      }
     }
   }
 }

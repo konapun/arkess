@@ -30,13 +30,15 @@ sub exportMethods {
     move => sub {
       my ($cob, $direction) = @_;
 
+      my $return = 0;
       my $tile = $self->{position};
       if ($tile->hasLink($direction)) {
         $tile->removeEntity($cob);
         $self->_setPosition($tile->getLink($direction));
-        return 1;
+        $return = 1; # move succeeded
       }
-      return 0; # Couldn't move
+      $cob->trigger('move', $direction);
+      return $return; # Couldn't move
     }
 
   };

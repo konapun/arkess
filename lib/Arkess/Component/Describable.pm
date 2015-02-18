@@ -9,6 +9,12 @@ sub initialize {
   $self->{description} = $description;
 }
 
+sub exportAttributes {
+  return {
+    describable => 1
+  };
+}
+
 sub exportMethods {
   my $self = shift;
 

@@ -8,9 +8,7 @@ use Arkess::IO::Controller;
 use Arkess::IO::Keyboard;
 use Arkess::Direction;
 use Arkess::Event;
-use Arkess::Runtime::Base;
-
-my $game = Arkess::Runtime::Base->new();
+use Arkess::Runtime::InteractiveFiction;
 
 my $textTile = Arkess::Object->new([
   'Arkess::Component::Describable',
@@ -44,8 +42,8 @@ my $scarecrow = Arkess::Object->new({
 $startingTile->setLink(UP, $valley);
 $valley->setLink(RIGHT, $ciderHouse);
 
-#$startingTile->setLink(DOWN, $parkingLot);
-#$startingTile->setLink(RIGHT, $ciderHouse);
+$startingTile->setLink(DOWN, $parkingLot);
+$startingTile->setLink(RIGHT, $ciderHouse);
 
 # Add entities to tiles
 $startingTile->addEntity($scarecrow);
@@ -57,9 +55,9 @@ my $player = Arkess::Object->new([
 ]);
 $player->setPosition($startingTile);
 
-print $player->getPosition()->getDescription() . "\n";
-$player->move('up');
-print $player->getPosition()->getDescription() . "\n";
-$player->move('right');
-print $player->getPosition()->getDescription() . "\n";
-#$player->look();
+$player->on('move', sub {
+  $player->look();
+});
+
+my $game = Arkess::Runtime::InteractiveFiction->new();
+$game->run();

@@ -7,7 +7,7 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Renderable' # needed to get screen coordinates to check for collisions
+    'Arkess::Component::Renderable' # needed to get screen coordinates to check for collisions (or maybe use non-screen coords instead?)
   ];
 }
 
@@ -20,6 +20,9 @@ sub initialize {
   $self->{collisionTag} = $collisionTag;
   $self->{collisionEvents} = {
     ALL => [] # default collision actions to run when no collideWith tag is given
+  };
+  $self->{uncollisionEvents} = {
+    ALL => [] # like above
   };
 }
 
@@ -102,6 +105,11 @@ sub exportMethods {
 
       $self->{collisionEvents}->{$collisionTag} = [] unless ref $self->{collisionEvents}->{$collisionTag} eq 'ARRAY';
       push(@{$self->{collisionEvents}->{$collisionTag}}, $callback);
+    },
+
+    uncollideWith => sub {
+      my ($cob, $collisionTag, $callback) = @_;
+
     },
 
     onCollideWith => sub {

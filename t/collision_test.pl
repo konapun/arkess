@@ -1,4 +1,4 @@
-;#!/usr/bin/perl
+#!/usr/bin/perl
 use strict;
 use lib '../lib';
 use Arkess;
@@ -15,52 +15,47 @@ my $game = Arkess::Runtime->new({
 my $collider1 = Arkess::Object->new({
   'Arkess::Component::Collidable' => undef,
   'Arkess::Component::Rectangle' => undef,
-  'Arkess::Component::Mobile' => [10]
+  'Arkess::Component::D4' => undef
 });
 my $collider2 = Arkess::Object->new({ # TODO: Fix clone
-  'Arkess::Component::Mobile' => [10],
+  'Arkess::Component::D4' => [undef, 2],
   'Arkess::Component::Collidable' => [],
   'Arkess::Component::Rectangle' => undef,
 });
+my $collider3 = Arkess::Object->new({
+  'Arkess::Component::D4' => [undef, 2],
+  'Arkess::Component::Collidable' => [],
+  'Arkess::Component::Rectangle' => undef,
+});
+
 $collider1->setColor([0,255,0,255]);
 $collider2->setColor([0, 0, 255, 255]);
+$collider3->setColor([255, 255, 0, 0]);
 
 $collider1->setCollisionTag('collider1');
 $collider2->setCollisionTag('collider2');
+$collider3->setCollisionTag('collider3');
+
 $collider2->setCoordinates(200, 0);
+$collider3->setCoordinates(0, 200);
 
 $collider1->collideWith('collider2', sub {
+  print "Collider1 collided with collider2\n";
   $collider1->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
   $collider2->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
 });
-
-$game->createController($collider1, {
-  Arkess::IO::Keyboard::KB_W => sub {
-    $collider1->move(Arkess::Direction::UP);
-  },
-  Arkess::IO::Keyboard::KB_A => sub {
-    $collider1->move(Arkess::Direction::LEFT);
-  },
-  Arkess::IO::Keyboard::KB_S => sub {
-    $collider1->move(Arkess::Direction::DOWN);
-  },
-  Arkess::IO::Keyboard::KB_D => sub {
-    $collider1->move(Arkess::Direction::RIGHT);
-  }
+$collider1->collideWith('collider3', sub {
+  print "Collider1 collided with collider3\n";
+  $collider1->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
+  $collider3->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
 });
-$game->createController($collider2, {
-  Arkess::IO::Keyboard::KB_UP => sub {
-    $collider2->move(Arkess::Direction::UP);
-  },
-  Arkess::IO::Keyboard::KB_LEFT => sub {
-    $collider2->move(Arkess::Direction::LEFT);
-  },
-  Arkess::IO::Keyboard::KB_DOWN => sub {
-    $collider2->move(Arkess::Direction::DOWN);
-  },
-  Arkess::IO::Keyboard::KB_RIGHT => sub {
-    $collider2->move(Arkess::Direction::RIGHT);
-  }
+
+$collider1->uncollideWith('collider2', sub {
+  print "COLLIDE OFF!\n";
+});
+
+$game->createController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  print "Pressed space\n";
 });
 
 $game->createEntity({
@@ -68,5 +63,6 @@ $game->createEntity({
 });
 $game->addEntity($collider1);
 $game->addEntity($collider2);
+$game->addEntity($collider3);
 
 $game->run();

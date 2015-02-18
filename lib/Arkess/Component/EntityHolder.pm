@@ -21,37 +21,37 @@ sub initialize {
 
 sub exportAttributes {
   return {
-    entities => shift->{entities}
+    holdsEntities => 1
   };
 }
 
 sub exportMethods {
+  my $self = shift;
+
   return {
 
     getEntities => sub {
-      my $cob = shift;
-
-      return $cob->get('entities');
+      return $self->{entities};
     },
 
     clearEntities => sub {
-      my $cob = shift;
-
-      $cob->set('entities', []);
+      $self->{entities} = [];
     },
 
     removeEntity => sub {
-        my ($cob, $entitiy) = @_;
-
-        # TODO
-    },
-
-    addEntity => sub { # FIXME
       my ($cob, $entity) = @_;
 
-      my $entities = $cob->getEntities();
-      push(@$entities, $entity);
-      $cob->set('entities', $entities);
+      foreach my $contained (@{$self->{entities}}) {
+        if ($contained eq $entity) {
+          print "FOUND! TODO\n";
+        }
+      }
+    },
+
+    addEntity => sub {
+      my ($cob, $entity) = @_;
+
+      push(@{$self->{entities}}, $entity);
     }
 
   }

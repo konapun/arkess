@@ -1,34 +1,46 @@
 #!/usr/bin/perl
 
 use strict;
+
 use lib '../lib';
 use Arkess;
-use Arkess::Direction;
 use Arkess::IO::Controller;
+use Arkess::IO::Keyboard;
+use Arkess::Direction;
+use Arkess::Event;
+use Arkess::Runtime::Base;
 
-my $textTile = Arkess::Tile->new({ # prototype for all tiles
-  'Arkess::Component::TextBased::Describable' => "An undescribable area"
-});
-$textTile->setDescription("Text tile!");
+my $game = Arkess::Runtime::Base->new();
+
+my $textTile = Arkess::Object->new([
+  'Arkess::Component::Describable',
+  'Arkess::Component::Linked',
+  'Arkess::Component::EntityHolder'
+]);
 
 # Create tiles
-my $startingTile = $textTile->clone(); # FIXME: Make sure clone has set caller for all components from parent
-$startingTile->setDescription("the top of a long, rolling hill. At the bottom you see a hay bale maze.");
+my $startingTile = $textTile->extend({
+  'Arkess::Component::Describable' => "the top of a long, rolling hill. At the bottom you see a hay bale maze."
+});
+my $valley = $textTile->extend({
+  'Arkess::Component::Describable' => "a shallow valley."
+});
 
-my $valley = $textTile->clone();
-$valley->setDescription("a shallow valley");
+my $parkingLot = $textTile->extend({
+  'Arkess::Component::Describable' => "a white gravel parking lot filled with dusty cars."
+});
 
-my $parkingLot = $textTile->clone();
-$parkingLot->setDescription("a white gravel parking lot filled with dusty cars");
-
-my $ciderHouse = $textTile->clone();
-$ciderHouse->setDescription("a red wooden building with white trim");
+my $ciderHouse = $textTile->extend({
+  'Arkess::Component::Describable' => "a red wooden building with white trim."
+});
 
 # Create entities
-my $scarecrow = Arkess::Character->new([ 'Arkess::Component::TextBased::Describable' ], 'Scarecrow');
-$scarecrow->setDescription("A gaunt, sullen looking scarecrow");
+my $scarecrow = Arkess::Object->new({
+  'Arkess::Component::Named' => "Scarecrow",
+  'Arkess::Component::Describable' => "A gaunt, sullen looking scarecrow"
+});
 
-# Piece tiles togethe
+# Piece tiles together
 $startingTile->setLink(UP, $valley);
 $valley->setLink(RIGHT, $ciderHouse);
 
@@ -39,21 +51,15 @@ $valley->setLink(RIGHT, $ciderHouse);
 $startingTile->addEntity($scarecrow);
 
 # Start!
-my $player = Arkess::Character->new([ 'Arkess::Component::TextBased::Looker' ]);
+my $player = Arkess::Object->new([
+  'Arkess::Component::Looker',
+  'Arkess::Component::EntityPositioned'
+]);
 $player->setPosition($startingTile);
 
-print "Manually getting desc for startingTile ($startingTile)\n";
-print $startingTile->getDescription() . "\n";
-
-print "Before look\n";
-$player->look();
-print "DONE\n";
-
-$player->on('move', sub {
-  print "MOVING!\n";
-});
-$player->move(LEFT);
-print "Move done\n";
-$player->look();
-
-print "Starting tile: " . $startingTile->getDescription() . "\n";
+print $player->getPosition()->getDescription() . "\n";
+$player->move('up');
+print $player->getPosition()->getDescription() . "\n";
+$player->move('right');
+print $player->getPosition()->getDescription() . "\n";
+#$player->look();

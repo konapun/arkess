@@ -5,14 +5,19 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Renderable',
-    'Arkess::Component::Positioned'
+    'Arkess::Component::Positioned',
+    'Arkess::Component::2D',
+    'Arkess::Component::Renderable'
   ];
+}
+
+sub setPriority {
+  return 3;
 }
 
 sub initialize {
   my ($self, $dimensions, $color) = @_;
-print "Rect init!\n";
+
   $dimensions = [0, 0, 100, 100] unless defined $dimensions; # (x, y, width, height)
   $color = [255,255, 0, 255] unless defined $color;
   $self->{dimensions} = $dimensions;

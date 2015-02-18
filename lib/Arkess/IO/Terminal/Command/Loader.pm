@@ -21,7 +21,8 @@ sub loadDirectory {
 	my $search = File::List->new($directory);
 	my @files = @{$search->find("\.pm\$")};
 	foreach my $file (@files) {
-		push(@loaded, $self->load($file, @args));
+		my $module = $self->load($file, @args);
+		push(@loaded, $module) if defined $module;
 	}
 
 	return @loaded;

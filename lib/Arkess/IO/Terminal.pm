@@ -14,10 +14,10 @@ sub new {
 	my $package = shift;
 	my ($env, $user) = @_;
 
-	my $self = $package->SUPER::new($user);
+	my $self = $package->SUPER::new($user->extend([ 'Arkess::Component::Actioned '])); # add actioned component for autobinds
 	$self->{environment} = $env;
 	$self->{ps1}         = '> ';
-	$self->{builtinsDir} = 'Builtin';
+	$self->{builtinsDir} = 'Builtin'; # relative to Terminal/Command dir
 	$self->{builtins}    = [];
 
 	$self->_init();
@@ -73,10 +73,11 @@ sub prompt {
 sub autobind {
 	my $self = shift;
 
-	foreach my $action ($self->player()->actions()->values()) {
-		my $bindingName = $action->registersAs();
+	my $actions = $self->getPlayer()->getActions(); # actions via Arkess::Component::Actioned
+	foreach my $action (keys %$actions) {
+		my $bindingName = $actions[$action];
 
-		$self->bindings()->set($bindingName, $action);
+		$self->bindings()->set($bindingName, $action); # FIXME
 	}
 }
 
@@ -118,7 +119,7 @@ sub _processBindings {
 sub _processInventoryAcceptors { # actions defined on items
 	my ($self, $command) = @_;
 
-	foreach my $item ($self->player()->inventory()->all()) {
+	foreach my $item ($self->player()->inventory()->all()) { #FIXME
 		if ($item->attributes()->has('accepts')) {
 			#TODO
 		}

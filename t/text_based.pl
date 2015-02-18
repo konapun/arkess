@@ -51,13 +51,36 @@ $startingTile->addEntity($scarecrow);
 # Start!
 my $player = Arkess::Object->new([
   'Arkess::Component::Looker',
-  'Arkess::Component::EntityPositioned'
+  'Arkess::Component::EntityPositioned',
+  'Arkess::Component::Actioned'
 ]);
+$player->addAction('move', sub {
+  return $player->move(@_);
+});
+$player->addAction('look', sub {
+  return $player->look(@_);
+});
 $player->setPosition($startingTile);
 
 $player->on('move', sub {
   $player->look();
 });
 
-my $game = Arkess::Runtime::InteractiveFiction->new();
-$game->run();
+while (1) {
+  my $input = prompt("> ");
+  last if $input eq 'exit';
+  my @words = split(/\s+/, $input);
+  $player->callAction(shift @words, @words);
+}
+
+sub prompt {
+  my $prompt = shift;
+
+  print $prompt;
+  my $response = <STDIN>;
+  chomp($response);
+  return $response;
+}
+
+#my $game = Arkess::Runtime::InteractiveFiction->new();
+#$game->run();

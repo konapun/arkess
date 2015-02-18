@@ -24,6 +24,10 @@ sub exportMethods {
       };
     },
 
+    getActions => sub {
+      return $shift->{abilities};
+    },
+
     doesActionExist => sub {
       my ($cob, $name) = @_;
 
@@ -60,11 +64,11 @@ sub exportMethods {
     callAction => sub {
       my ($cob, $action, @args) = @_;
 
-      if ($cob->isActionEnabled) {
-        return $self->{abilities}->{$name}->{action}->(@args);
+      if ($cob->isActionEnabled($action)) {
+        return $self->{abilities}->{$action}->{action}->(@args);
       }
     }
-    
+
   };
 }
 

@@ -14,14 +14,23 @@ sub new {
 	my $package = shift;
 	my ($env, $user) = @_;
 
-	my $self = $package->SUPER::new($user->extend([ 'Arkess::Component::Actioned '])); # add actioned component for autobinds
+	$user = $user->extend([ 'Arkess::Component::Actioned ']) if defined $user;  # add actioned component for autobinds
+	my $self = $package->SUPER::new($user);
 	$self->{environment} = $env;
 	$self->{ps1}         = '> ';
+	$self->{bindings}    = {};
 	$self->{builtinsDir} = 'Builtin'; # relative to Terminal/Command dir
 	$self->{builtins}    = [];
 
 	$self->_init();
 	return $self;
+}
+
+sub setPlayer {
+	my ($self, $user) = @_;
+
+	$self->{user} = $user->extend([ 'Arkess::Component::Actioned' ]);
+	$self->SUPER::setPlayer($user);
 }
 
 sub setPS1 {
@@ -32,10 +41,6 @@ sub setPS1 {
 
 sub getPS1 {
   return shift->{ps1};
-}
-
-sub getPlayer {
-	return shift->player();
 }
 
 sub getEnvironment {
@@ -60,6 +65,13 @@ sub process {
 	return 0;
 }
 
+#OVERRIDE
+sub bind {
+	my ($self, $key, $action) = @_;
+
+	$self->{bindings}->{$key} = $action;
+}
+
 sub prompt {
 	my $self = shift;
 
@@ -69,15 +81,14 @@ sub prompt {
 	return $response;
 }
 
-# Automatically create bindings for all user actions by their "registersAs" name
+# Automatically create bindings for all actioned user operations
 sub autobind {
 	my $self = shift;
 
 	my $actions = $self->getPlayer()->getActions(); # actions via Arkess::Component::Actioned
-	foreach my $action (keys %$actions) {
-		my $bindingName = $actions->{$action};
-
-		$self->bindings()->set($bindingName, $action); # FIXME
+	foreach my $bindingName (keys %$actions) {
+		my $action = $actions->{$bindingName};
+		$self->bind($bindingName, $action);
 	}
 }
 
@@ -92,7 +103,7 @@ sub _init {
 sub _processBuiltins {
 	my ($self, $command) = @_;
 
-	my $commandWord = $command->name();
+	my $commandWord = $command->getName();
 	foreach my $builtin (@{$self->{builtins}}) {
 		if ($commandWord eq $builtin->registersAs()) {
 			return $builtin->execute($command->arguments());
@@ -105,13 +116,13 @@ sub _processBuiltins {
 sub _processBindings {
 	my ($self, $command) = @_;
 
-	my $commandWord = $command->name();
-#	my %bindings = %{$self->bindings()->list()};
-#	while (my ($key, $val) = each %bindings) {
-#		if ($key eq $commandWord) {
-#			return $val->call($command->arguments());
-#		}
-#	}
+	my $commandWord = $command->getName();
+	my %bindings = %{$self->{bindings}};
+	foreach my $key (keys %bindings) {
+		if ($key eq $commandWord) {
+			return $bindings{$key}->call($command->getArguments());
+		}
+	}
 
 	return undef;
 }

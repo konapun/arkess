@@ -16,11 +16,11 @@ sub new {
 	}, $package;
 }
 
-sub name {
+sub getName {
 	return shift->{name};
 }
 
-sub arguments {
+sub getArguments {
 	return shift->{params};
 }
 

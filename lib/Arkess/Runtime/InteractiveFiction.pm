@@ -7,13 +7,25 @@ use base qw(Arkess::Runtime::Base);
 sub new {
     my $package = shift;
 
-    return bless {
+    my $self = bless {
       entities => [], # FIXME use object instead for easy removes
       running  => 0,
       eventBus => Arkess::Event::Bus->new(),
       eventHub => Arkess::IO::Controller::Hub->new(),
-      terminal => Arkess::IO::Terminal->new()
+      terminal => Arkess::IO::Terminal->new(),
+      setController => 0
     }, $package;
+    $self->{terminal} = Arkess::IO::Terminal->new($self);
+    return $self;
+}
+
+sub createController {
+  my ($self, $player) = @_;
+
+  die "Controller already set: InteractiveFiction runtime only allows a single controller" unless !$self->{setController};
+  $self->{setController} = 1;
+  $self->{terminal}->setPlayer($player);
+  return $self->{terminal};
 }
 
 sub run {

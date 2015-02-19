@@ -122,12 +122,12 @@ $player->on('move', sub {
   $player->look();
 });
 
-while (1) {
-  my $input = prompt("> ");
-  last if $input eq 'exit';
-  my @words = split(/\s+/, $input);
-  $player->callAction(shift @words, @words);
-}
+#while (1) {
+#  my $input = prompt("> ");
+#  last if $input eq 'exit';
+#  my @words = split(/\s+/, $input);
+#  $player->callAction(shift @words, @words);
+#}
 
 sub prompt {
   my $prompt = shift;
@@ -138,5 +138,7 @@ sub prompt {
   return $response;
 }
 
-#my $game = Arkess::Runtime::InteractiveFiction->new();
-#$game->run();
+my $game = Arkess::Runtime::InteractiveFiction->new();
+my $terminal = $game->createController($player);
+$terminal->autobind();
+$game->run();

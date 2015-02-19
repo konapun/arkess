@@ -75,7 +75,7 @@ sub autobind {
 
 	my $actions = $self->getPlayer()->getActions(); # actions via Arkess::Component::Actioned
 	foreach my $action (keys %$actions) {
-		my $bindingName = $actions[$action];
+		my $bindingName = $actions->{$action};
 
 		$self->bindings()->set($bindingName, $action); # FIXME
 	}

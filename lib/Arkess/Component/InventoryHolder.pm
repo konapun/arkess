@@ -30,10 +30,12 @@ sub exportMethods {
     removeFromInventory => sub {
       my ($cob, $item) = @_;
 
-      foreach my $contained (@{$self->{inventory}})  {
+      my $index = 0;
+      foreach my $contained (@{$self->{inventory}}) {
         if ($contained eq $item) {
-          # TODO
+          return splice(@{$self->{inventory}}, $index, 1);
         }
+        $index++;
       }
     },
 

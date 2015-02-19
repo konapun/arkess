@@ -40,10 +40,9 @@ my $scarecrow = Arkess::Object->new({
 
 # Piece tiles together
 $startingTile->setLink(UP, $valley);
-$valley->setLink(RIGHT, $ciderHouse);
-
 $startingTile->setLink(DOWN, $parkingLot);
 $startingTile->setLink(RIGHT, $ciderHouse);
+$valley->setLink(RIGHT, $ciderHouse);
 
 # Add entities to tiles
 $startingTile->addEntity($scarecrow);
@@ -52,7 +51,8 @@ $startingTile->addEntity($scarecrow);
 my $player = Arkess::Object->new([
   'Arkess::Component::Looker',
   'Arkess::Component::EntityPositioned',
-  'Arkess::Component::Actioned'
+  'Arkess::Component::Actioned',
+  'Arkess::Component::InventoryHolder'
 ]);
 $player->addAction('move', sub {
   return $player->move(@_);
@@ -60,6 +60,62 @@ $player->addAction('move', sub {
 $player->addAction('look', sub {
   return $player->look(@_);
 });
+$player->addAction('take', sub {
+  my $object = lc shift;
+
+  my $tile = $player->getPosition();
+  my @items = $tile->listEntities();
+  foreach my $item (@items) {
+    if ($item->hasMethod('getName')) {
+      my $itemName = lc $item->getName();
+      if ($object eq lc($item->getName())) {
+        $tile->removeEntity($item);
+        $player->addToInventory($item);
+      }
+    }
+  }
+});
+$player->addAction('inventory', sub {
+  print "Inventory\n";
+  print "---------\n";
+  foreach my $item ($player->listInventory()) {
+    print "\t" . $item->getName() . "\n";
+  }
+});
+$player->addAction('examine', sub {
+  my $object = lc shift;
+
+  foreach my $item ($player->listInventory()) { # First, examine inventory
+    if (lc $item->getName() eq $object) {
+      print $item->getDescription() . "\n";
+      return;
+    }
+  }
+
+  my $tile = $player->getPosition();
+  foreach my $entity ($tile->listEntities()) {
+    if (lc $entity->getName() eq $object) {
+      print $entity->getDescription() . "\n";
+      return;
+    }
+  }
+
+  print "Can't locate object '$object'\n";
+});
+$player->addAction('drop', sub {
+  my $object = lc shift;
+
+  foreach my $item ($player->listInventory()) {
+    if (lc $item->getName() eq $object) {
+      my $tile = $player->getPosition();
+      $player->removeFromInventory($item);
+      $tile->addEntity($item);
+      return;
+    }
+  }
+  print "Can't locate item '$object' in inventory\n";
+});
+
 $player->setPosition($startingTile);
 
 $player->on('move', sub {

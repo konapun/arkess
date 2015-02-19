@@ -30,6 +30,10 @@ sub exportMethods {
 
   return {
 
+    listEntities => sub {
+      return @{$self->{entities}};
+    },
+
     getEntities => sub {
       return $self->{entities};
     },
@@ -41,10 +45,12 @@ sub exportMethods {
     removeEntity => sub {
       my ($cob, $entity) = @_;
 
+      my $index = 0;
       foreach my $contained (@{$self->{entities}}) {
         if ($contained eq $entity) {
-          print "FOUND! TODO\n";
+          return splice(@{$self->{entities}}, $index, 1);
         }
+        $index++;
       }
     },
 

@@ -9,17 +9,21 @@ sub requires {
   ];
 }
 
-sub exportAttributes {
-  return {
-    name => '(unknown)'
-  };
+sub initialize {
+  my ($self, $name) = @_;
+
+  $self->{name} = $name;
 }
 
 sub exportMethods {
+  my $self = shift;
+
   return {
+
     getName => sub {
-      return shift->get('name');
+      return $self->{name};
     }
+
   };
 }
 

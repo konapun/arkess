@@ -25,7 +25,7 @@ sub exportMethods {
     },
 
     getActions => sub {
-      return $shift->{abilities};
+      return $self->{abilities};
     },
 
     doesActionExist => sub {

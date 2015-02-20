@@ -32,13 +32,14 @@ sub load {
 	my ($self, $file, @loadArgs) = @_;
 
 	require $file;
-	my $module = ($file =~ /(.*)\.pm/)[0];
+	my $module = ($file =~ /(Arkess.*)\.pm/)[0];
 	$module =~ s/\//::/g;
 	if ($module->can('execute')) {
 		my $action = $module->new(@loadArgs);
 
 		return $action;
 	}
+
 	return undef;
 }
 

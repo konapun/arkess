@@ -8,7 +8,7 @@ use strict;
 sub new {
 	my $package = shift;
 	my $shell = shift;
-	
+
 	return bless {
 		shell => $shell,
 	}, $package;
@@ -19,7 +19,7 @@ sub registersAs {
 }
 
 sub execute {
-	shift->{shell}->environment()->stop();
+	shift->{shell}->getEnvironment()->stop();
 	return 1;
 }
 

@@ -1,10 +1,9 @@
 package Arkess::IO::Terminal::Command;
 #
-# A command is a Blocky::Character::Action with its options
+# A command is an Arkess::Component::Actioned with its options
 #
 
 use strict;
-use Arkess::IO::Terminal::Command::Params;
 
 sub new {
 	my $package = shift;
@@ -12,7 +11,7 @@ sub new {
 
 	return bless {
 		name   => $name,
-		params => Arkess::IO::Terminal::Command::Params->new(@options),
+		params => [@options],
 	}, $package;
 }
 
@@ -21,13 +20,13 @@ sub getName {
 }
 
 sub getArguments {
-	return shift->{params};
+	return @{shift->{params}};
 }
 
 sub execute {
 	my ($self, @options) = @_;
 
-	$self->{action}->call($self->{params});
+	$self->{action}->call(@{$self->{params}});
 }
 
 1;

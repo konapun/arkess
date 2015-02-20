@@ -37,6 +37,10 @@ my $scarecrow = Arkess::Object->new({
   'Arkess::Component::Named' => "Scarecrow",
   'Arkess::Component::Describable' => "A gaunt, sullen looking scarecrow"
 });
+my $jackolantern = Arkess::Object->new({
+  'Arkess::Component::Named' => "Jackolantern",
+  'Arkess::Component::Describable' => "An All Hallows Eve favorite"
+});
 
 # Piece tiles together
 $startingTile->setLink(UP, $valley);
@@ -46,8 +50,9 @@ $valley->setLink(RIGHT, $ciderHouse);
 
 # Add entities to tiles
 $startingTile->addEntity($scarecrow);
+$valley->addEntity($jackolantern);
 
-# Start!
+# Set up the player and visible actions from the player API
 my $player = Arkess::Object->new([
   'Arkess::Component::Looker',
   'Arkess::Component::EntityPositioned',
@@ -67,7 +72,6 @@ $player->addAction('take', sub {
   my @items = $tile->listEntities();
   foreach my $item (@items) {
     if ($item->hasMethod('getName')) {
-      my $itemName = lc $item->getName();
       if ($object eq lc($item->getName())) {
         $tile->removeEntity($item);
         $player->addToInventory($item);
@@ -110,7 +114,7 @@ $player->addAction('drop', sub {
       my $tile = $player->getPosition();
       $player->removeFromInventory($item);
       $tile->addEntity($item);
-      return;
+      return 1;
     }
   }
   print "Can't locate item '$object' in inventory\n";
@@ -122,23 +126,8 @@ $player->on('move', sub {
   $player->look();
 });
 
-#while (1) {
-#  my $input = prompt("> ");
-#  last if $input eq 'exit';
-#  my @words = split(/\s+/, $input);
-#  $player->callAction(shift @words, @words);
-#}
-
-sub prompt {
-  my $prompt = shift;
-
-  print $prompt;
-  my $response = <STDIN>;
-  chomp($response);
-  return $response;
-}
-
+# Set up the runtime
 my $game = Arkess::Runtime::InteractiveFiction->new();
 my $terminal = $game->createController($player);
-$terminal->autobind();
+$terminal->autobind(); # all keys from addAction will be bound to shell commands
 $game->run();

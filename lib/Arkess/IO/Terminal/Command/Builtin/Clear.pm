@@ -22,7 +22,7 @@ sub registersAs {
 sub execute {
 	my $self = shift;
 
-	print "\n" x $self->{lines};
+	print "\n" x $self->{lines}; # FIXME - should use curses or something not so lame
 	return 1;
 }
 

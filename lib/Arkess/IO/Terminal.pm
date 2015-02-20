@@ -61,8 +61,7 @@ sub process {
 	$ret = $self->_processBindings($command);
 	return $ret if defined $ret;
 
-	print "You can't do that!\n";
-	return 0;
+	return 0; # Failed
 }
 
 #OVERRIDE
@@ -87,8 +86,9 @@ sub autobind {
 
 	my $actions = $self->getPlayer()->getActions(); # actions via Arkess::Component::Actioned
 	foreach my $bindingName (keys %$actions) {
-		my $action = $actions->{$bindingName};
-		$self->bind($bindingName, $action);
+		$self->bind($bindingName, sub {
+			$self->getPlayer()->callAction($bindingName, @_);
+		});
 	}
 }
 
@@ -106,7 +106,7 @@ sub _processBuiltins {
 	my $commandWord = $command->getName();
 	foreach my $builtin (@{$self->{builtins}}) {
 		if ($commandWord eq $builtin->registersAs()) {
-			return $builtin->execute($command->arguments());
+			return $builtin->execute($command->getArguments());
 		}
 	}
 
@@ -120,7 +120,7 @@ sub _processBindings {
 	my %bindings = %{$self->{bindings}};
 	foreach my $key (keys %bindings) {
 		if ($key eq $commandWord) {
-			return $bindings{$key}->call($command->getArguments());
+			return $bindings{$key}->($command->getArguments());
 		}
 	}
 

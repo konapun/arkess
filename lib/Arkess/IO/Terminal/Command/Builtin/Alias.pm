@@ -20,8 +20,8 @@ sub registersAs {
 }
 
 sub execute {
-	my ($self, $args) = @_;
-	my ($original, $alias) = $args->all();
+	my ($self, @args) = @_;
+	my ($original, $alias) = @args;
 
 	if (!defined $alias) {
 		print "Usage: alias <command> <new command>\n";
@@ -37,10 +37,14 @@ sub execute {
 			return 1;
 		}
 	}
-	while (my ($key, $action) = each %{$shell->user()->actions()->list()}) {
+
+	my $user = $shell->getPlayer();
+	foreach my $key (keys %{$shell->getPlayer()->getActions()}) {
 		if ($key eq $original) {
-			$shell->user()->actions($alias, sub {
-				return $action->call(@_);
+			print "Adding action $alias for $original\n";
+			$user->addAction($alias, sub {
+				print "CALLING $key\n";
+				return $user->callAction($key, @_);
 			});
 			return 1;
 		}

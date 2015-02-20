@@ -25,7 +25,7 @@ sub exportMethods {
     },
 
     getActions => sub {
-      return $self->{abilities};
+      return $self->{abilities}; # FIXME - only return names
     },
 
     doesActionExist => sub {

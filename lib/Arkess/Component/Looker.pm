@@ -26,7 +26,7 @@ sub exportMethods {
           if (scalar(@$entities) > 0) {
             print "You see:\n";
             foreach my $entity (@$entities) {
-              print "\t" . $entity->getDescription() . "\n"; # if $entity->hasAttribute('description');
+              print "\t" . $entity->getName() . "\n"; # if $entity->hasAttribute('description');
             }
           }
 

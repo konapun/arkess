@@ -27,9 +27,9 @@ sub execute {
 		print "\t" . $builtin->registersAs() . "\n";
 	}
 
-#	foreach my $action ($shell->user()->actions()->keys()) {
-#		print "\t$action\n";
-#	}
+	foreach my $action (keys %{$shell->getPlayer()->getActions()}) {
+		print "\t$action\n";
+	}
 
 	return 1;
 }

@@ -21,7 +21,7 @@ sub initialize {
 
   die "Must specify background" unless $background; # TODO: locate background automatically by looking through runtime's components?
   my $component = Arkess::Component::Mobile->new();
-  $component->install($background); # need to install component directly since extend will only give a copy
+  $background->installComponent($component); # need to install component directly since extend will only give a copy
   $followType ||= 'scroll'; # when the followed character becomes out of bounds, transition the whole screen
   $self->{background} = $background;
   $self->{transition} = $followType;

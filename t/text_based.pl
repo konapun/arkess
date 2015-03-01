@@ -52,6 +52,11 @@ $valley->setLink(RIGHT, $ciderHouse);
 $startingTile->addEntity($scarecrow);
 $valley->addEntity($jackolantern);
 
+print "Starting has " . scalar($startingTile->listEntities()) . " ents\n";
+print "Cider house has " . scalar($ciderHouse->listEntities()) . " ents\n";
+print "Starting has " . $startingTile->TMP_HOLDER() . " holder\n";
+print "Cider house has " . $ciderHouse->TMP_HOLDER() . " holder\n";
+
 # Set up the player and visible actions from the player API
 my $player = Arkess::Object->new([
   'Arkess::Component::Looker',

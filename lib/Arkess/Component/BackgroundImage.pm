@@ -21,7 +21,7 @@ sub initialize {
 sub afterInstall {
   my ($self, $cob) = @_;
 
-  $self->{imgComponent}->install($cob);
+  $cob->installComponent($self->{imgComponent});
   $cob->on(Arkess::Event::RUNTIME_START, sub {
     my $options = $cob->getRuntime()->getRenderer()->getWindowOptions();
 

@@ -20,6 +20,10 @@ my $player = $game->createEntity({
   'Arkess::Component::CameraFollow' => [$background, 'scroll']
 });
 
+my $widget = $game->createEntity({
+  'Arkess::Component::Widget' => $player
+});
+
 my $house = $game->createEntity({
   'RPG::Component::House' => [20, 20]
 });

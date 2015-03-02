@@ -25,18 +25,11 @@ sub exportAttributes {
   };
 }
 
-sub clone {
-  print "CLONE!\n";
-  return shift->SUPER::clone(@_);
-}
-
 sub exportMethods {
   my $self = shift;
 
   return {
-TMP_HOLDER => sub {
-  return $self;
-},
+
     listEntities => sub {
       return @{$self->{entities}};
     },
@@ -63,7 +56,7 @@ TMP_HOLDER => sub {
 
     addEntity => sub {
       my ($cob, $entity) = @_;
-
+      
       push(@{$self->{entities}}, $entity);
     }
 

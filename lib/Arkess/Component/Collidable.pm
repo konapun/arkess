@@ -7,6 +7,8 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Observable',
+    'Arkess::Component::Positioned',
+    'Arkess::Component::2D',
     'Arkess::Component::Renderable' # needed to get screen coordinates to check for collisions (or maybe use non-screen coords instead?)
   ];
 }
@@ -49,7 +51,6 @@ sub afterInstall {
             my $compareTag = $entity->getCollisionTag();
             my ($x2, $y2) = $entity->getCoordinates();
             my ($width2, $height2) = $entity->getDimensions();
-#  print "($x, $y, $width, $height) vs ($x2, $y2, $width2, $height2)\n";
             if ($x2 >= $x && $x2 <= $x + $width && $y2 >= $y && $y2 <= $y + $width) {
               $self->{colliding} = 1; # FIXME: Do for all collisions, not just this
 

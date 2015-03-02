@@ -21,9 +21,16 @@ my $player = $game->createEntity({
 });
 
 my $widget = $game->createEntity({
-  'Arkess::Component::Widget' => $player
+  'Arkess::Component::Widget' => {
+    visible => 0
+  }
 });
-
+my $textbox = $game->createEntity({
+  'Arkess::Component::TextBox' => [[
+    "This is the first page.",
+    "This is the second page."
+  ]]
+});
 my $house = $game->createEntity({
   'RPG::Component::House' => [20, 20]
 });
@@ -34,7 +41,14 @@ my $house = $game->createEntity({
 
 $player->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   print "Pressed space\n";
+  $widget->toggleVisibility();
 });
+$player->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  print "Advancing page\n";
+  $textbox->displayNextPage();
+#  $textbox->toggleVisibility();
+});
+
 $game->setWindowOptions({
   title  => 'Sample RPG',
   width  => 512,

@@ -30,10 +30,10 @@ sub afterInstall {
 
   $cob->setCollisionTag('ball');
   $cob->collideWith('paddle', sub {
-    die "BALL COLLIDED WITH PADDLE!\n";
+#    die "BALL COLLIDED WITH PADDLE!\n";
   });
   $cob->collideWith('ball', sub {
-    die "BALL COLLIDED WITH BALL!\n";
+#    die "BALL COLLIDED WITH BALL!\n";
   });
 
   $cob->on('setRuntime', sub {

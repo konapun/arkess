@@ -3,22 +3,35 @@ package Arkess::Component::Item;
 use strict;
 use base qw(Arkess::Component);
 
-sub exportAttributes {
-  return {
-    owner => undef
-  };
+sub initialize {
+  my ($self, $holder) = @_;
+
+  $self->{holder} = $holder;
 }
 
 sub exportMethods {
+  my $self = shift;
 
-  setOwner => sub {
-    my ($cob, $owner) = @_;
+  return {
 
-    $cob->set('owner', $owner);
-  },
+    setHolder => sub {
+      my ($cob, $holder) = @_;
 
-  use => sub {
-    die "Arkess::Component::Item does not implement `use`";
+      $self->{holder} = $holder;
+    },
+
+    isBeingHeld => sub {
+      return defined $self->{holder};
+    },
+
+    getHolder => sub {
+      return $self->{holder};
+    },
+    
+    use => sub {
+      die "Arkess::Component::Item does not implement `use`";
+    }
+
   }
 }
 1;

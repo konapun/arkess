@@ -43,7 +43,7 @@ sub exportMethods {
 
       $self->{image}->blit($renderer, undef, [$cob->getCoordinates()]);
     }
-    
+
   };
 }
 

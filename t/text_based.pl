@@ -37,9 +37,15 @@ my $scarecrow = Arkess::Object->new({
   'Arkess::Component::Named' => "Scarecrow",
   'Arkess::Component::Describable' => "A gaunt, sullen looking scarecrow"
 });
+
 my $jackolantern = Arkess::Object->new({
   'Arkess::Component::Named' => "Jackolantern",
-  'Arkess::Component::Describable' => "An All Hallows Eve favorite"
+  'Arkess::Component::Describable' => "An All Hallows Eve favorite",
+  'Arkess::Component::Actioned' => {
+    smash => sub {
+      print "SMASHING PUMPKIN\n";
+    }
+  }
 });
 
 # Piece tiles together
@@ -51,11 +57,6 @@ $valley->setLink(RIGHT, $ciderHouse);
 # Add entities to tiles
 $startingTile->addEntity($scarecrow);
 $valley->addEntity($jackolantern);
-
-print "Starting has " . scalar($startingTile->listEntities()) . " ents\n";
-print "Cider house has " . scalar($ciderHouse->listEntities()) . " ents\n";
-print "Starting has " . $startingTile->TMP_HOLDER() . " holder\n";
-print "Cider house has " . $ciderHouse->TMP_HOLDER() . " holder\n";
 
 # Set up the player and visible actions from the player API
 my $player = Arkess::Object->new([
@@ -123,6 +124,19 @@ $player->addAction('drop', sub {
     }
   }
   print "Can't locate item '$object' in inventory\n";
+});
+$player->addAction('proxy', sub { # Allow calling actions on items in inventory through player
+  my ($action, $object) = @_;
+
+  foreach my $item ($player->listInventory()) {
+    if (lc $item->getName() eq $object) {
+      if ($item->hasAttribute('actioned')) {
+        $item->callAction($action);
+        return 1;
+      }
+    }
+  }
+  print "Couldn't locate actioned item for proxy\n";
 });
 
 $player->setPosition($startingTile);

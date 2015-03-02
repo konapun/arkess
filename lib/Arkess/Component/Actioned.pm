@@ -4,9 +4,16 @@ use strict;
 use base qw(Arkess::Component);
 
 sub initialize {
-  my $self = shift;
+  my ($self, $actions) = @_;
 
+  $self->{initActions} = $actions || {}; # hashref of action names to actions
   $self->{abilities} = {};
+}
+
+sub exportAttributes {
+  return {
+    actioned => 1
+  };
 }
 
 sub exportMethods {
@@ -70,6 +77,15 @@ sub exportMethods {
     }
 
   };
+}
+
+sub afterInstall {
+  my ($self, $cob) = @_;
+
+  my %initActions = %{$self->{initActions}};
+  foreach my $actionName (keys %initActions) { # install actions from initialize if any
+    $cob->addAction($actionName, $initActions{$actionName});
+  }
 }
 
 1;

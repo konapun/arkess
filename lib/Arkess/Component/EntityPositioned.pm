@@ -8,6 +8,7 @@ sub initialize {
 
   $self->{position} = $entity;
   if ($entity) {
+    die "FIXME";
     $self->_setPosition($entity);
   }
 }
@@ -20,7 +21,7 @@ sub exportMethods {
     setPosition => sub {
       my ($cob, $entity) = @_;
 
-      $self->_setPosition($entity);
+      $self->_setPosition($cob, $entity);
     },
 
     getPosition => sub {
@@ -34,7 +35,7 @@ sub exportMethods {
       my $tile = $self->{position};
       if ($tile->hasLink($direction)) {
         $tile->removeEntity($cob);
-        $self->_setPosition($tile->getLink($direction));
+        $self->_setPosition($cob, $tile->getLink($direction));
         $return = 1; # move succeeded
       }
       $cob->trigger('move', $direction);
@@ -45,11 +46,11 @@ sub exportMethods {
 }
 
 sub _setPosition {
-  my ($self, $entity) = @_;
+  my ($self, $cob, $entity) = @_;
 
   $self->{position} = $entity;
   if ($entity->hasAttribute('holdsEntities')) {
-    $entity->addEntity($self); # FIXME - remove entity also
+    $entity->addEntity($cob); # FIXME - remove entity also
   }
 }
 

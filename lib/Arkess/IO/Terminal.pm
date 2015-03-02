@@ -7,7 +7,7 @@ use strict;
 use Arkess::IO::Terminal::Command;
 use Arkess::IO::Terminal::Command::Loader; # load the builtins
 use Arkess::IO::Terminal::UI;
-
+use Arkess::Event::Bus;
 use base qw(Arkess::IO::Controller);
 
 sub new {
@@ -21,6 +21,7 @@ sub new {
 	$self->{bindings}    = {};
 	$self->{builtinsDir} = 'Builtin'; # relative to Terminal/Command dir
 	$self->{builtins}    = [];
+	$self->{eventBus}    = Arkess::Event::Bus->new(); # event system for registering plugins
 
 	$self->_init();
 	return $self;
@@ -45,6 +46,12 @@ sub getPS1 {
 
 sub getEnvironment {
 	return shift->{environment};
+}
+
+sub loadPlugin {
+	my ($self, $plugin) = @_; # plugins are lowercase versions of their package names relative to the Arkess/IO/Terminal/Plugin directory
+
+	# TODO
 }
 
 #OVERRIDE
@@ -95,9 +102,15 @@ sub autobind {
 sub _init {
 	my $self = shift;
 
+	# Load commands
 	my $loader = Arkess::IO::Terminal::Command::Loader->new();
 	my @commands = $loader->loadDirectory($self->{builtinsDir}, $self);
 	$self->{builtins} = [@commands];
+
+	# Load plugins
+	foreach my $plugin (('autocomplete', 'exitStatus')) {
+		$self->loadPlugin($plugin);
+	}
 }
 
 sub _processBuiltins {

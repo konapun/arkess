@@ -1,33 +1,13 @@
-#!/usr/bin/perl
+use SDL;
+use SDL::Mixer;
+use SDL::Mixer::Channels;
+use SDL::Mixer::Effects;
+use SDL::Mixer::Samples;
 
-use SDLx::Sound;
+SDL::Mixer::open_audio( 44100, SDL::Constants::AUDIO_S16, 2, 1024 );
 
-my $file = './assets/sounds/dialog-warning.ogg';
-die "No such file $file" unless -e $file;
-my $player = SDLx::Sound->new();
-$player->load(
-  channel1 => $file
-);
-for (1 .. 10) {
-  $player->play($file);
-}
-print "DONE\n";
+my $playing_channel = SDL::Mixer::Channels::play_channel( -1, SDL::Mixer::Samples::load_WAV('assets/sounds/Shamisen-C4.wav'), -1 );
+SDL::delay(2000);
 
-my $snd = SDLx::Sound->new(
-  files => (
-    chanell_01 => $file,
-    chanell_02 => $file
-  ),
-  loud => (
-    channel_01 => 80,
-    channel_02 => 75
-  ),
-  times => (
-    chanell_01 => 0,      # start
-    chanell_01 => 1256,   # miliseconds
-    chanell_02 => 2345
-  ),
-  fade => (
-    chanell_02 => [2345, 3456, -20]
-  )
-)->play($file);
+SDL::Mixer::close_audio();
+SDL::quit();

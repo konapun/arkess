@@ -1,18 +1,13 @@
 package Arkess::Component::Audible;
 
 use strict;
-use SDL::Sound;
-use SDL::Mixer;
-use SDL::Mixer::Music;
+use Arkess::Sound::Player;
 use base qw(Arkess::Component);
 
 sub initialize {
-  my ($self, $sound) = @_;
+  my ($self, $sounds) = @_;
 
-  my $player = SDL::Sound->new();
-  $self->{muted} = 0;
-  $self->{player} = $player;
-  $self->{sound} = $sound;
+  $self->{soundPlayer} = Arkess::Sound::Player->new($sounds);
 }
 
 sub exportMethods {
@@ -20,35 +15,32 @@ sub exportMethods {
 
   return {
 
-    setSound => sub {
-      return $self->{sound};
-    },
+    addSound => sub {
+      my ($cob, $name, $file) = @_;
 
-    getSound => sub {
-      my ($cob, $sound) = @_;
-
-      $self->{sound} = $sound;
+      $self->{soundPlayer}->loadSound($name, $file);
     },
 
     mute => sub {
-      $self->{muted} = 1;
+      $self->{soundPlayer}->mute();
     },
 
     unmute => sub {
-      $self->{muted} = 0;
+      $self->{soundPlayer}->unmute();
     },
 
     isMuted => sub {
-      return $self->{muted};
+      return $self->{soundPlayer}->isMuted();
+    },
+
+    isPlaying => sub {
+      return $self->{soundPlayer}->isPlaying();
     },
 
     playSound => sub {
       my ($cob, $sound) = @_;
 
-      if (!$cob->isMuted()) {
-        $sound = defined $sound ? $sound : $self->{sound};
-        $self->{player}->play($sound);
-      }
+      $self->{soundPlayer}->playSound($sound);
     }
 
   };

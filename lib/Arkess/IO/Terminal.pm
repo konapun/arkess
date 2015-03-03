@@ -7,6 +7,7 @@ use strict;
 use Arkess::IO::Terminal::Command;
 use Arkess::IO::Terminal::Command::Loader; # load the builtins
 use Arkess::IO::Terminal::UI;
+use Arkess::IO::Terminal::Event;
 use Arkess::Event::Bus;
 use base qw(Arkess::IO::Controller);
 
@@ -51,23 +52,32 @@ sub getEnvironment {
 sub loadPlugin {
 	my ($self, $plugin) = @_; # plugins are lowercase versions of their package names relative to the Arkess/IO/Terminal/Plugin directory
 
-	# TODO
+	$plugin = 'Arkess::IO::Terminal::Plugin::' .  $plugin;
+	eval "require $plugin";
+  my $instance = $plugin->new($self);
+	$instance->register($self);
+}
+
+sub getEventBus {
+	return shift->{eventBus};
 }
 
 #OVERRIDE
 sub process {
 	my ($self, $string) = @_;
 
+	my $eventBus = $self->{eventBus};
 	my @cmd = split(/\s+/, $string);
 	my $commandWord = shift @cmd;
 	my $command = Arkess::IO::Terminal::Command->new($commandWord, @cmd);
 
 	my $ret;
 	$ret = $self->_processBuiltins($command);
-	return $ret if defined $ret;
+	$eventBus->trigger(Arkess::IO::Terminal::Event::COMMAND_SUCCEEDED, $command) && return $ret if defined $ret;
 	$ret = $self->_processBindings($command);
-	return $ret if defined $ret;
+	$eventBus->trigger(Arkess::IO::Terminal::Event::COMMAND_SUCCEEDED, $command) && return $ret if defined $ret;
 
+	$eventBus->trigger(Arkess::IO::Terminal::Event::COMMAND_FAILED, $command);
 	return 0; # Failed
 }
 
@@ -108,9 +118,9 @@ sub _init {
 	$self->{builtins} = [@commands];
 
 	# Load plugins
-	foreach my $plugin (('autocomplete', 'exitStatus')) {
-		$self->loadPlugin($plugin);
-	}
+#	foreach my $plugin (('autocomplete', 'exitStatus')) {
+#		$self->loadPlugin($plugin);
+#	}
 }
 
 sub _processBuiltins {

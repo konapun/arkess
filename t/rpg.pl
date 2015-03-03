@@ -18,6 +18,10 @@ my $player = $game->createEntity({
 #  'Arkess::Component::Collidable' => [undef, 'player'],
   'Arkess::Component::D4'         => [],
   'Arkess::Component::CameraFollow' => [$background, 'scroll'],
+  'Arkess::Component::Audible' => {
+    notification => 'assets/sounds/Shamisen-C4.wav',
+    notification2 => 'assets/sounds/Koto.wav'
+  }
 });
 my $beetle = $game->createEntity({
   'Arkess::Component::Image' => './assets/characters/beetle.png',
@@ -54,6 +58,12 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyb
   $textbox->displayNextPage();
 #  $textbox->toggleVisibility();
 });
+$player->getController()->bind(Arkess::IO::Keyboard::KB_1, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  $player->playSound('notification');
+});
+$player->getController()->bind(Arkess::IO::Keyboard::KB_2, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  $player->playSound('notification2');
+});
 
 $beetle->addAutomation('cycleSquare', sub {
   my $event;
@@ -75,4 +85,8 @@ $game->setWindowOptions({
   height => 512
 });
 
+my $musicPlayer = Arkess::Sound::Player->new({
+  theme => 'assets/sounds/theme.wav'
+});
+#$musicPlayer->playSound('theme');
 $game->run();

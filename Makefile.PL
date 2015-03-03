@@ -26,7 +26,8 @@ WriteMakefile(
     'SDL' => '2.544',
     'Image::ParseGIF' => '0.2',
     'Color::Rgb' => '1.4',
-    'GD' => '2.56'
+    'GD' => '2.56',
+    'threads' => '1.96'
   },
   EXE_FILES => {
     # TODO

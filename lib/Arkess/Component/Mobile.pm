@@ -58,6 +58,7 @@ sub exportMethods {
       }
       $cob->trigger('move', $direction, $units); # FIXME: shouldn't be necessary
     }
+
   }
 }
 

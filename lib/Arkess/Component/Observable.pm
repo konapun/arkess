@@ -2,6 +2,7 @@ package Arkess::Component::Observable;
 
 use strict;
 use Arkess::Event;
+use Arkess::Event::Bus;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -14,7 +15,7 @@ sub requires {
 sub initialize {
   my ($self, $eventBus) = @_;
 
-  $self->{events} = {};
+  $self->{events} = Arkess::Event::Bus->new();
   $self->{eventBus} = $eventBus;
 }
 
@@ -81,19 +82,14 @@ sub exportMethods {
     on => sub {
       my ($cob, $event, $callback) = @_;
 
-      $self->{events}->{$event} = [] unless defined $self->{events}->{$event};
-      push(@{$self->{events}->{$event}}, $callback);
-      return $callback; # so it can be used to unregister (more on this later)
+      return $self->{events}->bind($event, $callback);
     },
 
     # Trigger an event with given args
     trigger => sub {
       my ($cob, $event, @args) = @_;
 
-      return unless defined $self->{events}->{$event};
-      foreach my $cb (@{$self->{events}->{$event}}) {
-        $cb->(@args);
-      }
+      $self->{events}->trigger($event, @args);
     },
 
     # Allow this component to add new events when installing rathe rthan overwriting

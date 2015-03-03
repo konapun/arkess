@@ -70,8 +70,28 @@ sub exportMethods {
         my $renderer = $cob->getRenderer();
 
         if ($self->{text}) {
-          $widget->draw_gfx_text( [10,10], [20,20,20,20], $self->{text});
+          my $text = $self->{text};
+          my $padX = 10;
+          my $letterWidth = 7; # 7 px for gfx text
+          my $letterHeight = 7;
+          my $spaceWidth = 1; # 1 px for spaces in gfx text
+          my $boxWidth = $widget->w - ($padX*2); # 10px padding each side
+
+          my $pxX = $padX;
+          my $pxY = $padX;
+          my @words = split(/\s+/, $text);
+          foreach my $word (@words) {
+            my $wordLength = length($word) * $letterWidth + $spaceWidth;
+            if ($wordLength + $pxX > $boxWidth) {
+              $pxY += $letterHeight + 12;
+              $pxX = $padX;
+            }
+            $widget->draw_gfx_text( [$pxX,$pxY], [20,20,20,20], $word);
+            $pxX += $wordLength + 12;
+          }
+#          $widget->draw_gfx_text( [10,10], [20,20,20,20], $self->{text});
         }
+
         $widget->blit($renderer, undef, $self->{coords});
       }
     }

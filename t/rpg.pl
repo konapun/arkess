@@ -14,12 +14,16 @@ my $background = $game->createEntity({
   'Arkess::Component::BackgroundImage' => './assets/backgrounds/light_world.png'
 });
 my $player = $game->createEntity({
-  'Arkess::Component::Image'      => './assets/characters/beetle.png',
+  'Arkess::Component::Image'      => './assets/characters/scarecrow.png',
 #  'Arkess::Component::Collidable' => [undef, 'player'],
   'Arkess::Component::D4'         => [],
   'Arkess::Component::CameraFollow' => [$background, 'scroll'],
 });
-
+my $beetle = $game->createEntity({
+  'Arkess::Component::Image' => './assets/characters/beetle.png',
+  'Arkess::Component::Mobile' => [],
+  'Arkess::Component::Automated' => []
+});
 my $widget = $game->createEntity({
   'Arkess::Component::Widget' => {
     visible => 0
@@ -29,6 +33,7 @@ my $textbox = $game->createEntity({
   'Arkess::Component::TextBox' => [[
     "This is an example of a textbox.Press enter to scroll through the text pages.",
     "This is the second page.",
+    "This is a long page to test text wrapping. Widgets will automatically wrap lines while avoiding breaking up words. Eventually, the textbox component should automatically add pages when text exceeds given space. Some extra stuff here to force automatic paging.",
     "After this page, the box will go invisible."
   ]]
 });
@@ -49,6 +54,20 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyb
   $textbox->displayNextPage();
 #  $textbox->toggleVisibility();
 });
+
+$beetle->addAutomation('cycleSquare', sub {
+  my $event;
+  $event = $beetle->moveTo(0, 400, sub {
+    $beetle->moveTo(400, 400, sub {
+      $beetle->moveTo(400, 0, sub {
+        $beetle->moveTo(0, 0, sub {
+          $event->unregister();
+        });
+      });
+    });
+  });
+});
+$beetle->playAutomation('cycleSquare'); # TODO: Loop animation
 
 $game->setWindowOptions({
   title  => 'Sample RPG',

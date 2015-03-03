@@ -21,8 +21,6 @@ sub initialize {
 
   $textScreens = [] unless defined $textScreens;
   $self->{pages} = ref $textScreens eq 'ARRAY' ? $textScreens : [$textScreens];
-  use Data::Dumper;
-  print  Dumper($self->{pages});
   $self->{currentPage} = -1; # -1 because it will automatically be incremented to 0 on afterInstall
 }
 
@@ -34,8 +32,14 @@ sub exportMethods {
     displayNextPage => sub {
       my $cob = shift;
 
-      $self->{currentPage}++ unless $self->{currentPage} == scalar(@{$self->{pages}})-1;
-      $cob->writeText($cob->getTextboxText());
+      if ($self->{currentPage} < scalar(@{$self->{pages}}-1)) {
+        $self->{currentPage}++;
+        $cob->writeText($cob->getTextboxText());
+      }
+      else {
+        $cob->setVisibility(0);
+        $cob = undef;
+      }
     },
 
     displayPrevPage => sub {

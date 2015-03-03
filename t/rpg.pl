@@ -17,7 +17,7 @@ my $player = $game->createEntity({
   'Arkess::Component::Image'      => './assets/characters/beetle.png',
 #  'Arkess::Component::Collidable' => [undef, 'player'],
   'Arkess::Component::D4'         => [],
-  'Arkess::Component::CameraFollow' => [$background, 'scroll']
+  'Arkess::Component::CameraFollow' => [$background, 'scroll'],
 });
 
 my $widget = $game->createEntity({
@@ -27,8 +27,9 @@ my $widget = $game->createEntity({
 });
 my $textbox = $game->createEntity({
   'Arkess::Component::TextBox' => [[
-    "This is the first page.",
-    "This is the second page."
+    "This is an example of a textbox.Press enter to scroll through the text pages.",
+    "This is the second page.",
+    "After this page, the box will go invisible."
   ]]
 });
 my $house = $game->createEntity({

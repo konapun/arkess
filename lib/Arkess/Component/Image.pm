@@ -18,14 +18,16 @@ sub requires {
 sub initialize {
   my ($self, $src, $opts) = @_;
 
-  $opts ||= {};
-  die "Must provide image source for component Image" unless defined $src;
-  die "Unable to read file '$src' for loading" unless -e $src;
-  $self->{image} = SDLx::Surface->load($src);
+  if ($src eq 'INIT_SKIP') {
+    $self->{width} = 0;
+    $self->{height} = 0;
+    return;
+  }
 
-  my ($width, $height) = imgsize($src);
-  $self->{width} = $opts->{width} || $width;
-  $self->{height} = $opts->{height} || $height;
+  $self->{image} = undef;
+  $self->{width} = 0;
+  $self->{height} = 0;
+  $self->_loadImage($src, $opts);
 }
 
 sub setPriority {
@@ -36,6 +38,27 @@ sub exportMethods {
   my $self = shift;
 
   return {
+
+    setImageSource => sub {
+      my ($cob, $src, $opts) = @_;
+
+      $self->_loadImage($src, $opts);
+      $cob->setDimensions($self->{width}, $self->{height});
+    },
+
+    getImageWidth => sub {
+      return $self->{width};
+    },
+
+    getImageHeight => sub {
+      return $self->{height};
+    },
+
+    getImageDimensions => sub {
+      my $cob = shift;
+
+      return ($cob->getImageWidth(), $cob->getImageHeight());
+    },
 
     render => sub {
       my $cob = shift;
@@ -51,6 +74,19 @@ sub afterInstall {
   my ($self, $cob) = @_;
 
   $cob->setDimensions($self->{width}, $self->{height}); # via Arkess::Component::2D
+}
+
+sub _loadImage {
+  my ($self, $src, $opts) = @_;
+
+  $opts ||= {};
+  die "Must provide image source for component Image" unless defined $src;
+  die "Unable to read file '$src' for loading" unless -e $src;
+
+  my ($width, $height) = imgsize($src);
+  $self->{image} = SDLx::Surface->load($src);
+  $self->{width} = $opts->{width} || $width;
+  $self->{height} = $opts->{height} || $height;
 }
 
 1;

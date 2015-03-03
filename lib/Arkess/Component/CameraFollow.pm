@@ -8,6 +8,7 @@ use base qw(Arkess::Component);
 # Export follow types
 use constant SCROLL => 'scroll'; # when the player reaches screen bounds, transition to new screen
 use constant CENTER => 'center'; # keep player centered in the screen when possible
+use constant SHOOTER => 'shooter';
 
 sub requires {
   return [
@@ -45,6 +46,9 @@ sub afterInstall {
   elsif ($transition eq 'pause slide') {
     $self->_setupPauseSlide($cob, $background);
   }
+  elsif ($transition eq 'shooter') {
+    $self->_setupShooterTransitions($cob, $background);
+  }
   else {
     die "Unknown transition type '$transition'";
   }
@@ -55,23 +59,39 @@ sub _setupScrollTransitions {
 
   $cob->on('move', sub {
     my ($x, $y) = $cob->getCoordinates();
+    my ($width, $height) = $cob->getDimensions();
     my ($bwidth, $bheight) = $background->getDimensions();
+    my ($bwidthFull, $bheightFull) = $background->getImageDimensions();
+    my ($bx, $by) = $background->getCoordinates();
 
-    if ($x > $bwidth-1) {
+    if ($bx >= 0 && $x <= 0) {
+      $cob->setX(0);
+    }
+    elsif ($bx <= ($bwidthFull-$bwidth)*-1 && $x >= $bwidth) {
+      $cob->setX($bwidth-1);
+    }
+    elsif ($x < 0 && $bx <= 0) {
+      $background->move(Arkess::Direction::RIGHT, $bwidth);
+      $cob->setX($bwidth-1);
+    }
+    elsif ($x > $bwidth-1) {
       $background->move(Arkess::Direction::LEFT, $bwidth);
       $cob->setX(0);
+    }
+
+    if ($by >= 0 && $y <= 0) {
+      $cob->setY(0);
+    }
+    elsif ($by <= ($bheightFull-$bheight)*-1 && $y >= $bheight) {
+      $cob->setY($bheight-1);
+    }
+    elsif ($y < 0 && $by <= 0) {
+      $background->move(Arkess::Direction::DOWN, $bheight);
+      $cob->setY($bheight-1);
     }
     elsif ($y > $bheight-1) {
       $background->move(Arkess::Direction::UP, $bheight);
       $cob->setY(0);
-    }
-    elsif ($x < 0) {
-      $background->move(Arkess::Direction::RIGHT, $bwidth);
-      $cob->setX($bwidth-1);
-    }
-    elsif ($y < 0) {
-      $background->move(Arkess::Direction::DOWN, $bheight);
-      $cob->setY($bheight-1);
     }
   });
 }
@@ -92,6 +112,44 @@ sub _setupCenterTransitions {
     else {
       $cob->setCoordinates($bwidth/2, $bheight/2);
       $background->move(Arkess::Direction::reverse($direction), $units);
+    }
+  });
+}
+
+sub _setupShooterTransitions {
+  my ($self, $cob, $background) = @_;
+
+  $cob->on('move', sub {
+    my ($x, $y) = $cob->getCoordinates();
+    my ($bwidth, $bheight) = $background->getDimensions();
+    my ($bwidthFull, $heightFull) = $background->getImageDimensions();
+    my ($bx, $by) = $background->getCoordinates();
+
+    if ($bx >= 0 && $x <= 0) {
+      $cob->setX(0);
+    }
+    elsif ($x < 0 && $bx <= 0) {
+      $background->move(Arkess::Direction::RIGHT, $bwidth);
+      $cob->setX($bwidth-1);
+    }
+    elsif ($x > $bwidth-1) {
+      $background->move(Arkess::Direction::LEFT, $bwidth);
+      $cob->setX(0);
+    }
+
+    if ($by >= 0 && $y <= 0) {
+      $cob->setY(0);
+    }
+    elsif ($y < 0 && $by <= 0) {
+print "MOVING BG DOWN\n";
+      $background->move(Arkess::Direction::DOWN, $bheight);
+      $cob->setY($bheight-1);
+    }
+
+    elsif ($y > $bheight-1) {
+print "MOVING BG UP\n";
+      $background->move(Arkess::Direction::UP, $bheight);
+      $cob->setY(0);
     }
   });
 }

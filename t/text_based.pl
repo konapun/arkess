@@ -15,6 +15,11 @@ my $textTile = Arkess::Object->new([
   'Arkess::Component::Linked',
   'Arkess::Component::EntityHolder'
 ]);
+my $item = Arkess::Object->new({
+  'Arkess::Component::Named' => "(unknown item)",
+  'Arkess::Component::Describable' => "(no description)",
+  'Arkess::Component::Usable' => sub { print "I don't know how to use that!" }
+});
 
 # Create tiles
 my $startingTile = $textTile->extend({
@@ -33,16 +38,23 @@ my $ciderHouse = $textTile->extend({
 });
 
 # Create entities
-my $scarecrow = Arkess::Object->new({
+my $scarecrow = $item->extend({
   'Arkess::Component::Named' => "Scarecrow",
   'Arkess::Component::Describable' => "A gaunt, sullen looking scarecrow"
 });
 
-my $jackolantern = Arkess::Object->new({
+my $jackolantern = $item->extend({
   'Arkess::Component::Named' => "Jackolantern",
   'Arkess::Component::Describable' => "An All Hallows Eve favorite",
   'Arkess::Component::Actioned' => {
     smash => sub {
+      my $guts = $item->extend({
+        'Arkess::Component::Named' => "Pumpkin guts",
+        'Arkess::Component' => "Mushy pumpkin guts",
+        'Arkess::Component::Usable' => sub {
+          print "USING GUTS\n";
+        }
+      });
       print "SMASHING PUMPKIN\n";
     }
   }
@@ -63,7 +75,8 @@ my $player = Arkess::Object->new([
   'Arkess::Component::Looker',
   'Arkess::Component::EntityPositioned',
   'Arkess::Component::Actioned',
-  'Arkess::Component::InventoryHolder'
+  'Arkess::Component::InventoryHolder',
+  'Arkess::Component::Mortal'
 ]);
 $player->addAction('move', sub {
   return $player->move(@_);

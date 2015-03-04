@@ -12,7 +12,8 @@ sub new {
     'Arkess::Component::Getter',
     'Arkess::Component::AttributeChecker',
     'Arkess::Component::MethodChecker',
-    'Arkess::Component::RuntimeAware'
+    'Arkess::Component::RuntimeAware',
+    'Arkess::Component::Destroyable'
   ]);
 
   return $base->extend($additional);

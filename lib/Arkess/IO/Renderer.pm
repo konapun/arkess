@@ -17,12 +17,26 @@ sub new {
   return $self;
 }
 
-sub addEntity {
+sub register {
   my ($self, $entity) = @_;
 
   # TODO: Sort entities by zlayer
   push(@{$self->{entities}}, $entity);
   $entity->setRenderer($self->{app});
+}
+
+sub unregister {
+  my ($self, $entity) = @_;
+
+  my $index = 0;
+  foreach my $contained (@{$self->{entities}}) {
+    if ($contained eq $entity) {
+      splice(@{$self->{entities}}, $index, 1);
+      return 1;
+    }
+    $index++;
+  }
+  return 0;
 }
 
 sub initialize {

@@ -5,7 +5,9 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Renderable'
+    'Arkess::Component::Renderable',
+    'Arkess::Component::2D',
+    'Arkess::Component::Positioned'
   ];
 }
 
@@ -36,7 +38,7 @@ sub exportMethods {
     setOrigin => sub {
       my ($cob, $x, $y) = @_;
 
-      $self->{origin} = [$x, $y];
+      $cob->setCoordinates($x, $y);
     },
 
     setRadius => sub {
@@ -55,7 +57,7 @@ sub exportMethods {
       my $cob = shift;
 
       my $app = $cob->getRenderer();
-      $app->draw_circle_filled($self->{origin}, $self->{radius}, $self->{color});
+      $app->draw_circle_filled([$cob->getCoordinates()], $self->{radius}, $self->{color});
     }
 
   };

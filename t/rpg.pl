@@ -84,7 +84,6 @@ $game->setWindowOptions({
   width  => 512,
   height => 512
 });
-
 my $musicPlayer = Arkess::Sound::Player->new({
   theme => 'assets/sounds/theme.wav'
 });

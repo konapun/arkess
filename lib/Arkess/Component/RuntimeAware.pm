@@ -25,6 +25,10 @@ sub exportMethods {
       $self->{runtime} = $runtime;
     },
 
+    hasRuntime => sub {
+      return defined $self->{runtime};
+    },
+
     getRuntime => sub {
       die "No runtime set" unless defined $self->{runtime};
       return $self->{runtime};

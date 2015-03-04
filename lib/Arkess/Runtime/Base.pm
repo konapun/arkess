@@ -39,6 +39,16 @@ sub createEntity {
   return $entity;
 }
 
+sub removeEntity {
+  my ($self, $entity) = @_;
+
+  foreach my $contained (@{$self->{entities}}) {
+    if ($entity eq $contained) {
+      print "FOUND IT!\n";
+    }
+  }
+}
+
 sub createController {
   my ($self, $character, $bindings) = @_;
 

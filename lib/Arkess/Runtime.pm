@@ -48,9 +48,28 @@ sub addEntity {
   $entity->setRuntime($self);
   push(@{$self->{entities}}, $entity);
   if ($entity->attributes->has('renderable')) {
-    $self->{renderer}->addEntity($entity);
+    $self->{renderer}->register($entity);
   }
   $self->getEventBus()->trigger(Arkess::Event::ENTITY_ADDED);
+}
+
+sub removeEntity {
+  my ($self, $entity) = @_;
+
+  my $index = 0;
+  foreach my $contained (@{$self->{entities}}) {
+    if ($contained eq $entity) {
+      my $found = splice(@{$self->{entities}}, $index, 1);
+      if ($found->hasAttribute('renderable')) { # unregister with renderer
+        $self->getRenderer()->unregister($found);
+      }
+      # TODO: Also unregister controller?
+      return 1;
+    }
+    $index++;
+  }
+
+  return 0;
 }
 
 sub createEntity {

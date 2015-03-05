@@ -37,7 +37,7 @@ sub exportMethods {
 
       my $lastTick = [gettimeofday];
       my $elapsed = $self->{immediate} ? $interval : 0; # So timed event executes before waiting for a timeout the first time
-      my $timedEvent = $cob->getEventBus()->bind(Arkess::Event::LOOP_START, sub {
+      my $timedEvent = $cob->getEventBus()->bind(Arkess::Event::TICK, sub {
         if ($elapsed >= $interval) {
           $callback->();
           $lastTick = [gettimeofday];

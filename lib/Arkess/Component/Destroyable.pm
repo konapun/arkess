@@ -22,6 +22,7 @@ sub exportMethods {
         my $runtime = $cob->getRuntime();
         $status = $runtime->removeEntity($cob);
       }
+      # TODO: Also need to remove any associated controllers
       $cob = undef;
       return $status;
     }

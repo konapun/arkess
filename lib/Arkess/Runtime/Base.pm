@@ -76,7 +76,7 @@ sub run {
   $timer->set();
   $self->{running} = 1;
   while ($self->{running}) {
-    $eventBus->trigger(Arkess::Event::LOOP_START);
+    $eventBus->trigger(Arkess::Event::TICK);
     $eventHub->processEvents();
     $eventBus->trigger(Arkess::Event::BEFORE_RENDER);
 

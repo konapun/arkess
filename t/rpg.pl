@@ -67,11 +67,16 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_2, Arkess::IO::Keyboard:
 
 $beetle->addAutomation('cycleSquare', sub {
   my $event;
+  print "Moving to 0,400\n";
   $event = $beetle->moveTo(0, 400, sub {
+    print "Moving to 400,400\n";
     $beetle->moveTo(400, 400, sub {
+      print "Moving to 400,0\n";
       $beetle->moveTo(400, 0, sub {
+        print "Moving to 0,0\n";
         $beetle->moveTo(0, 0, sub {
-          $event->unregister();
+          print "Unregistering event\n";
+          #$event->unregister();
         });
       });
     });

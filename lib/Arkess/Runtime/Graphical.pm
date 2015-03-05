@@ -96,7 +96,7 @@ sub run {
   $self->{running} = 1;
   $renderer->initialize();
   while ($self->{running}) {
-    $eventBus->trigger(Arkess::Event::LOOP_START);
+    $eventBus->trigger(Arkess::Event::TICK);
     $eventHub->processEvents();
     $eventBus->trigger(Arkess::Event::BEFORE_RENDER);
     $renderer->render();

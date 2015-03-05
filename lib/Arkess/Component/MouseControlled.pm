@@ -37,7 +37,7 @@ sub afterInstall {
     });
   }
 
-  $cob->on(Arkess::Event::LOOP_START, sub {
+  $cob->on(Arkess::Event::TICK, sub {
     my $dir = $self->{direction};
     if ($dir) {
       $cob->move($dir);

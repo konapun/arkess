@@ -36,7 +36,7 @@ sub run {
   my $eventHub = $self->{eventHub};
 	$self->{running} = 1;
 	while ($self->{running}) {
-    $eventBus->trigger(Arkess::Event::LOOP_START);
+    $eventBus->trigger(Arkess::Event::TICK);
 		my $input = $term->prompt();
 		$term->process($input);
     $eventHub->processEvents();

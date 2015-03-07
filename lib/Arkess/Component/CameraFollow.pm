@@ -13,7 +13,8 @@ use constant SHOOTER => 'shooter';
 sub requires {
   return [
     'Arkess::Component::Mobile',
-    'Arkess::Component::Observable'
+    'Arkess::Component::Observable',
+    'Arkess::Component::Renderable' # (x, y) coordinates relative to the screen
   ];
 }
 
@@ -29,7 +30,7 @@ sub initialize {
 }
 
 sub setPriority {
-  return 1;
+  return -1; # Needs to be lower than renderable
 }
 
 sub afterInstall {
@@ -64,32 +65,32 @@ sub _setupScrollTransitions {
     my ($bwidthFull, $bheightFull) = $background->getImageDimensions();
     my ($bx, $by) = $background->getCoordinates();
 
-    if ($bx >= 0 && $x <= 0) {
+    if ($bx >= 0 && $x <= 0) { # Keep entity from going out of bounds left
       $cob->setX(0);
     }
-    elsif ($bx <= ($bwidthFull-$bwidth)*-1 && $x >= $bwidth) {
+    elsif ($bx <= ($bwidthFull-$bwidth)*-1 && $x >= $bwidth) { # Keep entity from going out of bounds right
       $cob->setX($bwidth-1);
     }
-    elsif ($x < 0 && $bx <= 0) {
+    elsif ($x < 0 && $bx <= 0) { # Transition for cob moving left off of screen
       $background->move(Arkess::Direction::RIGHT, $bwidth);
       $cob->setX($bwidth-1);
     }
-    elsif ($x > $bwidth-1) {
+    elsif ($x > $bwidth-1) { # Transition for cob moving right off of screen
       $background->move(Arkess::Direction::LEFT, $bwidth);
       $cob->setX(0);
     }
 
-    if ($by >= 0 && $y <= 0) {
+    if ($by >= 0 && $y <= 0) { # Keep entity from going out of bounds top
       $cob->setY(0);
     }
-    elsif ($by <= ($bheightFull-$bheight)*-1 && $y >= $bheight) {
+    elsif ($by <= ($bheightFull-$bheight)*-1 && $y >= $bheight) { # Keep entity from going out of bounds bottom
       $cob->setY($bheight-1);
     }
-    elsif ($y < 0 && $by <= 0) {
+    elsif ($y < 0 && $by <= 0) { # Transition for cob moving up off of screen
       $background->move(Arkess::Direction::DOWN, $bheight);
       $cob->setY($bheight-1);
     }
-    elsif ($y > $bheight-1) {
+    elsif ($y > $bheight-1) { # Transition for cob moving down off of screen
       $background->move(Arkess::Direction::UP, $bheight);
       $cob->setY(0);
     }
@@ -141,13 +142,11 @@ sub _setupShooterTransitions {
       $cob->setY(0);
     }
     elsif ($y < 0 && $by <= 0) {
-print "MOVING BG DOWN\n";
       $background->move(Arkess::Direction::DOWN, $bheight);
       $cob->setY($bheight-1);
     }
 
     elsif ($y > $bheight-1) {
-print "MOVING BG UP\n";
       $background->move(Arkess::Direction::UP, $bheight);
       $cob->setY(0);
     }
@@ -157,5 +156,5 @@ print "MOVING BG UP\n";
 1;
 __END__
 =head1 NAME
-Arkess::Component::CameraFollow - Keep a mobile entity in the center of the
-screen
+Arkess::Component::CameraFollow - Use a scrollable screen which tracks an entity
+using multiple follow types.

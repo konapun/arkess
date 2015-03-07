@@ -7,7 +7,6 @@ sub requires {
   return [
     'Arkess::Component::Getter',
     'Arkess::Component::Observable',
-    'Arkess::Component::Positioned'
   ];
 }
 
@@ -15,6 +14,8 @@ sub initialize {
   my ($self, $renderer, $zlayer) = @_;
 
   $self->{renderer} = $renderer;
+  $self->{x} = 0;
+  $self->{y} = 0;
   $self->{zlayer} = defined $zlayer ? $zlayer : 1;
   $self->{width} = 160;
   $self->{height} = 160;
@@ -37,6 +38,39 @@ sub exportMethods {
       $self->{zlayer} = $layer;
     },
 
+    setScreenX => sub {
+      my ($cob, $x) = @_;
+
+      $self->{x} = $x;
+    },
+
+    setScreenY => sub {
+      my ($cob, $y) = @_;
+
+      $self->{y} = $y;
+    },
+
+    getScreenX => sub {
+      return $self->{x};
+    },
+
+    getScreenY => sub {
+      return $self->{y};
+    },
+
+    setScreenCoordinates => sub {
+      my ($cob, $x, $y) = @_;
+
+      $cob->setScreenX($x);
+      $cob->setScreenY($y);
+    },
+
+    getScreenCoordinates => sub {
+      my $cob = shift;
+
+      return [$cob->getScreenX(), $cob->getScreenY()];
+    },
+
     getZLayer => sub {
       return $self->{zlayer};
     },
@@ -55,6 +89,14 @@ sub exportMethods {
       # pass - not implemented here
     }
 
+  }
+}
+
+sub afterInstall {
+  my ($self, $cob) = @_;
+
+  if ($cob->hasMethod('getCoordinates')) {
+    $cob->setScreenCoordinates($cob->getX(), $cob->getY()); # Make screen coords same as internal coords if they exist
   }
 }
 

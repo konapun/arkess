@@ -49,10 +49,6 @@ my $house = $game->createEntity({
 #  print "Player collided with house!\n";
 #});
 
-$player->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
-  print "Pressed space\n";
-  $widget->toggleVisibility();
-});
 $player->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   print "Advancing page\n";
   $textbox->displayNextPage();
@@ -66,23 +62,24 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_2, Arkess::IO::Keyboard:
 });
 
 $beetle->addAutomation('cycleSquare', sub {
-  my $event;
   print "Moving to 0,400\n";
-  $event = $beetle->moveTo(0, 400, sub {
+  $beetle->moveTo(0, 400, sub {
     print "Moving to 400,400\n";
     $beetle->moveTo(400, 400, sub {
       print "Moving to 400,0\n";
       $beetle->moveTo(400, 0, sub {
         print "Moving to 0,0\n";
         $beetle->moveTo(0, 0, sub {
-          print "Unregistering event\n";
-          #$event->unregister();
+          print "DONE\n";
         });
       });
     });
   });
 });
-$beetle->playAutomation('cycleSquare'); # TODO: Loop animation
+$player->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  print "Pressed space\n";
+  $beetle->playAutomation('cycleSquare');
+});
 
 $game->setWindowOptions({
   title  => 'Sample RPG',

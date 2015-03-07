@@ -58,6 +58,7 @@ sub exportMethods {
       if (!$cob->isAutomationPlaying($name)) {
         $self->{automations}->{$name}->{cancelable} = $cancelable;
         $cancelable = $self->{automations}->{$name}->{code}->($cob);
+        print "Got cancelable $cancelable\n";
       }
       else { # get stoppable handle
         # TODO
@@ -100,7 +101,6 @@ sub exportMethods {
       $event = $cob->on(Arkess::Event::BEFORE_RENDER, sub {
         my ($cobX, $cobY) = $cob->getCoordinates();
 
-#        print "Moving cob at ($cobX, $cobY) to ($x, $y)\n";
         if ($cobX < $x) {
           $cob->move(Arkess::Direction::RIGHT);
         }
@@ -108,16 +108,14 @@ sub exportMethods {
           $cob->move(Arkess::Direction::LEFT);
         }
         if ($cobY < $y) {
-          print "$self; xMOVING DOWN (from $cobY to $y)\n";
           $cob->move(Arkess::Direction::DOWN);
         }
         elsif ($cobY > $y) {
-          print "$self: MOVING UP (from $cobY to $y)\n";
           $cob->move(Arkess::Direction::UP);
         }
 
+        ($cobX, $cobY) = $cob->getCoordinates(); # Recheck coords after ops
         if ($cobX == $x && $cobY == $y) {
-          print "UNREGISTERING EVENT\n";
           $event->unregister();
           $cb->();
         }

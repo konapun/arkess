@@ -8,7 +8,6 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Renderable',
-    'Arkess::Component::Positioned',
     'Arkess::Component::2D',
     'Arkess::Component::Timed',
     'Arkess::Component::Observable'
@@ -55,7 +54,7 @@ sub exportMethods {
       my $renderer = $cob->getRenderer();
 
       $self->{frame} = 0 if $self->{frame} >= $self->{frames};
-      $self->{images}->[$self->{frame}]->blit($renderer, undef, [$cob->getX(), $cob->getY()]);
+      $self->{images}->[$self->{frame}]->blit($renderer, undef, [$cob->getScreenX(), $cob->getScreenY()]);
     }
 
   };

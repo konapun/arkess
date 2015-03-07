@@ -9,7 +9,7 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Positioned', # To get/set (x, y)
+    'Arkess::Component::Renderable', # To get/set screen (x, y)
     'Arkess::Component::2D' # To get width/height
   ];
 }
@@ -63,7 +63,7 @@ sub _configureController {
     # Check to see if click is on a cob with drag and drop enabled
     my $clickX = $event->button_x;
     my $clickY = $event->button_y;
-    my ($x, $y) = $cob->getCoordinates();
+    my ($x, $y) = $cob->getScreenCoordinates();
     my ($width, $height) = $cob->getDimensions();
     print "Clicked ($clickX, $clickY), cob is at ($x, $y) with dimensions ($width, $height)\n";
     if ($clickX >= $x && $clickX < $x + $width && $clickY >= $y && $clickY < $y + $height) { # click was within bounds
@@ -80,7 +80,7 @@ sub _configureController {
       my $clickY = $event->button_y;
       my ($width, $height) = $cob->getDimensions();
 
-      $cob->setCoordinates($clickX+$width/2, $clickY+$height/2);
+      $cob->setScreenCoordinates($clickX+$width/2, $clickY+$height/2);
     }
   });
 

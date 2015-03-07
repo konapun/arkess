@@ -7,7 +7,6 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Renderable',
-    'Arkess::Component::Positioned',
     'Arkess::Component::2D'
   ];
 }
@@ -25,7 +24,7 @@ sub initialize {
 
   $self->{opts} = $opts;
   $self->{visible} = defined $opts->{visible} ? $opts->{visible} : 1;
-  $self->{coords} = [$opts->{x}, $opts->{y}];
+  $self->{coords} = [$opts->{x}, $opts->{y}]; # FIXME: Use coords exposed by renderable instead
   $self->{text} = $opts->{text};
   $self->{widget} = SDLx::Surface->new(
     width  => $opts->{width},

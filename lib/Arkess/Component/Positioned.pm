@@ -19,7 +19,7 @@ sub exportMethods {
 
     setCoordinates => sub {
       my ($cob, $x, $y) = @_;
-      
+
       $self->{x} = $x;
       $self->{y} = $y;
     },
@@ -65,4 +65,5 @@ sub exportMethods {
 __END__
 =head1 NAME
 Arkess::Component::Positioned - A component for entities who occupy space in the
-game world
+game world. Note that this component does not provide screen coordinates; those
+are contained in the Arkess::Component::Renderable package

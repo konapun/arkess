@@ -9,7 +9,7 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Positioned', # To get/set (x, y)
+    'Arkess::Component::Renderable', # To get/set (x, y)
     'Arkess::Component::Mobile',
     'Arkess::Component::2D' # To get width/height
   ];
@@ -65,7 +65,7 @@ sub _configureController {
     my $clickY = $event->button_y;
     my ($x, $y) = $cob->getCoordinates();
     my ($width, $height) = $cob->getDimensions();
-    $cob->setCoordinates($clickX, $clickY); # FIXME
+    $cob->setScreenCoordinates($clickX, $clickY); # FIXME
   });
 }
 

@@ -13,14 +13,16 @@ use constant SHOOTER => 'shooter';
 sub requires {
   return [
     'Arkess::Component::Mobile',
-    'Arkess::Component::Observable'
+    'Arkess::Component::Observable',
+    'Arkess::Component::Positioned' # Absolute (x, y) coordinates in terms of game positions
+    'Renderable' # (x, y) coordinates relative to the screen
   ];
 }
 
 sub initialize {
   my ($self, $background, $followType) = @_; # TODO: Export follow types
 
-  die "Must specify background" unless $background; # TODO: locate background automatically by looking through runtime's components?
+  die "Must specify background" unless $background; # TODO: locate background automatically by looking through runtime's entities?
   my $component = Arkess::Component::Mobile->new();
   $background->installComponent($component); # need to install component directly since extend will only give a copy
   $followType ||= 'scroll'; # when the followed character becomes out of bounds, transition the whole screen

@@ -10,7 +10,6 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Renderable',
-    'Arkess::Component::Positioned',
     'Arkess::Component::2D'
   ];
 }
@@ -64,7 +63,7 @@ sub exportMethods {
       my $cob = shift;
       my $renderer = $cob->getRenderer();
 
-      $self->{image}->blit($renderer, undef, [$cob->getCoordinates()]);
+      $self->{image}->blit($renderer, undef, [$cob->getScreenCoordinates()]);
     }
 
   };

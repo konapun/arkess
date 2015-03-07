@@ -5,7 +5,6 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::Positioned',
     'Arkess::Component::2D',
     'Arkess::Component::Renderable'
   ];
@@ -28,7 +27,7 @@ sub afterInstall {
   my ($self, $cob) = @_;
 
   my ($x, $y, $width, $height) = @{$self->{dimensions}};
-  $cob->setCoordinates($x, $y);
+  $cob->setScreenCoordinates($x, $y);
   $cob->setDimensions($width, $height);
 }
 
@@ -47,7 +46,7 @@ sub exportMethods {
       my $cob = shift;
 
       my $app = $cob->getRenderer();
-      $app->draw_rect([$cob->getX(), $cob->getY(), $cob->getWidth(), $cob->getHeight()], $self->{color});
+      $app->draw_rect([$cob->getScreenX(), $cob->getScreenY(), $cob->getWidth(), $cob->getHeight()], $self->{color});
     }
 
   };

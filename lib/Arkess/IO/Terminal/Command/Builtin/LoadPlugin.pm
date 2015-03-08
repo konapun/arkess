@@ -1,15 +1,7 @@
 package Arkess::IO::Terminal::Command::Builtin::LoadPlugin;
 
 use strict;
-
-sub new {
-  my $package = shift;
-  my $shell = shift;
-
-  return bless {
-    shell => $shell,
-  }, $package;
-}
+use base qw(Arkess::IO::Terminal::Command::Builtin);
 
 sub registersAs {
   return 'load-plugin';
@@ -18,7 +10,7 @@ sub registersAs {
 sub execute {
   my ($self, $plugin) = @_;
 
-  $self->{shell}->loadPlugin($plugin);
+  $self->_getShell()->loadPlugin($plugin);
   return 1;
 }
 

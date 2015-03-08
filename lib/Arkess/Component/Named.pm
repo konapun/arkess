@@ -20,6 +20,12 @@ sub exportMethods {
 
   return {
 
+    setName => sub {
+      my ($cob, $name) = @_;
+
+      $self->{name} = $name;
+    },
+
     getName => sub {
       return $self->{name};
     }

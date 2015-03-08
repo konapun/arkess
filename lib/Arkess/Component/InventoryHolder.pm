@@ -23,6 +23,12 @@ sub exportMethods {
       return 1;
     },
 
+    hasInInventory => sub {
+      my ($cob, $name) = @_;
+
+      # TODO
+    },
+
     listInventory => sub {
       return @{$self->{inventory}};
     },

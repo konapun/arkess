@@ -4,15 +4,7 @@ package Arkess::IO::Terminal::Command::Builtin::Exit;
 #
 
 use strict;
-
-sub new {
-	my $package = shift;
-	my $shell = shift;
-
-	return bless {
-		shell => $shell,
-	}, $package;
-}
+use base qw(Arkess::IO::Terminal::Command::Builtin);
 
 sub registersAs {
 	return 'exit';

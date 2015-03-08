@@ -4,15 +4,7 @@ package Arkess::IO::Terminal::Command::Builtin::Help;
 #
 
 use strict;
-
-sub new {
-	my $package = shift;
-	my $shell = shift;
-
-	return bless {
-		shell => $shell,
-	}, $package;
-}
+use base qw(Arkess::IO::Terminal::Command::Builtin);
 
 sub registersAs {
 	return 'help';
@@ -28,8 +20,8 @@ sub _listCommands {
 	my $self = shift;
 
 	print "Available commands are:\n";
-	my $shell = $self->{shell};
-	foreach my $builtin (@{$shell->{builtins}}) {
+	my $shell = $self->_getShell();
+	foreach my $builtin (@{$shell->{builtins}}) { # FIXME don't call it this way
 		print "\t" . $builtin->registersAs() . "\n";
 	}
 	foreach my $action (keys %{$shell->getPlayer()->getActions()}) {
@@ -41,8 +33,8 @@ sub _listCommands {
 sub _describeCommand {
 	my ($self, $command) = @_;
 
-	my $shell = $self->{shell};
-	foreach my $builtin (@{$shell->{builtins}}) {
+	my $shell = $self->_getShell();
+	foreach my $builtin (@{$shell->{builtins}}) { # FIXME same
 		my $name = $builtin->registersAs();
 		if ($name eq $command) {
 			print "FOUND\n";

@@ -11,6 +11,12 @@ sub requires {
   ];
 }
 
+sub initialize {
+  my ($self, $useCompassDirections) = @_;
+
+  $self->{compass} = defined $useCompassDirections ? $useCompassDirections : 0; # Report directions as up, down, etc. rather than north, south by default
+}
+
 sub exportMethods {
   return {
 
@@ -19,7 +25,7 @@ sub exportMethods {
 
       my $tile = $cob->getPosition();
       if ($tile && $tile->hasAttribute('describable')) {
-        print "You are in " . $tile->getDescription() . "\n"; # Current location
+        print "You are in " . lcfirst $tile->getDescription() . "\n"; # Current location
 
         my $printedHeader = 0;
         my $entities = $tile->getEntities();
@@ -36,10 +42,20 @@ sub exportMethods {
           }
         }
 
-        print "To the north you see " . $tile->getLink(UP)->getDescription() . "\n" if ($tile->hasLink(UP));
-        print "To the west you see " . $tile->getLink(LEFT)->getDescription() . "\n" if ($tile->hasLink(LEFT));
-        print "To the east you see " . $tile->getLink(RIGHT)->getDescription() . "\n" if ($tile->hasLink(RIGHT));
-        print "To the south you see " . $tile->getLink(DOWN)->getDescription() . "\n" if ($tile->hasLink(DOWN));
+        my $north = $tile->getLink(UP);
+        my $west = $tile->getLink(LEFT);
+        my $east = $tile->getLink(RIGHT);
+        my $south = $tile->getLink(DOWN);
+
+        my $northDescription = lcfirst($north->getShortDescription() || $north->getDescription()) if defined $north;
+        my $westDescription = lcfirst($west->getShortDescription() || $west->getDescription()) if defined $west;
+        my $eastDescription = lcfirst($east->getShortDescription() || $east->getDescription()) if defined $east;
+        my $southDescription = lcfirst($south->getShortDescription() || $south->getDescription()) if defined $south;
+
+        print "To the north you see $northDescription\n" if ($tile->hasLink(UP));
+        print "To the west you see $westDescription\n" if ($tile->hasLink(LEFT));
+        print "To the east you see $eastDescription\n" if ($tile->hasLink(RIGHT));
+        print "To the south you see $southDescription\n" if ($tile->hasLink(DOWN));
       }
     }
   }

@@ -4,9 +4,10 @@ use strict;
 use base qw(Arkess::Component);
 
 sub initialize {
-  my ($self, $description) = @_;
+  my ($self, $description, $shortDescription) = @_;
 
   $self->{description} = $description;
+  $self->{shortDescription} = $shortDescription;
 }
 
 sub exportAttributes {
@@ -21,13 +22,23 @@ sub exportMethods {
   return {
 
     setDescription => sub {
-      my ($self, $desc) = @_;
+      my ($cob, $desc) = @_;
 
       $self->{description} = $desc;
     },
 
+    setShortDescription => sub {
+      my ($cob, $desc) = @_;
+
+      $self->{shortDescription} = $desc;
+    },
+
     getDescription => sub {
       return $self->{description};
+    },
+
+    getShortDescription => sub {
+      return $self->{shortDescription};
     }
 
   };

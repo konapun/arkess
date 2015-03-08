@@ -27,7 +27,9 @@ WriteMakefile(
     'Image::ParseGIF' => '0.2',
     'Color::Rgb' => '1.4',
     'GD' => '2.56',
-    'threads' => '1.96'
+    'threads' => '1.96',
+    'Curses' => '1.32', # need curses.h provided by libncurses5-dev on Ubuntu
+    'Curses::UI' => '1.32'
   },
   EXE_FILES => {
     # TODO

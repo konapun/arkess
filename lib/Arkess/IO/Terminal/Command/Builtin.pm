@@ -1,24 +1,29 @@
 package Arkess::IO::Terminal::Command::Builtin;
 #
-# Define builtins at runtime
+# Abstract class for builtin commands
 #
+
+use strict;
 
 sub new {
 	my $package = shift;
-	my ($name, $sub) = @_;
+	my $shell = shift;
 
 	return bless {
-		name => $name,
-		execute => $sub,
+		shell => $shell
 	}, $package;
 }
 
 sub registersAs {
-	return shift->{name};
+	die "Builtin command must provide an implementation for `registersAs`";
 }
 
 sub execute {
-	return shift->{execute}->(@_);
+	die "Builtin command must provide an implementation for `execute`";
+}
+
+sub _getShell {
+	return shift->{shell};
 }
 
 1;

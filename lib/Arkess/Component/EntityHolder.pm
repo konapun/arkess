@@ -7,7 +7,8 @@ use Data::Dumper;
 
 sub requires {
   return [
-    'Arkess::Component::Getter'
+    'Arkess::Component::Getter',
+    'Arkess::Component::Observable'
   ];
 }
 
@@ -56,8 +57,9 @@ sub exportMethods {
 
     addEntity => sub {
       my ($cob, $entity) = @_;
-      
+
       push(@{$self->{entities}}, $entity);
+      $cob->trigger('addEntity', $entity); # FIXME should happen automatically
     }
 
   }

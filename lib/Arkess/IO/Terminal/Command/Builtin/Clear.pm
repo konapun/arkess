@@ -4,15 +4,14 @@ package Arkess::IO::Terminal::Command::Builtin::Clear;
 #
 
 use strict;
+use base qw(Arkess::IO::Terminal::Command::Builtin);
 
 sub new {
 	my $package = shift;
-	my $shell = shift;
 
-	return bless {
-		shell => $shell,
-		lines => 60,
-	}, $package;
+	my $self = $package->SUPER::new(@_);
+	$self->{lines} = 60;
+	return $self;
 }
 
 sub registersAs {

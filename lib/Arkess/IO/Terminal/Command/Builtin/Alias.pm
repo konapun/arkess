@@ -4,16 +4,7 @@ package Arkess::IO::Terminal::Command::Builtin::Alias;
 #
 
 use strict;
-use Arkess::IO::Terminal::Command::Builtin;
-
-sub new {
-	my $package = shift;
-	my $shell = shift;
-
-	return bless {
-		shell => $shell,
-	}, $package;
-}
+use base qw(Arkess::IO::Terminal::Command::Builtin);
 
 sub registersAs {
 	return 'alias';
@@ -28,7 +19,7 @@ sub execute {
 		return 0;
 	}
 
-	my $shell = $self->{shell};
+	my $shell = $self->_getShell();
 	foreach my $builtin (@{$shell->{builtins}}) {
 		if ($builtin->registersAs() eq $original) {
 			push(@{$shell->{builtins}}, Arkess::IO::Terminal::Command::Builtin->new($alias, sub {

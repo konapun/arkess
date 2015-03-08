@@ -1,6 +1,7 @@
 package AutumnDay::Character;
 
 use strict;
+use Arkess::Direction;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -22,6 +23,18 @@ sub afterInstall {
   });
   $cob->addAction('look', sub {
     return $cob->look(@_);
+  });
+  $cob->addAction('w', sub {
+    return $cob->move(UP);
+  });
+  $cob->addAction('a', sub {
+    return $cob->move(LEFT);
+  });
+  $cob->addAction('s', sub {
+    return $cob->move(DOWN);
+  });
+  $cob->addAction('d', sub {
+    return $cob->move(RIGHT);
   });
   $cob->addAction('take', sub {
     my $object = lc shift;

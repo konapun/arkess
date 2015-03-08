@@ -18,6 +18,7 @@ sub exportMethods {
     addToInventory => sub  {
       my ($cob, $item) = @_;
 
+      return 0 unless $item->hasAttribute('takeable');
       return 0 if (defined $self->{max} && scalar(@{$self->{inventory}}) > $self->{max});
       push(@{$self->{inventory}}, $item);
       return 1;
@@ -48,6 +49,7 @@ sub exportMethods {
     clearInventory => sub {
       $self->{inventory} = []
     }
+
   };
 }
 

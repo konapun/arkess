@@ -45,18 +45,34 @@ sub create {
     'Arkess::Component::Named' => 'gourd',
     'Arkess::Component::Describable' => "A curved, warty gourd. The bottom is a dome of dark green which fades upwards into a light orange as the neck tapers."
   });
+  $cider->addAction('drink', sub {
+    #if ($cider->)
+    $cider->destroy();
+  });
 
   # Add items to rooms
   $shelves->addEntity($cider);
   $shelves->addEntity($gourd);
 
   # Events
+  my $paid = 0;
   $entrance->on('addEntity', sub {
     my $entity = shift;
 
     my @inventory = $entity->listInventory();
     if (scalar @inventory > 0) {
       print "You gotsta pay for that\n";
+    }
+  });
+  $entrance->on('setLink', sub {
+    my $direction = shift;
+
+    if ($direction eq LEFT) {
+      $entrance->getLink(LEFT)->on('addEntity', sub {
+        if (!$paid) {
+          print "Did you steal that?\n";
+        }
+      });
     }
   });
 

@@ -3,6 +3,12 @@ package Arkess::Component::Item;
 use strict;
 use base qw(Arkess::Component);
 
+sub requires {
+  return [
+    'Arkess::Component::Takeable'
+  ];
+}
+
 sub initialize {
   my ($self, $holder) = @_;
 
@@ -27,13 +33,14 @@ sub exportMethods {
     getHolder => sub {
       return $self->{holder};
     },
-    
+
     use => sub {
       die "Arkess::Component::Item does not implement `use`";
     }
 
   }
 }
+
 1;
 
 __END__

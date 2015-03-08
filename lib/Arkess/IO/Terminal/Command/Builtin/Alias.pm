@@ -4,6 +4,7 @@ package Arkess::IO::Terminal::Command::Builtin::Alias;
 #
 
 use strict;
+use Arkess::IO::Terminal::Command::DefinedBuiltin;
 use base qw(Arkess::IO::Terminal::Command::Builtin);
 
 sub registersAs {
@@ -22,7 +23,7 @@ sub execute {
 	my $shell = $self->_getShell();
 	foreach my $builtin (@{$shell->{builtins}}) {
 		if ($builtin->registersAs() eq $original) {
-			push(@{$shell->{builtins}}, Arkess::IO::Terminal::Command::Builtin->new($alias, sub {
+			push(@{$shell->{builtins}}, Arkess::IO::Terminal::Command::DefinedBuiltin->new($alias, sub {
 				return $builtin->execute(@_);
 			}));
 			return 1;

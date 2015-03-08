@@ -15,6 +15,7 @@ my $map = AutumnDay::Map::buildMap();
 $kid->setPosition($map);
 
 $game->addEntity($kid);
-my $terminal = $game->createController($kid)->autobind();
-
+my $terminal = $game->createController($kid);
+$terminal->autobind();
+$terminal->process('alias exit quit');
 $game->run();

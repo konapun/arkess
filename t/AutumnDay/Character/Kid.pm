@@ -9,6 +9,8 @@ sub create {
   );
   $kid->setName('Kid');
 
+  # Give items
+  
   return $kid;
 }
 

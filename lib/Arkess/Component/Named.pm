@@ -15,6 +15,12 @@ sub initialize {
   $self->{name} = $name;
 }
 
+sub exportAttributes {
+  return {
+    named => 1
+  };
+}
+
 sub exportMethods {
   my $self = shift;
 

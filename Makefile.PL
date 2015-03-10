@@ -29,7 +29,8 @@ WriteMakefile(
     'GD' => '2.56',
     'threads' => '1.96',
     'Curses' => '1.32', # need curses.h provided by libncurses5-dev on Ubuntu
-    'Curses::UI' => '1.32'
+    'Curses::UI' => '1.32',
+    'Scalar::Util::Numeric' => '0.40'
   },
   EXE_FILES => {
     # TODO

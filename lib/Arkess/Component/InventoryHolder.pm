@@ -21,6 +21,7 @@ sub exportMethods {
       return 0 unless $item->hasAttribute('takeable');
       return 0 if (defined $self->{max} && scalar(@{$self->{inventory}}) > $self->{max});
       push(@{$self->{inventory}}, $item);
+      $item->setHolder($cob);
       return 1;
     },
 
@@ -34,12 +35,19 @@ sub exportMethods {
       return @{$self->{inventory}};
     },
 
+    getInventoryItem => sub {
+      my ($cob, $item) = @_;
+
+      # TODO
+    },
+
     removeFromInventory => sub {
       my ($cob, $item) = @_;
 
       my $index = 0;
       foreach my $contained (@{$self->{inventory}}) {
         if ($contained eq $item) {
+          $item->removeHolder();
           return splice(@{$self->{inventory}}, $index, 1);
         }
         $index++;

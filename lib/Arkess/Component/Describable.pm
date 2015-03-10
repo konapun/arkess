@@ -22,9 +22,10 @@ sub exportMethods {
   return {
 
     setDescription => sub {
-      my ($cob, $desc) = @_;
+      my ($cob, $longDesc, $shortDesc) = @_;
 
-      $self->{description} = $desc;
+      $self->{description} = $longDesc;
+      $cob->setShortDescription($shortDesc) if defined $shortDesc;
     },
 
     setShortDescription => sub {

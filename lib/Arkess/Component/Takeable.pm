@@ -18,6 +18,25 @@ sub exportAttributes {
 sub exportMethods {
   my $self = shift;
 
-  # TODO
+  return {
+
+    setHolder => sub {
+      my ($cob, $holder) = @_;
+
+      $self->{holder} = $holder;
+    },
+
+    removeHolder => sub {
+      $self->{holder} = undef;
+    },
+
+    getHolder => sub {
+      return $self->{holder};
+    },
+
+    isBeingHeld => sub {
+      return defined $self->{holder};
+    }
+  }
 }
 1;

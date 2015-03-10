@@ -13,4 +13,22 @@ sub requires {
   };
 }
 
+sub setPriority {
+  return 2;
+}
+
+sub exportMethods {
+  return {
+
+    getPosition => sub {
+      my $cob = shift;
+
+      if ($cob->isBeingHeld()) {
+        return $cob->getHolder()->getPosition();
+      }
+    }
+
+  };
+}
+
 1;

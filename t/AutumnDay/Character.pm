@@ -11,7 +11,8 @@ sub requires {
     'Arkess::Component::EntityPositioned',
     'Arkess::Component::Actioned',
     'Arkess::Component::InventoryHolder',
-    'Arkess::Component::Mortal'
+    'Arkess::Component::Mortal',
+    'Arkess::Component::Conversable'
   ];
 }
 
@@ -102,6 +103,17 @@ sub afterInstall {
       }
     }
     print "Couldn't locate actioned item for proxy\n";
+  });
+  $cob->addAction('talk', sub {
+    my ($blank, $object) = @_;
+
+    foreach my $entity ($cob->getPosition()->listEntities()) {
+      unless ($entity eq $cob) {
+        if ($entity->hasAttribute('conversable') && $entity->hasAttribute('named') && lc($entity->getName()) eq $object) {
+          $entity->talkTo($cob->getName());
+        }
+      }
+    }
   });
 }
 1;

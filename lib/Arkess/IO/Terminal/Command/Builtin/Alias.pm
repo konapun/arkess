@@ -46,4 +46,8 @@ sub execute {
 	return 0;
 }
 
+sub getDescription {
+	return "Aliases one command to another";
+}
+
 1;

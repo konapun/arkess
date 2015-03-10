@@ -16,8 +16,8 @@ sub create {
   # Build the rooms
   my $tile1 = $tile->extend({
     'Arkess::Component::Describable' => [
-      'A dusty parking lot 1.',
-      'A dusty parking lot 1.'
+      'The north side of the parking lot. About 70% of the lot is full',
+      'The north side of the parking lot.'
     ]
   });
   my $tile2 = $tile->extend({

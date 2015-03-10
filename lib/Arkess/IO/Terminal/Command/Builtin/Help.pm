@@ -16,6 +16,10 @@ sub execute {
 	return defined $command ? $self->_describeCommand($command) : $self->_listCommands();
 }
 
+sub getDescription {
+	return "Lists all available actions or gives the description of an action";
+}
+
 sub _listCommands {
 	my $self = shift;
 
@@ -30,20 +34,22 @@ sub _listCommands {
 	return 1;
 }
 
-sub _describeCommand {
+sub _describeCommand { # show actions for a command
 	my ($self, $command) = @_;
 
 	my $shell = $self->_getShell();
 	foreach my $builtin (@{$shell->{builtins}}) { # FIXME same
 		my $name = $builtin->registersAs();
 		if ($name eq $command) {
-			print "FOUND\n";
+			my $description = $builtin->getDescription();
+			print "$command (shell builtin)\n";
+			print  "$description\n" if $description;
 			return 1;
 		}
 	}
 	foreach my $action (keys %{$shell->getPlayer()->getActions()}) {
 		if ($action eq $command) {
-			print "FOUND (action)\n";
+			print "No help available.\n";
 			return 1;
 		}
 	}

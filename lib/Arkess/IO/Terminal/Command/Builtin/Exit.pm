@@ -15,4 +15,8 @@ sub execute {
 	return 1;
 }
 
+sub getDescription {
+	return "Exits the game";
+}
+
 1;

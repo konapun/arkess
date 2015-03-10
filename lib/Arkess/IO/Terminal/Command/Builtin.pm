@@ -22,6 +22,10 @@ sub execute {
 	die "Builtin command must provide an implementation for `execute`";
 }
 
+sub getDescription {
+	return "No description available";
+}
+
 sub _getShell {
 	return shift->{shell};
 }

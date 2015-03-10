@@ -14,4 +14,8 @@ sub execute {
   return 1;
 }
 
+sub getDescription {
+  return "Loads a plugin if available";
+}
+
 1;

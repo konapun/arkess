@@ -25,4 +25,8 @@ sub execute {
 	return 1;
 }
 
+sub getDescription {
+	return "Clears the screen";
+}
+
 1;

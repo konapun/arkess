@@ -12,7 +12,8 @@ sub requires {
     'Arkess::Component::Actioned',
     'Arkess::Component::InventoryHolder',
     'Arkess::Component::Mortal',
-    'Arkess::Component::Conversable'
+    'Arkess::Component::Conversable',
+#    'AutumnDay::Character::Component::HungerMove'
   ];
 }
 
@@ -114,6 +115,10 @@ sub afterInstall {
         }
       }
     }
+  });
+  $cob->addAction('status', sub {
+    print "Name: " . $cob->getName() . "\n";
+    print "Health: " . $cob->getHP() . "\n";
   });
 }
 1;

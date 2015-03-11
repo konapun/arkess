@@ -21,22 +21,24 @@ sub afterInstall {
   my ($self, $cob) = @_;
 
   $cob->addAction('move', sub {
-    return $cob->move(@_);
+    my $status = $cob->move(@_);
+    $cob->look(1);
+    return $status;
   });
   $cob->addAction('look', sub {
-    return $cob->look(@_);
+    return $cob->look();
   });
   $cob->addAction('w', sub {
-    return $cob->move(UP);
+    return $cob->callAction('move', UP);
   });
   $cob->addAction('a', sub {
-    return $cob->move(LEFT);
+    return $cob->callAction('move', LEFT);
   });
   $cob->addAction('s', sub {
-    return $cob->move(DOWN);
+    return $cob->callAction('move', DOWN);
   });
   $cob->addAction('d', sub {
-    return $cob->move(RIGHT);
+    return $cob->callAction('move', RIGHT);
   });
   $cob->addAction('take', sub {
     my $object = lc shift;

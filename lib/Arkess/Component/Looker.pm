@@ -21,11 +21,14 @@ sub exportMethods {
   return {
 
     look => sub {
-      my $cob = shift;
+      my ($cob, $useShort) = @_;
+      $useShort = 0 unless defined $useShort;
 
       my $tile = $cob->getPosition();
       if ($tile && $tile->hasAttribute('describable')) {
-        print "You are in " . lcfirst $tile->getDescription() . "\n"; # Current location
+        my $description = $useShort ? $tile->getShortDescription() : $tile->getDescription();
+        $description = $tile->getDescription() unless defined $description;
+        print "You are in " . lcfirst $description . "\n"; # Current location
 
         my $printedHeader = 0;
         my $entities = $tile->getEntities();

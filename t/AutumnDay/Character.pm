@@ -21,7 +21,8 @@ sub afterInstall {
   my ($self, $cob) = @_;
 
   $cob->addAction('move', sub {
-    my $status = $cob->move(@_);
+    my ($self, @args) = @_;
+    my $status = $cob->move(@args);
     $cob->look(1);
     return $status;
   });
@@ -41,18 +42,25 @@ sub afterInstall {
     return $cob->callAction('move', RIGHT);
   });
   $cob->addAction('take', sub {
-    my $object = lc shift;
+    my ($self, $object) = @_;
 
-    my $tile = $cob->getPosition();
-    my @items = $tile->listEntities();
-    foreach my $item (@items) {
-      if ($item->hasMethod('getName')) {
-        if ($object eq lc($item->getName())) {
-          $tile->removeEntity($item);
-          $cob->addToInventory($item);
-        }
-      }
+    my $found = $cob->callAction('_find', $object);
+    if ($found) {
+      my $location = $found->getPosition();
+      print "Located at $location\n";
+      # TODO: Remove found from its old location
+      $cob->addToInventory($found);
     }
+
+    # my @items = $tile->listEntities();
+    # foreach my $item (@items) {
+    #   if ($item->hasMethod('getName')) {
+    #     if ($object eq lc($item->getName())) {
+    #       $tile->removeEntity($item);
+    #       $cob->addToInventory($item);
+    #     }
+    #   }
+    # }
   });
   $cob->addAction('inventory', sub {
     print "Inventory\n";
@@ -62,27 +70,36 @@ sub afterInstall {
     }
   });
   $cob->addAction('examine', sub {
-    my $object = lc shift;
+    my ($self, $object) = @_;
 
-    foreach my $item ($cob->listInventory()) { # First, examine inventory
-      if (lc $item->getName() eq $object) {
-        print $item->getDescription() . "\n";
-        return;
-      }
-    }
+    my $found = $cob->callAction('_find', $object);
+    if ($found && $found->hasAttribute('describable')) {
+      print $found->getDescription() . "\n";
+      if ($found->hasAttribute('attributed')) {
+        print "The following states are set on $object:\n";
+        $found->eachAttribute(sub {
+          my ($key, $val) = @_;
 
-    my $tile = $cob->getPosition();
-    foreach my $entity ($tile->listEntities()) {
-      if (lc $entity->getName() eq $object) {
-        print $entity->getDescription() . "\n";
-        return;
+          print "\t$key: $val\n";
+        });
       }
+      if ($found->hasAttribute('holdsEntities')) {
+        my @entities = $found->listEntitiesExcept($cob);
+        return unless @entities;
+        print "Peering at the $object you see the following:\n";
+        foreach my $entity (@entities) {
+          print "\t" . $entity->getName() . "\n" if $entity->hasAttribute('named') && $entity ne $cob;
+        }
+      }
+
+      return;
     }
 
     print "Can't locate object '$object'\n";
   });
   $cob->addAction('drop', sub {
-    my $object = lc shift;
+    my ($self, $object) = @_;
+    $object = lc $object;
 
     foreach my $item ($cob->listInventory()) {
       if (lc $item->getName() eq $object) {
@@ -95,32 +112,59 @@ sub afterInstall {
     print "Can't locate item '$object' in inventory\n";
   });
   $cob->addAction('proxy', sub { # Allow calling actions on items in inventory through player
-    my ($action, $object) = @_;
+    my ($self, $action, $object) = @_;
 
-    foreach my $item ($cob->listInventory()) {
-      if (lc $item->getName() eq $object) {
-        if ($item->hasAttribute('actioned')) {
-          $item->callAction($action);
-          return 1;
-        }
-      }
+    my $found = $cob->callAction('_find', $object);
+    if ($found && $found->hasAttribute('actioned')) {
+      $found->callAction($action);
+      return 1;
     }
     print "Couldn't locate actioned item for proxy\n";
   });
   $cob->addAction('talk', sub {
-    my ($blank, $object) = @_;
+    my ($self, $blank, $object) = @_;
 
-    foreach my $entity ($cob->getPosition()->listEntities()) {
-      unless ($entity eq $cob) {
-        if ($entity->hasAttribute('conversable') && $entity->hasAttribute('named') && lc($entity->getName()) eq $object) {
-          $entity->talkTo($cob->getName());
-        }
+    my $found = $cob->callAction('_find', $object);
+    if ($found) {
+      if ($found->hasAttribute('conversable')) {
+        $found->talkTo($cob->getName());
       }
+      else {
+        print "$object doesn't say anything\n";
+      }
+    }
+    else {
+      print "Can't locate object '$object'\n";
     }
   });
   $cob->addAction('status', sub {
     print "Name: " . $cob->getName() . "\n";
     print "Health: " . $cob->getHP() . "\n";
   });
+  $cob->addAction('_find', sub { # Locate an object based on name
+    my ($self, $object) = @_;
+    $object = lc $object;
+
+    my $tile = $cob->getPosition();
+    foreach my $item ($cob->listInventory()) { # First, check inventory
+      return $item if (lc $item->getName() eq $object);
+    }
+    foreach my $entity ($tile->listEntitiesExcept($cob)) { # Second, check entities contained in tile
+      return $entity if $entity->hasAttribute('named') && lc $entity->getName() eq $object;
+      if ($entity->hasAttribute('holdsEntities')) { # Also check for nested entities (TODO: recurse)
+        foreach my $contained ($entity->listEntities()) {
+          return $contained if $contained->hasAttribute('named') && lc $contained->getName() eq $object;
+        }
+      }
+    }
+
+    return $tile if ($tile->hasAttribute('named') && lc $tile->getName() eq $object);# Last, check the tile itself
+  });
+
+  # Events
+  $cob->on('move', sub {
+    print "MOVING!\n";
+  });
 }
+
 1;

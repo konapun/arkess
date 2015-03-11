@@ -10,16 +10,20 @@ sub require {
 }
 
 sub initialize {
-  my ($self, $hp) = @_;
+  my ($self, $max, $hp) = @_;
 
-  $hp = 10 unless defined $hp;
+  $max = 10 unless defined $max;
+  $hp = $max unless defined $hp;
+
+  die "HP ($hp) must be below max ($max)" if $hp > $max;
+  $self->{max} = $max;
   $self->{hp} = $hp;
 }
 
 sub exportAttributes {
   return {
-    hp => shift->{hp}
-  }
+    isMortal => 1
+  };
 }
 
 sub exportMethods {
@@ -46,8 +50,19 @@ sub exportMethods {
       $cob->set('hp', $hp);
       $cob->trigger('die') if $hp <= 0;
       return $hp;
+    },
+
+    # Replentish health by a given amount (refill until full otherwise)
+    refillHealth => sub {
+      my ($cob, $amount) = @_;
+
+      $amount = $self->{max} unless defined $amount;
+      my $hp = $self->{hp} + $amount;
+      $hp = $self->{max} if ($hp > $self->{max});
+      $self->{hp} = $hp;
     }
 
-  }
+  };
 }
+
 1;

@@ -13,6 +13,12 @@ sub initialize {
   }
 }
 
+sub exportAttributes {
+  return {
+    entityPositioned => 1
+  };
+}
+
 sub exportMethods {
   my $self = shift;
 
@@ -38,7 +44,6 @@ sub exportMethods {
         $self->_setPosition($cob, $tile->getLink($direction));
         $return = 1; # move succeeded
       }
-      $cob->trigger('move', $direction);
       return $return; # Couldn't move
     }
 

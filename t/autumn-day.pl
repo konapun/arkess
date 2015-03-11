@@ -10,9 +10,9 @@ use AutumnDay::Core;
 my $game = Arkess::Runtime::InteractiveFiction->new();
 
 my $kid = AutumnDay::Character::Kid::create();
-my $map = AutumnDay::Map::buildMap();
+my $map = AutumnDay::Map->new();
 
-$kid->setPosition($map);
+$kid->setPosition($map->getSpawnPoint());
 
 $game->addEntity($kid);
 my $terminal = $game->createController($kid);

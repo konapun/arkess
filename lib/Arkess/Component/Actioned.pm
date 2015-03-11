@@ -72,7 +72,7 @@ sub exportMethods {
       my ($cob, $action, @args) = @_;
 
       if ($cob->isActionEnabled($action)) {
-        return $self->{abilities}->{$action}->{action}->(@args);
+        return $self->{abilities}->{$action}->{action}->($cob, @args);
       }
     }
 

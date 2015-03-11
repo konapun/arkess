@@ -5,14 +5,9 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
+    'Arkess::Component::Named',
     'Arkess::Component::Takeable'
   ];
-}
-
-sub initialize {
-  my ($self, $holder) = @_;
-
-  $self->{holder} = $holder;
 }
 
 sub exportMethods {
@@ -20,25 +15,11 @@ sub exportMethods {
 
   return {
 
-    setHolder => sub {
-      my ($cob, $holder) = @_;
-
-      $self->{holder} = $holder;
-    },
-
-    isBeingHeld => sub {
-      return defined $self->{holder};
-    },
-
-    getHolder => sub {
-      return $self->{holder};
-    },
-
     use => sub {
       die "Arkess::Component::Item does not implement `use`";
     }
 
-  }
+  };
 }
 
 1;

@@ -9,6 +9,12 @@ sub initialize {
   $self->{attributes} = $attributes || {};
 }
 
+sub exportAttributes {
+  return {
+    attributed => 1
+  };
+}
+
 sub exportMethods {
   my $self = shift;
 
@@ -18,12 +24,6 @@ sub exportMethods {
       my ($cob, $key, $val) = @_;
 
       $self->{attributes}->{$key} = $val;
-    },
-
-    hasAttribute => sub {
-      my ($cob, $key) = @_;
-
-      return exists $self->{attributes}->{$key};
     },
 
     getAttribute => sub {
@@ -36,6 +36,15 @@ sub exportMethods {
       my ($cob, $key) = @_;
 
       delete $self->{attributes}->{$key};
+    },
+
+    eachAttribute => sub {
+      my ($cob, $sub) = @_;
+
+      foreach my $attrName (keys %{$self->{attributes}}) {
+        my $val = $self->{attributes}->{$attrName};
+        $sub->($attrName, $val);
+      }
     }
 
   };

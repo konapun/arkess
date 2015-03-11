@@ -11,11 +11,18 @@ sub requires {
   ];
 }
 
+sub setPriority { # Set a high number so this component can wrap everything else
+  return 999;
+}
+
 # (Optionally) Make runtime event bus's events observable from the Cobsy object
 sub initialize {
   my ($self, $eventBus) = @_;
 
-  $self->{events} = Arkess::Event::Bus->new();
+  $self->{events} = {
+    before => Arkess::Event::Bus->new(),
+    after  => Arkess::Event::Bus->new()
+  };
   $self->{eventBus} = $eventBus;
 }
 
@@ -34,10 +41,11 @@ sub afterInstall {
   $owner->methods->each(sub {
     my ($key, $val) = @_;
 
-    return if $key eq 'trigger' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
-    $owner->methods->set($key, sub {
+    return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
+    $owner->methods->set($key, sub { # FIXME: Don't want to rewrap things...
       my ($cob, @args) = @_;
 
+      $owner->triggerBefore($key, @args);
       my $return = $val->call(@args);
       $owner->trigger($key, $return);
       return $return;
@@ -82,14 +90,26 @@ sub exportMethods {
     on => sub {
       my ($cob, $event, $callback) = @_;
 
-      return $self->{events}->bind($event, $callback);
+      return $self->{events}->{after}->bind($event, $callback);
+    },
+
+    before => sub {
+      my ($cob, $event, $callback) = @_;
+
+      return $self->{events}->{before}->bind($event, $callback);
     },
 
     # Trigger an event with given args
     trigger => sub {
       my ($cob, $event, @args) = @_;
 
-      $self->{events}->trigger($event, @args);
+      $self->{events}->{after}->trigger($event, @args);
+    },
+
+    triggerBefore => sub {
+      my ($cob, $event, @args) = @_;
+
+      $self->{events}->{before}->trigger($event, @args);
     },
 
     # Allow this component to add new events when installing rathe rthan overwriting

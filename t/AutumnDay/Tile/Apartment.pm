@@ -6,11 +6,15 @@ use Arkess::Direction;
 use AutumnDay::Item;
 
 sub create {
+  # Prototypes
   my $tile = Arkess::Object->new([
     'AutumnDay::Tile',
   ]);
   my $item = Arkess::Object->new([
     'AutumnDay::Item'
+  ]);
+  my $fixture = Arkess::Object->new([
+    'AutumnDay::Fixture'
   ]);
 
   # Build the rooms
@@ -38,13 +42,32 @@ sub create {
       'A glass sliding door.'
     ],
     'Arkess::Component::Named' => 'door',
-#    'Arkess::Component::Attributed' => {
-#      open => 0,
-#      locked => 1
-#    },
+    'Arkess::Component::Attributed' => {
+      open => 0,
+      locked => 1
+    },
     'Arkess::Component::Actioned' => {
       open => sub {
-        print "CALLING OPEN\n";
+        my $self = shift;
+
+        if (!$self->getAttribute('locked')) {
+          $self->setAttribute('open', 1)
+        }
+      },
+      close => sub {
+        my $self = shift;
+
+        $self->setAttribute('open', 0);
+      },
+      unlock => sub {
+        my $self = shift;
+
+        $self->setAttribute('locked', 0);
+      },
+      lock => sub {
+        my $self = shift;
+
+        $self->setAttribute('locked', 1);
       }
     }
   });
@@ -109,7 +132,36 @@ sub create {
   $bedroom2->setLink(DOWN, $bedroom2Closet);
   $bedroom3->setLink(RIGHT, $bedroom3Closet);
 
-  # Add items to rooms
+  # Create items and decorations
+  my $bed = $fixture->extend({
+    'Arkess::Component::Named' => 'bed',
+    'Arkess::Component::Describable' => [
+      'A queensized bed.'
+    ]
+  });
+# $bed->acceptsActions({ sleep => sub{} });
+  my $cupboards = $fixture->extend({
+    'Arkess::Component::Named' => 'cupboards',
+    'Arkess::Component::EntityHolder' => [],
+    'Arkess::Component::Describable' => [
+      'Brown cupboards'
+    ]
+  });
+  $cupboards->addEntity($item->extend({
+    'Arkess::Component::Named' => 'cup',
+    'Arkess::Component::Describable' => [
+      'A black plastic cup'
+    ]
+  }));
+
+  # Add items and decorations to rooms
+  $kitchen->addEntity($cupboards);
+  $bedroom1->addEntity($bed);
+
+  # Add events
+  $entryway->on('addEntity', sub {
+    print "ADDING\n";
+  });
 
   return $entryway;
 }

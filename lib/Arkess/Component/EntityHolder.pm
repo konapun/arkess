@@ -35,6 +35,16 @@ sub exportMethods {
       return @{$self->{entities}};
     },
 
+    listEntitiesExcept => sub {
+      my ($cob, $except) = @_;
+
+      my @filtered;
+      foreach my $entity ($cob->listEntities()) {
+        push(@filtered, $entity) unless $entity eq $except;
+      }
+      return @filtered;
+    },
+
     getEntities => sub {
       return $self->{entities};
     },
@@ -59,7 +69,6 @@ sub exportMethods {
       my ($cob, $entity) = @_;
 
       push(@{$self->{entities}}, $entity);
-      $cob->trigger('addEntity', $entity); # FIXME should happen automatically
     }
 
   }

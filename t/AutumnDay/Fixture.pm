@@ -8,6 +8,7 @@ sub requires {
     'Arkess::Component::Named' => "(unknown item)",
     'Arkess::Component::Describable' => "(no description)",
     'Arkess::Component::Actioned' => [],
+    'Arkess::Component::EntityHolder' => []
   };
 }
 

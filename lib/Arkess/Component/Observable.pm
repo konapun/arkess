@@ -44,11 +44,22 @@ sub afterInstall {
     return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
     $owner->methods->set($key, sub { # FIXME: Don't want to rewrap things...
       my ($cob, @args) = @_;
+      my $wantarray = wantarray;
 
+      my @return;
       $owner->triggerBefore($key, @args);
-      my $return = $val->call(@args);
-      $owner->trigger($key, $return);
-      return $return;
+      unless (defined $wantarray) { # Make sure to return the wrapped sub's value in the same context it's being asked for
+        $val->call(@args);
+      }
+      elsif (!$wantarray) {
+        $return[0] = $val->call(@args);
+      }
+      else {
+        @return = $val->call(@args);
+      }
+      $owner->trigger($key, $wantarray ? @return : $return[0]);
+      return unless defined $wantarray;
+      return $wantarray ? @return : $return[0];
     });
   });
 

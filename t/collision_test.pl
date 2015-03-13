@@ -39,18 +39,19 @@ $collider3->setCollisionTag('collider3');
 $collider2->setCoordinates(200, 0);
 $collider3->setCoordinates(0, 200);
 
-$collider1->collideWith('collider2', sub {
+$collider1->onCollideWith('collider2', sub {
   print "Collider1 collided with collider2\n";
   $collider1->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
   $collider2->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
 });
-$collider1->collideWith('collider3', sub {
+$collider1->onCollideWith('collider3', sub {
   print "Collider1 collided with collider3\n";
   $collider1->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
   $collider3->setColor([int(rand(256)), int(rand(256)), int(rand(256)), 255]);
 });
 
-$collider1->uncollideWith('collider2', sub {
+$collider1->onUncollideWith('collider2', sub {
+  die "COLLIDE OFF (1 with 2)";
   print "COLLIDE OFF!\n";
 });
 

@@ -21,7 +21,8 @@ sub initialize {
   $self->{runtime} = $runtime;
   $self->{collisionTag} = $collisionTag;
   $self->{collisionEvents} = {
-    ALL => [] # default collision actions to run when no collideWith tag is given
+    ALL => [], # default collision actions to run when no collideWith tag is given
+    # all other events are added by collision tag
   };
   $self->{uncollisionEvents} = {
     ALL => [] # like above
@@ -29,7 +30,7 @@ sub initialize {
 }
 
 sub setPriority {
-  return 2; # needs a higher priority because observable needs to be loaded first
+  return 2;
 }
 
 sub afterInstall {
@@ -46,23 +47,44 @@ sub afterInstall {
         my ($width, $height) = $cob->getDimensions();
 
         foreach my $entity ($runtime->getEntities()) {
-          next if $entity == $cob;
+          next if $entity == $cob; # Don't check for collisions against self
           if ($entity->hasAttribute('collidable')) {
             my $compareTag = $entity->getCollisionTag();
             my ($x2, $y2) = $entity->getCoordinates();
             my ($width2, $height2) = $entity->getDimensions();
-            if ($x2 >= $x && $x2 <= $x + $width && $y2 >= $y && $y2 <= $y + $width) {
-              $self->{colliding} = 1; # FIXME: Do for all collisions, not just this
+            if (($y2 + $height2 >= $y && $y2 <= $y + $height)  && ($x2 + $width2 >= $x && $x2 <= $x + $width)) {
+              $self->{colliding} = 1;
+              $entity->{colliding} = 1;
 
               foreach my $callback (@{$self->{collisionEvents}->{ALL}}) {
                 $callback->($entity);
               }
-              foreach my $callback (@{$self->{collisionEvents}->{$thisTag}}) {
+              foreach my $callback (@{$entity->{collisionEvents}->{ALL}}) {
+                $callback->($self);
+              }
+              foreach my $callback (@{$entity->{collisionEvents}->{$thisTag}}) {
                 $callback->($entity);
               }
               foreach my $callback (@{$self->{collisionEvents}->{$compareTag}}) {
                 $callback->($entity);
               }
+            }
+            else { # no collision between $self and $entity
+              if ($entity->{colliding}) { # was colliding but is no longer; trigger uncollide
+                foreach my $callback (@{$entity->{uncollisionEvents}->{ALL}}) {
+                  $callback->($self);
+                }
+                foreach my $callback (@{$self->{uncollisionEvents}->{ALL}}) {
+                  $callback->($self);
+                }
+                foreach my $callback (@{$entity->{uncollisionEvents}->{$thisTag}}) {
+                  $callback->($self);
+                }
+                foreach my $callback (@{$self->{uncollisionEvents}->{$compareTag}}) {
+                  $callback->($entity);
+                }
+              }
+              $entity->{colliding} = 0;
             }
           }
         }
@@ -82,35 +104,19 @@ sub exportMethods {
 
   return {
 
-    # Callback triggered each time a collision happens
-    collide => sub {
-      my ($cob, $callback, $collisionTag) = @_;
-
-      $collisionTag = 'ALL' unless defined $collisionTag;
-      return $cob->collideWith($collisionTag, $callback);
-    },
-
+    # Set a callback to be triggered each time a collision happens
     onCollide => sub {
       my ($cob, $callback, $collisionTag) = @_;
 
       $collisionTag = 'ALL' unless defined $collisionTag;
-      return $cob->collideWith($collisionTag, $callback);
+      return $cob->onCollideWith($collisionTag, $callback);
     },
 
-    uncollide => sub {
+    onUncollide => sub {
+      my ($cob, $callback, $collisionTag) = @_;
 
-    },
-
-    collideWith => sub {
-      my ($cob, $collisionTag, $callback) = @_;
-
-      $self->{collisionEvents}->{$collisionTag} = [] unless ref $self->{collisionEvents}->{$collisionTag} eq 'ARRAY';
-      push(@{$self->{collisionEvents}->{$collisionTag}}, $callback);
-    },
-
-    uncollideWith => sub {
-      my ($cob, $collisionTag, $callback) = @_;
-
+      $collisionTag = 'ALL' unless defined $collisionTag;
+      return $cob->onUncollideWith($collisionTag, $callback);
     },
 
     onCollideWith => sub {
@@ -118,6 +124,13 @@ sub exportMethods {
 
       $self->{collisionEvents}->{$collisionTag} = [] unless ref $self->{collisionEvents}->{$collisionTag} eq 'ARRAY';
       push(@{$self->{collisionEvents}->{$collisionTag}}, $callback);
+    },
+
+    onUncollideWith => sub {
+      my  ($cob, $collisionTag, $callback) = @_;
+
+      $self->{uncollisionEvents}->{$collisionTag} = [] unless ref $self->{uncollisionEvents}->{$collisionTag} eq 'ARRAY';
+      push(@{$self->{uncollisionEvents}->{$collisionTag}}, $callback);
     },
 
     # Tag for collideWith

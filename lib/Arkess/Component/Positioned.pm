@@ -9,7 +9,6 @@ sub initialize {
 
   $self->{x} = defined $x ? $x : 0;
   $self->{y} = defined $y ? $y : 0;
-  print "Initializing at (" . $self->{x} . ", " . $self->{y} . ")\n";
   $self->{direction} = defined $direction ? $direction : Arkess::Direction::DOWN;
 }
 

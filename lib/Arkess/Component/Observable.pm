@@ -48,17 +48,13 @@ sub afterInstall {
 
       my @return;
       $owner->triggerBefore($key, @args);
-      unless (defined $wantarray) { # Make sure to return the wrapped sub's value in the same context it's being asked for
-        $val->call(@args);
-      }
-      elsif (!$wantarray) {
+      if (!$wantarray) { # Make sure to return the wrapped sub's value in the same context it's being asked for
         $return[0] = $val->call(@args);
       }
       else {
         @return = $val->call(@args);
       }
       $owner->trigger($key, $wantarray ? @return : $return[0]);
-      return unless defined $wantarray;
       return $wantarray ? @return : $return[0];
     });
   });

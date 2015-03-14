@@ -54,6 +54,9 @@ sub create {
     ]
   });
   $lockedRoom->before('addEntity', sub {
+    my $entity = shift;
+
+    print "Adding entity $entity\n";
     print "BEFORE - locked\n";
   });
 

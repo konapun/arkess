@@ -15,7 +15,7 @@ my $background = $game->createEntity({
 });
 my $player = $game->createEntity({
   'Arkess::Component::Image'      => './assets/characters/scarecrow.png',
-#  'Arkess::Component::Collidable' => [undef, 'player'],
+#  'Arkess::Component::Collidable' => 'player', # Collision tag for player
   'Arkess::Component::D4'         => [],
   'Arkess::Component::CameraFollow' => [$background, 'scroll'],
   'Arkess::Component::Audible' => {
@@ -41,9 +41,9 @@ my $textbox = $game->createEntity({
     "After this page, the box will go invisible."
   ]]
 });
-my $house = $game->createEntity({
-  'RPG::Component::House' => [20, 20]
-});
+#my $house = $game->createEntity({
+#  'RPG::Component::House' => [20, 20]
+#});
 
 #$player->onCollideWith('house', sub {
 #  print "Player collided with house!\n";

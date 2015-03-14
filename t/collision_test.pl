@@ -51,7 +51,7 @@ $collider1->onCollideWith('collider3', sub {
 });
 
 $collider1->onUncollideWith('collider2', sub {
-  die "COLLIDE OFF (1 with 2)";
+  #die "COLLIDE OFF (1 with 2)";
   print "COLLIDE OFF!\n";
 });
 

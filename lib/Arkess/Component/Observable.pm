@@ -23,6 +23,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
+  $self->{wrapped} = {};
   $self->{eventBus} = $eventBus;
 }
 
@@ -31,6 +32,7 @@ sub beforeInstall {
 
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
     $self->{events} = $owner->_getEvents();
+    $self->{wrapped} = $owner->_getWrapped();
   }
 }
 
@@ -41,8 +43,9 @@ sub afterInstall {
   $owner->methods->each(sub {
     my ($key, $val) = @_;
 
+    return if $self->_alreadyWrapped($owner, $key, $val); # Don't rewrap methods
     return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
-    $owner->methods->set($key, sub { # FIXME: Don't want to rewrap things...
+    $owner->methods->set($key, sub {
       my ($cob, @args) = @_;
       my $wantarray = wantarray;
 
@@ -122,6 +125,10 @@ sub exportMethods {
     # Allow this component to add new events when installing rathe rthan overwriting
     _getEvents => sub {
       return $self->{events};
+    },
+
+    _getWrapped => sub {
+      return $self->{wrapped};
     }
 
   };
@@ -135,6 +142,20 @@ sub _registerRuntimeEvents {
       $cob->trigger($event, @_);
     });
   }
+}
+
+sub _alreadyWrapped {
+  my ($self, $cob, $name, $value) = @_;
+
+return 0; # FIXME
+  return 1 if defined $self->{wrapped}->{$cob}->{$name};
+  $self->{wrapped}->{$cob}->{$name} = 1;
+  if ($name eq 'addEntity') {
+    print "$name:\n";
+    print "\tCob: $cob\n";
+    print "\tVal: $value\n";
+  }
+  return 0;
 }
 
 1;

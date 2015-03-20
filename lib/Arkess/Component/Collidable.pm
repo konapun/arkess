@@ -130,7 +130,7 @@ sub _registerCollisionCheckWithRuntime {
             $callback->($self);
           }
           foreach my $callback (@{$entity->{collisionEvents}->{$thisTag}}) {
-            $callback->($entity);
+            $callback->($self);
           }
           foreach my $callback (@{$self->{collisionEvents}->{$compareTag}}) {
             $callback->($entity);
@@ -142,7 +142,7 @@ sub _registerCollisionCheckWithRuntime {
               $callback->($self);
             }
             foreach my $callback (@{$self->{uncollisionEvents}->{ALL}}) {
-              $callback->($self);
+              $callback->($entity);
             }
             foreach my $callback (@{$entity->{uncollisionEvents}->{$thisTag}}) {
               $callback->($self);

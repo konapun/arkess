@@ -1,12 +1,13 @@
 package Arkess::Component::AnimatedSprite;
 
 use strict;
-use SDLx::Sprite;
-use Arkess::File::SpriteSheet::Extractor;
+use SDLx::Surface;
+use Image::Size;
 use base qw(Arkess::Component);
 
 sub requires {
   return [
+    'Arkess::Component::2D',
     'Arkess::Component::Renderable',
     'Arkess::Component::Timed',
     'Arkess::Component::Observable'
@@ -14,15 +15,16 @@ sub requires {
 }
 
 sub initialize {
-  my ($self, $src, $interval, $spritesheetBackgroundColor) = @_;
+  my ($self, $src, $dimensions, $interval) = @_;
 
-  $self->{sprites} = $self->_loadSpriteSheet($src, $spritesheetBackgroundColor); # Individual sprites, loaded from sprite sheet and referred to by their 2D coords
+  die "Requires sprite source, dimensions, and interval" unless defined $interval;
+  $self->{sprite} = SDLx::Surface->load($src) or die $!;
   $self->{activeSequence} = undef;
-
   $self->{interval} = $interval;
   $self->{frame} = 0; # specific frame within animation
-  $self->{sprite} = undef; # specific sprite to be rendered in the current frame
-die "DIED ON PURPOSE";
+  $self->{animations} = {};
+
+  $self->_getSpriteDimensions($src, $dimensions);
 }
 
 sub exportMethods {
@@ -35,10 +37,23 @@ sub exportMethods {
 
       # TODO: Check frames bounds
       $self->{animations}->{$name} = $frames;
+      $self->{activeSequence} = $name unless defined $self->{activeSequence};
+    },
+
+    addAnimationSequences => sub {
+      my ($cob, $sequences) = @_;
+
+      foreach my $name (keys %$sequences) {
+        $cob->addAnimationSequence($name, $sequences->{$name});
+      }
     },
 
     getCurrentSequence => sub {
       return $self->{activeSequence};
+    },
+
+    getCurrentAnimationFrame => sub {
+      return $self->{frame};
     },
 
     setSequence => sub {
@@ -53,8 +68,13 @@ sub exportMethods {
     render => sub {
       my $cob = shift;
       my $renderer = $cob->getRenderer();
+      use Data::Dumper;
 
-      $self->{frame}->blit($renderer, undef, [$cob->getX(), $cob->getY()]);
+      my $width = $self->{width};
+      my $height = $self->{height};
+      my ($y, $x) = @{$self->{animations}->{$self->{activeSequence}}->[$self->{frame}]};
+      print "[" . ($x*$width) . ", " . ($y*$height) . ", $width, $height]\n";
+      $self->{sprite}->blit($renderer, SDL::Rect->new($x*$width, $y*$height, $width, $height), [$cob->getX(), $cob->getY()]);
     }
 
   };
@@ -63,35 +83,32 @@ sub exportMethods {
 sub afterInstall {
   my ($self, $cob) = @_;
 
-  $cob->setDimensions($self->{width}, $self->{height}); # via Arkess::Component::2D
+  $cob->setDimensions($self->{width}, $self->{height});
   $cob->on('setRuntime', sub {
     $cob->registerTimedEvent(sub {
-
+      return unless $self->{activeSequence};
+      $self->{frame}++;
+      $self->{frame} = 0 if $self->{frame} >= scalar(@{$self->{animations}->{$self->{activeSequence}}});
     }, $self->{interval});
   });
 }
 
-# Load a sprite sheet using SDLx::Sprite::Animated since it's probably a
-# dependency anyway
-sub _loadSpriteSheet {
-  my ($self, $src, $backgroundColor) = @_;
+sub _getSpriteDimensions {
+  my ($self, $image, $bounds) = @_;
 
-  my @sprites;
-  my $spriteExtractor = Arkess::File::SpriteSheet::Extractor->new();
-  my @spriteCoords = $spriteExtractor->extract($src, $backgroundColor);
-  foreach my $sprite (@spriteCoords) {
-    print "PUSHING\n";
-    push(@sprites, SDLx::Sprite->new(
-      image => $src,
-      clip => SDL::Rect->new($sprite->getX(), $sprite->getY(), $sprite->getWidth(), $sprite->getHeight()),
-#      alpha_key => $backgroundColor
-    ));
-    print "PUSHED\n";
-  }
+  my ($fullWidth, $fullHeight) = imgsize($image);
+  my ($nx, $ny) = @$bounds;
 
+  my $spriteWidth = $fullWidth / $nx;
+  my $spriteHeight = $fullHeight / $ny;
+
+my $padding = 10;
+  $self->{width} = $spriteWidth - $padding;
+  $self->{height} = $spriteHeight - $padding;
 }
 
 1;
 __END__
 =head1 NAME
-Arkess::Component::AnimatedSprite - Component for creating and animating a sprite
+Arkess::Component::AnimatedSprite - Component for creating sprite animation
+sequences from a spritesheet

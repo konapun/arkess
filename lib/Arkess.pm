@@ -3,6 +3,15 @@ package Arkess;
 use Arkess::Object;
 use Arkess::Component;
 use Arkess::Direction;
+use Arkess::IO::Controller;
+use Arkess::IO::Keyboard;
+use Arkess::Direction;
+use Arkess::Event;
+use Arkess::Runtime;
+
+#TODO: Import everything
+
+our $VERSION = 0.0.1;
 
 1;
 

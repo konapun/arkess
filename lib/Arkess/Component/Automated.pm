@@ -98,7 +98,7 @@ sub exportMethods {
 
       my $event;
       $cb ||= sub{}; # NOP
-      $event = $cob->on(Arkess::Event::BEFORE_RENDER, sub {
+      return $cob->on(Arkess::Event::BEFORE_RENDER, sub { # Return event which can be unregistered
         my ($cobX, $cobY) = $cob->getCoordinates();
 
         if ($cobX < $x) {
@@ -120,7 +120,42 @@ sub exportMethods {
           $cb->();
         }
       });
-      return $event;
+    },
+
+    follow => sub {
+      my ($cob, $toFollow, $lagDistance, $warpDistance) = @_;
+
+      $lagDistance = ($toFollow->getWidth() + 5) unless defined $lagDistance; # How far to follow behind $toFollow
+      $warpDistance = $lagDistance * 2 unless defined $warpDistance; # How far behind $toFollow $cob can be before it's warped to $toFollow (in case it gets stuck on something)
+      return $toFollow->on('move', sub { # Return event which can be unregistered
+        my ($direction, $units) = @_;
+
+        return unless $direction;
+        my $lagDistanceX = $lagDistance;
+        my $lagDistanceY = $lagDistance;
+        $lagDistanceX = 0 if $direction eq 'up' || $direction eq 'down';
+        $lagDistanceY = 0 if $direction eq 'left' || $direction eq 'right';
+        my ($x, $y) = $toFollow->getCoordinates();
+        my ($x2, $y2) = $cob->getCoordinates();
+        my ($distanceX, $distanceY) = $cob->getDistanceFrom($toFollow, 1);
+        if (($distanceX > $warpDistance) || ($distanceY > $warpDistance)) { # warp to $toFollow
+          $cob->setCoordinates($x, $y);
+        }
+        else { # follow normally
+          if ($x2+$lagDistanceX < $x) {
+            $cob->move('right');
+          }
+          elsif ($x2-$lagDistanceX > $x) {
+            $cob->move('left');
+          }
+          if ($y2+$lagDistanceY < $y) {
+            $cob->move('down');
+          }
+          elsif ($y2-$lagDistanceY > $y) {
+            $cob->move('up');
+          }
+        }
+      });
     }
 
   };

@@ -19,15 +19,23 @@ my $player = $game->createEntity({
   'Arkess::Component::D4'         => [],
   'Arkess::Component::CameraFollow' => [$background, 'scroll'],
   'Arkess::Component::Audible' => {
-    notification => 'assets/sounds/Shamisen-C4.wav',
-    notification2 => 'assets/sounds/Koto.wav'
+    notification  => 'assets/sounds/Shamisen-C4.wav',
+    notification2 => 'assets/sounds/Koto.wav',
+    theme         => 'assets/sounds/theme.wav'
   }
 });
-my $beetle = $game->createEntity({
-  'Arkess::Component::Image' => './assets/characters/beetle.png',
-  'Arkess::Component::Mobile' => [],
+my $partyMember = $game->createEntity({
+  'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden.png', [8, 1], 200],
   'Arkess::Component::Automated' => []
 });
+my $partyMember2 = $partyMember->extend({
+  'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden2.png', [8, 1], 200],
+});
+my $partyMember3 = $partyMember->extend({
+  'Arkess::Component::AnimatedSprite' => ['./assets/characters/zelda.png', [8, 1], 200],
+});
+$game->addEntity($partyMember2);
+$game->addEntity($partyMember3);
 my $widget = $game->createEntity({
   'Arkess::Component::Widget' => {
     visible => 0
@@ -49,6 +57,45 @@ my $textbox = $game->createEntity({
 #  print "Player collided with house!\n";
 #});
 
+$partyMember->addAnimationSequences({
+  up    => [[0, 6], [0, 7]],
+  down  => [[0, 4], [0, 5]],
+  left  => [[0, 0], [0, 1]],
+  right => [[0, 2], [0, 3]]
+});
+$partyMember->on('move', sub {
+  my ($direction, $units) = @_;
+
+  $partyMember->setSequence($direction) if $direction;
+});
+$partyMember->follow($player);
+
+$partyMember2->addAnimationSequences({
+  up    => [[0, 6], [0, 7]],
+  down  => [[0, 4], [0, 5]],
+  left  => [[0, 0], [0, 1]],
+  right => [[0, 2], [0, 3]]
+});
+$partyMember2->on('move', sub {
+  my ($direction, $units) = @_;
+
+  $partyMember2->setSequence($direction) if $direction;
+});
+$partyMember2->follow($partyMember);
+
+$partyMember3->addAnimationSequences({
+  up    => [[0, 4], [0, 5]],
+  down  => [[0, 0], [0, 1]],
+  left  => [[0, 6], [0, 7]],
+  right => [[0, 2], [0, 3]]
+});
+$partyMember3->on('move', sub {
+  my ($direction, $units) = @_;
+
+  $partyMember3->setSequence($direction) if $direction;
+});
+$partyMember3->follow($partyMember2, 60);
+
 $player->addAnimationSequences({
   up    => [[3, 0], [3, 1], [3, 2],  [3, 3],  [3, 4],  [3, 5],  [3, 6],  [3, 7]],
   down  => [[3, 8], [3, 9], [3, 10], [3, 11], [3, 12], [3, 13], [3, 14], [3, 15]],
@@ -66,20 +113,23 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_1, Arkess::IO::Keyboard:
 $player->getController()->bind(Arkess::IO::Keyboard::KB_2, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   $player->playSound('notification2');
 });
+$player->getController()->bind(Arkess::IO::Keyboard::KB_3, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+  $player->playSound('theme');
+});
 $player->on('move', sub {
   my ($direction, $units) = @_;
 
   $player->setSequence($direction) if $direction;
 });
-$beetle->addAutomation('cycleSquare', sub {
+$partyMember->addAutomation('cycleSquare', sub {
   print "Moving to 0,400\n";
-  $beetle->moveTo(0, 400, sub {
+  $partyMember->moveTo(0, 400, sub {
     print "Moving to 400,400\n";
-    $beetle->moveTo(400, 400, sub {
+    $partyMember->moveTo(400, 400, sub {
       print "Moving to 400,0\n";
-      $beetle->moveTo(400, 0, sub {
+      $partyMember->moveTo(400, 0, sub {
         print "Moving to 0,0\n";
-        $beetle->moveTo(0, 0, sub {
+        $partyMember->moveTo(0, 0, sub {
           print "DONE\n";
         });
       });
@@ -88,7 +138,7 @@ $beetle->addAutomation('cycleSquare', sub {
 });
 $player->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   print "Pressed space\n";
-  $beetle->playAutomation('cycleSquare');
+  $partyMember->playAutomation('cycleSquare');
 });
 
 $game->setWindowOptions({

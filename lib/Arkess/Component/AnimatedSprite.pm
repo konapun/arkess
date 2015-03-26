@@ -2,6 +2,7 @@ package Arkess::Component::AnimatedSprite;
 
 use strict;
 use SDLx::Surface;
+use SDL::GFX; # http://sdl.perl.org/SDL-GFX-Rotozoom.html
 use Image::Size;
 use base qw(Arkess::Component);
 
@@ -12,6 +13,10 @@ sub requires {
     'Arkess::Component::Timed',
     'Arkess::Component::Observable'
   ];
+}
+
+sub setPriority {
+  return 2;
 }
 
 sub initialize {
@@ -65,6 +70,18 @@ sub exportMethods {
       $self->{activeSequence} = $name;
     },
 
+    rotate => sub {
+
+    },
+
+    zoom => sub {
+
+    },
+
+    setAlpha => sub {
+
+    },
+
     render => sub {
       my $cob = shift;
       my $renderer = $cob->getRenderer();
@@ -73,7 +90,6 @@ sub exportMethods {
       my $width = $self->{width};
       my $height = $self->{height};
       my ($y, $x) = @{$self->{animations}->{$self->{activeSequence}}->[$self->{frame}]};
-      #print "[" . ($x*$width) . ", " . ($y*$height) . ", $width, $height]\n";
       $self->{sprite}->blit($renderer, SDL::Rect->new($x*$width, $y*$height, $width, $height), [$cob->getX(), $cob->getY()]);
     }
 
@@ -100,7 +116,7 @@ sub _getSpriteDimensions {
   my ($nx, $ny) = @$bounds;
   my $spriteWidth = $fullWidth / $nx;
   my $spriteHeight = $fullHeight / $ny;
-print "Sprite clipping dimensions: ($spriteWidth, $spriteHeight)\n";
+
   $self->{width} = $spriteWidth;
   $self->{height} = $spriteHeight;
 }

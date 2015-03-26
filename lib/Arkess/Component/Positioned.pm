@@ -56,6 +56,22 @@ sub exportMethods {
 
     getDirection => sub {
       return $self->{direction};
+    },
+
+    getDistanceFrom => sub {
+      my ($cob, $cob2, $abs) = @_;
+
+      die "Can't get distance from unpositioned object" unless $cob2->hasMethod('getDistanceFrom');
+      my ($x1, $y1) = $cob->getCoordinates();
+      my ($x2, $y2) = $cob2->getCoordinates();
+      my $distanceX = $x2 - $x1;
+      my $distanceY = $y2 - $y1;
+      if ($abs) {
+        $distanceX = abs $distanceX;
+        $distanceY = abs $distanceY;
+      }
+
+      return ($distanceX, $distanceY);
     }
 
   };

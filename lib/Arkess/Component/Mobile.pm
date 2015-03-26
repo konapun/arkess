@@ -56,6 +56,8 @@ sub exportMethods {
       else {
         die "Bad direction '$direction'";
       }
+
+      $cob->trigger('move', $direction, $units);
     }
 
   }

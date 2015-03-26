@@ -14,7 +14,7 @@ my $background = $game->createEntity({
   'Arkess::Component::BackgroundImage' => './assets/backgrounds/light_world.png'
 });
 my $player = $game->createEntity({
-  'Arkess::Component::Image'      => './assets/characters/scarecrow.png',
+  'Arkess::Component::AnimatedSprite' => ['./assets/characters/link.png', [16, 4], 200],
 #  'Arkess::Component::Collidable' => 'player', # Collision tag for player
   'Arkess::Component::D4'         => [],
   'Arkess::Component::CameraFollow' => [$background, 'scroll'],
@@ -49,6 +49,12 @@ my $textbox = $game->createEntity({
 #  print "Player collided with house!\n";
 #});
 
+$player->addAnimationSequences({
+  up    => [[3, 0], [3, 1], [3, 2],  [3, 3],  [3, 4],  [3, 5],  [3, 6],  [3, 7]],
+  down  => [[3, 8], [3, 9], [3, 10], [3, 11], [3, 12], [3, 13], [3, 14], [3, 15]],
+  left  => [[2, 0], [2, 1], [2, 2],  [2, 3],  [2, 4],  [2, 5],  [2, 6],  [2, 7]],
+  right => [[2, 8], [2, 9], [2, 10], [2, 11], [2, 12], [2, 13], [2, 14], [2, 15]]
+});
 $player->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   print "Advancing page\n";
   $textbox->displayNextPage();
@@ -60,7 +66,11 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_1, Arkess::IO::Keyboard:
 $player->getController()->bind(Arkess::IO::Keyboard::KB_2, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   $player->playSound('notification2');
 });
+$player->on('move', sub {
+  my ($direction, $units) = @_;
 
+  $player->setSequence($direction) if $direction;
+});
 $beetle->addAutomation('cycleSquare', sub {
   print "Moving to 0,400\n";
   $beetle->moveTo(0, 400, sub {

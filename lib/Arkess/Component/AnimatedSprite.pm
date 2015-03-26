@@ -73,7 +73,7 @@ sub exportMethods {
       my $width = $self->{width};
       my $height = $self->{height};
       my ($y, $x) = @{$self->{animations}->{$self->{activeSequence}}->[$self->{frame}]};
-      print "[" . ($x*$width) . ", " . ($y*$height) . ", $width, $height]\n";
+      #print "[" . ($x*$width) . ", " . ($y*$height) . ", $width, $height]\n";
       $self->{sprite}->blit($renderer, SDL::Rect->new($x*$width, $y*$height, $width, $height), [$cob->getX(), $cob->getY()]);
     }
 
@@ -98,13 +98,11 @@ sub _getSpriteDimensions {
 
   my ($fullWidth, $fullHeight) = imgsize($image);
   my ($nx, $ny) = @$bounds;
-
   my $spriteWidth = $fullWidth / $nx;
   my $spriteHeight = $fullHeight / $ny;
-
-my $padding = 10;
-  $self->{width} = $spriteWidth - $padding;
-  $self->{height} = $spriteHeight - $padding;
+print "Sprite clipping dimensions: ($spriteWidth, $spriteHeight)\n";
+  $self->{width} = $spriteWidth;
+  $self->{height} = $spriteHeight;
 }
 
 1;

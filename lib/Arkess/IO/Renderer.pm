@@ -60,7 +60,8 @@ sub render {
   my $self = shift;
 
   $self->_initializeEnvironment() unless defined $self->{app};
-  foreach my $entity (@{$self->{entities}}) {
+  my @zOrdered = sort { $a->getZIndex() <=> $b->getZIndex() } @{$self->{entities}};
+  foreach my $entity (@zOrdered) {
     $entity->render();
   }
   $self->{app}->update();

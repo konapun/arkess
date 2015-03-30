@@ -32,7 +32,7 @@ sub exportMethods {
 
   return {
 
-    setZLayer => sub {
+    setZIndex => sub {
       my ($cob, $layer) = @_;
 
       $self->{zlayer} = $layer;
@@ -71,7 +71,7 @@ sub exportMethods {
       return [$cob->getScreenX(), $cob->getScreenY()];
     },
 
-    getZLayer => sub {
+    getZIndex => sub {
       return $self->{zlayer};
     },
 

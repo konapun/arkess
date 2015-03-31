@@ -22,11 +22,13 @@ my $player = $game->createEntity({
     notification  => 'assets/sounds/Shamisen-C4.wav',
     notification2 => 'assets/sounds/Koto.wav',
     theme         => 'assets/sounds/theme.wav'
-  }
+  },
+  'Arkess::Component::CoordinateZIndex' => []
 });
 my $partyMember = $game->createEntity({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden.png', [8, 1], 200],
-  'Arkess::Component::Automated' => []
+  'Arkess::Component::Automated' => [],
+  'Arkess::Component::CoordinateZIndex' => []
 });
 my $partyMember2 = $partyMember->extend({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden2.png', [8, 1], 200],
@@ -96,10 +98,10 @@ $partyMember3->on('move', sub {
 });
 $partyMember3->follow($partyMember2, 60);
 
-$player->setZIndex(4);
-$partyMember->setZIndex(3);
-$partyMember2->setZIndex(2);
-$partyMember3->setZIndex(1);
+$player->setZIndex(2);
+#$partyMember->setZIndex(3);
+#$partyMember2->setZIndex(2);
+#$partyMember3->setZIndex(1);
 $player->addAnimationSequences({
   up    => [[3, 0], [3, 1], [3, 2],  [3, 3],  [3, 4],  [3, 5],  [3, 6],  [3, 7]],
   down  => [[3, 8], [3, 9], [3, 10], [3, 11], [3, 12], [3, 13], [3, 14], [3, 15]],

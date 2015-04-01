@@ -19,6 +19,7 @@ sub initialize {
   $self->{zlayer} = defined $zlayer ? $zlayer : 1;
   $self->{width} = 160;
   $self->{height} = 160;
+  $self->{hidden} = 0;
 }
 
 sub exportAttributes {
@@ -83,6 +84,22 @@ sub exportMethods {
 
     getRenderer => sub {
       return $self->{renderer};
+    },
+
+    hide => sub {
+      $self->{hidden} = 1;
+    },
+
+    unhide => sub {
+      $self->{hidden} = 0;
+    },
+
+    toggleVisibility => sub {
+      $self->{hidden} = !$self->{hidden};
+    },
+
+    isHidden => sub {
+      return $self->{hidden};
     },
 
     render => sub {

@@ -3,10 +3,17 @@ package Arkess::Component::RuntimeAware;
 use strict;
 use base qw(Arkess::Component);
 
+sub requires {
+  return [
+    'Arkess::Component::Observable'
+  ];
+}
+
 sub initialize {
   my ($self, $runtime) = @_;
 
   $self->{runtime} = $runtime;
+  $self->{deferred} = []; # Callbacks to run once the runtime is available
 }
 
 sub exportAttributes {
@@ -42,9 +49,31 @@ sub exportMethods {
     getAllEntities => sub {
       die "No runtime set" unless defined $self->{runtime};
       return $self->{runtime}->getEntities();
+    },
+
+    doOnceRuntimeIsAvailable => sub {
+      my ($cob, $sub) = @_;
+
+      if ($cob->hasRuntime()) {
+        return $sub->();
+      }
+      else {
+        push(@{$self->{deferred}}, $sub);
+      }
     }
 
   };
+}
+
+sub afterInstall {
+  my ($self, $cob) = @_;
+
+  $cob->on('setRuntime', sub { # Run deferred callbacks
+    foreach my $deferred (@{$self->{deferred}}) {
+      print "DEFERRED\n";
+      $deferred->();
+    }
+  });
 }
 
 1;

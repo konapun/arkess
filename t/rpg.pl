@@ -35,6 +35,7 @@ my $partyMember2 = $partyMember->extend({
 });
 my $partyMember3 = $partyMember->extend({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/zelda.png', [8, 1], 200],
+  'Arkess::Component::Blink' => 500
 });
 $game->addEntity($partyMember2);
 $game->addEntity($partyMember3);

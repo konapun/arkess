@@ -62,7 +62,7 @@ sub render {
   $self->_initializeEnvironment() unless defined $self->{app};
   my @zOrdered = sort { $a->getZIndex() <=> $b->getZIndex() } @{$self->{entities}};
   foreach my $entity (@zOrdered) {
-    $entity->render();
+    $entity->render() unless $entity->isHidden();
   }
   $self->{app}->update();
 }

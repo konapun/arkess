@@ -7,7 +7,7 @@ use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Component::AttributeChecker'
+    'Arkess::Component::AttributeChecker',
   ];
 }
 
@@ -147,9 +147,11 @@ sub _registerRuntimeEvents {
 sub _alreadyWrapped {
   my ($self, $cob, $name, $value) = @_;
 
-return 0; # FIXME
-  return 1 if defined $self->{wrapped}->{$cob}->{$name};
+return 0;
+print "Already wrapped $name\n" if defined $self->{wrapped}->{$cob}->{$name};
+  #return 1 if defined $self->{wrapped}->{$cob}->{$name};
   $self->{wrapped}->{$cob}->{$name} = 1;
+return 0; # FIXME
   if ($name eq 'addEntity') {
     print "$name:\n";
     print "\tCob: $cob\n";

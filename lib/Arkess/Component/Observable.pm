@@ -23,7 +23,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
-  $self->{wrapped} = {};
+  $self->{unwrapped} = {};
   $self->{eventBus} = $eventBus;
 }
 
@@ -32,7 +32,11 @@ sub beforeInstall {
 
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
     $self->{events} = $owner->_getEvents();
-    $self->{wrapped} = $owner->_getWrapped();
+    $self->{unwrapped} = $owner->_getUnwrapped();
+  }
+  else {
+    my $get = $owner->methods->get('get');
+    $self->{unwrapped} = $owner->methods; #->clone($owner); # FIXME
   }
 }
 
@@ -40,10 +44,9 @@ sub afterInstall {
   my ($self, $owner) = @_;
 
   # Decorate all the owner's methods with a version which executes callbacks after the original method is called.
-  $owner->methods->each(sub {
+  $self->{unwrapped}->each(sub {
     my ($key, $val) = @_;
 
-    return if $self->_alreadyWrapped($owner, $key, $val); # Don't rewrap methods
     return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
     $owner->methods->set($key, sub {
       my ($cob, @args) = @_;
@@ -61,6 +64,12 @@ sub afterInstall {
       return $wantarray ? @return : $return[0];
     });
   });
+
+  # DEBUG
+  # use Data::Dumper;
+  # print "----\n";
+  # print Dumper($self->{unwrapped}->keys());
+  # print "----\n";
 
   $owner->on('setRuntime', sub {
     $self->_registerRuntimeEvents($owner, shift->getEventBus());
@@ -127,8 +136,8 @@ sub exportMethods {
       return $self->{events};
     },
 
-    _getWrapped => sub {
-      return $self->{wrapped};
+    _getUnwrapped => sub {
+      return $self->{unwrapped};
     }
 
   };
@@ -142,22 +151,6 @@ sub _registerRuntimeEvents {
       $cob->trigger($event, @_);
     });
   }
-}
-
-sub _alreadyWrapped {
-  my ($self, $cob, $name, $value) = @_;
-
-return 0;
-print "Already wrapped $name\n" if defined $self->{wrapped}->{$cob}->{$name};
-  #return 1 if defined $self->{wrapped}->{$cob}->{$name};
-  $self->{wrapped}->{$cob}->{$name} = 1;
-return 0; # FIXME
-  if ($name eq 'addEntity') {
-    print "$name:\n";
-    print "\tCob: $cob\n";
-    print "\tVal: $value\n";
-  }
-  return 0;
 }
 
 1;

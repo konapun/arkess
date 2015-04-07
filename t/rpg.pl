@@ -25,6 +25,9 @@ my $player = $game->createEntity({
   },
   'Arkess::Component::CoordinateZIndex' => []
 });
+print "MOVING\n";
+$player->move('left');
+print "Moved\n";
 my $partyMember = $game->createEntity({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden.png', [8, 1], 200],
   'Arkess::Component::Automated' => [],
@@ -35,7 +38,6 @@ my $partyMember2 = $partyMember->extend({
 });
 my $partyMember3 = $partyMember->extend({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/zelda.png', [8, 1], 200],
-  'Arkess::Component::Blink' => 500
 });
 $game->addEntity($partyMember2);
 $game->addEntity($partyMember3);
@@ -126,6 +128,7 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_3, Arkess::IO::Keyboard:
 $player->on('move', sub {
   my ($direction, $units) = @_;
 
+  print "REACTING TO MOVE TRIGGER\n";
   $player->setSequence($direction) if $direction;
 });
 $partyMember->addAutomation('cycleSquare', sub {

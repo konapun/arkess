@@ -1,5 +1,4 @@
-
-package Arkess::Component::Observable;
+package Arkess::Component::Observable2;
 
 use strict;
 use Arkess::Event;
@@ -33,11 +32,10 @@ sub beforeInstall {
 
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
     $self->{events} = $owner->_getEvents();
-    $self->{unwrapped} = $owner->_getUnwrapped();
+    $self->{unwrapped} = $self->_merge($owner->_getUnwrapped(), $owner->methods);
   }
   else {
-    my $get = $owner->methods->get('get');
-    $self->{unwrapped} = $owner->methods; #->clone($owner); # FIXME
+    $self->{unwrapped} = $owner->methods->clone($owner); # FIXME
   }
 }
 
@@ -65,12 +63,6 @@ sub afterInstall {
       return $wantarray ? @return : $return[0];
     });
   });
-
-  # DEBUG
-  # use Data::Dumper;
-  # print "----\n";
-  # print Dumper($self->{unwrapped}->keys());
-  # print "----\n";
 
   $owner->on('setRuntime', sub {
     $self->_registerRuntimeEvents($owner, shift->getEventBus());
@@ -152,6 +144,21 @@ sub _registerRuntimeEvents {
       $cob->trigger($event, @_);
     });
   }
+}
+
+sub _merge {
+  my ($self, $unwrapped, $all) = @_;
+
+  $all->each(sub {
+    my ($methodName, $sub) = @_;
+
+    if (!$unwrapped->has($methodName) || $unwrapped->get($methodName) ne $sub) {
+      die "DOING IT ($methodName)\n";
+      #$unwrapped->set($methodName, $sub);
+    }
+  });
+
+  return $unwrapped;
 }
 
 1;

@@ -127,8 +127,6 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_3, Arkess::IO::Keyboard:
 });
 $player->on('move', sub {
   my ($direction, $units) = @_;
-
-  print "REACTING TO MOVE TRIGGER\n";
   $player->setSequence($direction) if $direction;
 });
 $partyMember->addAutomation('cycleSquare', sub {

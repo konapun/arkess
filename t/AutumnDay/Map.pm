@@ -34,8 +34,8 @@ sub _buildMap {
   $building->setLink(LEFT, $parkingLot);
   $parkingLot->setLink(LEFT, $apartment);
 
-  my $testRoom = AutumnDay::Tile::TestRoom::create();
-  return $testRoom;
+  # my $testRoom = AutumnDay::Tile::TestRoom::create();
+  # return $testRoom;
 
   return $apartment; # return the spawn point
 }

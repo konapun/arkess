@@ -1,10 +1,22 @@
 package Arkess::Scene;
 
 use strict;
-use State::Machine;
-use State::Machine::State;
-use State::Machine::Transition;
 
+sub enter {
+  shift->addListeners();
+}
+
+sub exit {
+  shift->removeListeners();
+}
+
+sub onDestroy {
+  shift->removeListeners();
+}
+
+sub addListeners {}
+
+sub removeListeners {}
 
 1;
 __END__

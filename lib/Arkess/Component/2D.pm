@@ -3,6 +3,12 @@ package Arkess::Component::2D;
 use strict;
 use base qw(Arkess::Component);
 
+sub requires {
+  return {
+    'Arkess::Component::2D::Point' => [0, 0]
+  };
+}
+
 sub initialize {
   my ($self, $width, $height) = @_;
 

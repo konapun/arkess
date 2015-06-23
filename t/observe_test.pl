@@ -17,7 +17,6 @@ $kid->setPosition($map->getSpawnPoint());
 my $terminal = $game->createController($kid);
 $terminal->autobind();
 $terminal->process('alias exit quit');
-die;
 $game->run();
 
 print "DONE\n";

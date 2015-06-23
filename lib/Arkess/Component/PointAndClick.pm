@@ -7,11 +7,14 @@ use Arkess::Direction;
 use base qw(Arkess::Component);
 
 sub requires {
+  my ($self, $requires) = @_;
+  
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Positioned', # To get/set (x, y)
     'Arkess::Component::Mobile',
-    'Arkess::Component::2D' # To get width/height
+# FIXME: these shouldn't reset image dimensions
+#    'Arkess::Component::Positioned', # To get/set (x, y)
+#    'Arkess::Component::2D' # To get width/height
   ];
 }
 
@@ -65,7 +68,9 @@ sub _configureController {
     my $clickY = $event->button_y;
     my ($x, $y) = $cob->getCoordinates();
     my ($width, $height) = $cob->getDimensions();
-    $cob->setCoordinates($clickX, $clickY); # FIXME
+    my ($imgX, $imgY) = ($clickX - $width/2, $clickY - $height/2); # Place image center at click point
+
+    $cob->setCoordinates($imgX, $imgY);
   });
 }
 

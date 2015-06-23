@@ -1,4 +1,4 @@
-package Arkess::Component::Circle;
+package Arkess::Component::2D::Circle;
 
 use strict;
 use base qw(Arkess::Component);

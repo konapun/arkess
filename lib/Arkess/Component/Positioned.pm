@@ -4,6 +4,12 @@ use strict;
 use Arkess::Direction;
 use base qw(Arkess::Component);
 
+sub requires {
+  return [
+    'Arkess::Component::2D::Point'
+  ];
+}
+
 sub initialize {
   my ($self, $x, $y, $direction) = @_;
 
@@ -12,41 +18,16 @@ sub initialize {
   $self->{direction} = defined $direction ? $direction : Arkess::Direction::DOWN;
 }
 
+sub afterInstall {
+  my ($self, $cob) = @_;
+  
+  $cob->setCoordinates($self->{x}, $self->{y});
+}
+
 sub exportMethods {
   my $self = shift;
 
   return {
-
-    setCoordinates => sub {
-      my ($cob, $x, $y) = @_;
-
-      $self->{x} = $x;
-      $self->{y} = $y;
-    },
-
-    setX => sub {
-      my ($cob, $x) = @_;
-
-      $self->{x} = $x;
-    },
-
-    setY => sub {
-      my ($cob, $y) = @_;
-
-      $self->{y} = $y;
-    },
-
-    getCoordinates => sub {
-      return ($self->{x}, $self->{y});
-    },
-
-    getX => sub {
-      return $self->{x};
-    },
-
-    getY => sub {
-      return $self->{y};
-    },
 
     setDirection => sub {
       my ($cob, $direction) = @_;

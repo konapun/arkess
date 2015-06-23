@@ -1,4 +1,4 @@
-package Arkess::Component::Line;
+package Arkess::Component::2D::Line;
 
 use strict;
 use base qw(Arkess::Component);

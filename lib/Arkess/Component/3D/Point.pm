@@ -1,11 +1,11 @@
-package Arkess::Component::Point::2D;
+package Arkess::Component::3D::Point;
 
 use strict;
 use base qw(Arkess::Component);
 
 sub requires {
   return [
-    'Arkess::Point::3D'
+    'Arkess::Component::2D::Point'
   ];
 }
 
@@ -32,9 +32,9 @@ sub exportMethods {
     setCoordinates => sub {
       my ($cob, $x, $y, $z) = @_;
 
-      $self->setX($x);
-      $self->setY($y);
-      $self->setZ($z);
+      $cob->setX($x);
+      $cob->setY($y);
+      $cob->setZ($z);
     },
 
     getZ => sub {
@@ -42,7 +42,7 @@ sub exportMethods {
     },
 
     getCoordinates => sub {
-      return ($self->getX(), $self->getY(), $self->getZ());
+      return ($cob->getX(), $cob->getY(), $cob->getZ());
     }
 
   };

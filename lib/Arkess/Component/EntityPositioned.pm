@@ -26,7 +26,7 @@ sub exportMethods {
 
     setPosition => sub {
       my ($cob, $entity) = @_;
-
+      
       $self->_setPosition($cob, $entity);
     },
 
@@ -54,9 +54,9 @@ sub _setPosition {
   my ($self, $cob, $entity) = @_;
 
   $self->{position} = $entity;
-  if ($entity->hasAttribute('holdsEntities')) {
-    $entity->addEntity($cob); # FIXME - remove entity also
-  }
+  # if ($entity->hasAttribute('holdsEntities')) {
+  #   $entity->addEntity($cob); # FIXME - remove entity also
+  # }
 }
 
 1;

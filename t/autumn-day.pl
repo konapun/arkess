@@ -18,4 +18,5 @@ $game->addEntity($kid);
 my $terminal = $game->createController($kid);
 $terminal->autobind();
 $terminal->process('alias exit quit');
+$terminal->process('look');
 $game->run();

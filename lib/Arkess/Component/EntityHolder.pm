@@ -45,6 +45,16 @@ sub exportMethods {
       return @filtered;
     },
 
+    listEntitiesWithAttribute => sub {
+      my ($cob, $attribute) = @_;
+
+      my @filtered;
+      foreach my $entity ($cob->listEntities()) {
+        push(@filtered, $entity) if $entity->hasAttribute($attribute);
+      }
+      return @filtered;
+    },
+
     getEntities => sub {
       return $self->{entities};
     },
@@ -59,7 +69,8 @@ sub exportMethods {
       my $index = 0;
       foreach my $contained (@{$self->{entities}}) {
         if ($contained eq $entity) {
-          return splice(@{$self->{entities}}, $index, 1);
+          my $found = splice(@{$self->{entities}}, $index, 1);
+          $found->setPosition(undef) if $entity->is('entityPositioned');
         }
         $index++;
       }
@@ -68,6 +79,7 @@ sub exportMethods {
     addEntity => sub {
       my ($cob, $entity) = @_;
 
+      $entity->setPosition($cob) if $entity->is('entityPositioned');
       push(@{$self->{entities}}, $entity);
     }
 

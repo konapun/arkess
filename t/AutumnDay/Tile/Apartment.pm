@@ -13,7 +13,7 @@ sub create {
   my $item = Arkess::Object->new([
     'AutumnDay::Item'
   ]);
-  my $fixture = Arkess::Object->new([
+  my $fixture = Arkess::Object->new([ # Fixtures are items which are not takeable
     'AutumnDay::Fixture'
   ]);
 
@@ -108,13 +108,19 @@ sub create {
     ]
   });
   my $bedroom2Closet = $tile->extend({
-
+    'Arkess::Component::Describable' => [
+      'A closet'
+    ]
   });
   my $bedroom3 = $tile->extend({
-
+    'Arkess::Component::Describable' => [
+      'A third bedroom.'
+    ]
   });
   my $bedroom3Closet = $tile->extend({
-
+    'Arkess::Component::Describable' => [
+      'A closet'
+    ]
   });
 
   # Piece the place together
@@ -139,6 +145,16 @@ sub create {
       'A queensized bed.'
     ]
   });
+  my $pillow = $item->extend({
+    'Arkess::Component::Named' => 'pillow',
+    'Arkess::Component::Describable' => [
+      'A fluffly white pillow.',
+      'A fluffy white pillow. The pillowcase is a light blue cotton and the pillow is stuffed with down.'
+    ]
+  });
+  $bed->addEntity($pillow->clone());
+  $bed->addEntity($pillow->clone());
+
 # $bed->acceptsActions({ sleep => sub{} });
   my $cupboards = $fixture->extend({
     'Arkess::Component::Named' => 'cupboards',
@@ -151,11 +167,39 @@ sub create {
     'Arkess::Component::Named' => 'cup',
     'Arkess::Component::Describable' => [
       'A black plastic cup'
+    ],
+    'Arkess::Component::Usable' => sub {
+      print "You use the cup\n";
+    },
+    'Arkess::Component::Actioned' => {
+      fill => sub {
+        my $liquid = shift;
+
+        print "Filling the cup with $liquid\n";
+      }
+    }
+  }));
+
+  my $refrigerator = $fixture->extend({
+    'Arkess::Component::Named' => 'refrigerator',
+    'Arkess::Component::Describable' => [
+      'A large, white refrigerator.'
     ]
+  });
+  $refrigerator->addEntity($item->extend({
+    'Arkess::Component::Named' => 'milk',
+    'Arkess::Component::Describable' => [
+      'A gallon of milk.',
+      'MILK EXPIRATION DATE'
+    ],
+    'Arkess::Component::Usable' => sub {
+      print "You drink the milk\n";
+    }
   }));
 
   # Add items and decorations to rooms
   $kitchen->addEntity($cupboards);
+  $kitchen->addEntity($refrigerator);
   $bedroom1->addEntity($bed);
 
   # Add events

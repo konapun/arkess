@@ -20,7 +20,41 @@ sub requires {
 sub afterInstall {
   my ($self, $cob) = @_;
 
-  my $coordSystem = 'abs';
+  my $direction = UP;
+  $cob->before('move', sub {
+    $direction = shift;
+  });
+
+  # facing up ^
+  # - w -> move up
+  # - a -> move left
+  # - s -> move down
+  # - d -> move right
+  #
+  # facing left <-
+  # - w -> move left
+  # - a -> move down
+  # - s -> move right
+  # - d -> move up
+  #
+  # facing down v
+  # - w -> move down
+  # - a -> move right
+  # - s -> move up
+  # - d -> move left
+  #
+  # facing right ->
+  # - w -> move right
+  # - a -> move up
+  # - s -> move left
+  # - d -> move down
+  my $absCoords = 1; # If false, directions will be in relation to the direction the character is facing
+  $cob->addAction('abs-coords', sub {
+    $absCoords = 1;
+  });
+  $cob->addAction('fps-coords', sub {
+    $absCoords = 0;
+  });
   $cob->addAction('move', sub {
     my ($self, @args) = @_;
     my $status = $cob->move(@args);
@@ -30,13 +64,10 @@ sub afterInstall {
   $cob->addAction('look', sub {
     return $cob->look();
   });
-  $cob->addAction('fps-coords', sub {
-    $coordSystem = 'fps';
-  });
-  $cob->addAction('abs-coords', sub {
-    $coordSystem = 'abs';
-  });
   $cob->addAction('w', sub {
+    if (!$absCoords) {
+      #$direction = $cob->
+    }
     return $cob->callAction('move', UP);
   });
   $cob->addAction('a', sub {

@@ -31,6 +31,17 @@ sub exportMethods {
       };
     },
 
+    wrapAsActioned => sub {
+      my ($cob, $actions) = @_;
+
+      foreach my $action (@$actions) {
+        my $sub = $cob->methods->get($action);
+        $cob->addAction($action, sub {
+          return $sub->call(@_);
+        });
+      }
+    },
+
     getActions => sub {
       return $self->{abilities}; # FIXME - only return names
     },

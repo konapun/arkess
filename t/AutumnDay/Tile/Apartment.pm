@@ -7,7 +7,7 @@ use AutumnDay::Item;
 
 sub create {
   # Prototypes
-  my $tile = Arkess::Object->new([
+  my $tile = Arkess::Object->new([ # Tiles are rooms
     'AutumnDay::Tile',
   ]);
   my $item = Arkess::Object->new([
@@ -131,7 +131,7 @@ sub create {
   $hallway->setLink(DOWN, $bathroom);
   $hallway->setLink(LEFT, $bedroom1);
   $hallway->setLink(UP, $hallway2);
-  $hallway2->setLink(UP, $bedroom2);
+  $hallway2->setLink(LEFT, $bedroom2);
   $hallway2->setLink(UP, $bedroom3);
   $bedroom1->setLink(UP, $bedroom1Closet);
   $bedroom1->setLink(DOWN, $bedroom1Bathroom);
@@ -197,10 +197,13 @@ sub create {
     }
   }));
 
+  my $tv = $fixture->extend( 'AutumnDay::Item::TV' );
+
   # Add items and decorations to rooms
   $kitchen->addEntity($cupboards);
   $kitchen->addEntity($refrigerator);
   $bedroom1->addEntity($bed);
+  $bedroom2->addEntity($tv);
 
   # Add events
   $entryway->on('addEntity', sub {

@@ -2,7 +2,6 @@ package Arkess;
 
 use Arkess::Object;
 use Arkess::Component;
-use Arkess::Direction;
 use Arkess::IO::Controller;
 use Arkess::IO::Keyboard;
 use Arkess::Direction;

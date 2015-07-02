@@ -31,6 +31,29 @@ sub exportMethods {
 
   return {
 
+    # Find an entity by its object reference
+    findEntity => sub {
+      my ($cob, $entity) = @_;
+
+      if (ref $entity eq 'CODE') {
+        return $cob->findEntityCallback($entity);
+      }
+      foreach my $holding ($cob->listEntities()) {
+        return $holding if $entity eq $holding;
+      }
+    },
+
+    # Locate an entity by passing in a callback to be called against every
+    # contained entity. Returns the entity passed to the callback if $callback
+    # returns a truthy value
+    findEntityCallback => sub {
+      my ($cob, $callback) = @_;
+
+      foreach my $holding ($cob->listEntities()) {
+        return $holding if $callback->($holding);
+      }
+    },
+
     listEntities => sub {
       return @{$self->{entities}};
     },

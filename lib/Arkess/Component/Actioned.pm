@@ -3,6 +3,12 @@ package Arkess::Component::Actioned;
 use strict;
 use base qw(Arkess::Component);
 
+sub requires {
+  return [
+    'Arkess::Component::Observable'
+  ];
+}
+
 sub initialize {
   my ($self, $actions) = @_;
 
@@ -83,8 +89,21 @@ sub exportMethods {
       my ($cob, $action, @args) = @_;
 
       if ($cob->isActionEnabled($action)) {
+        $cob->trigger($action, @args);
         return $self->{abilities}->{$action}->{action}->($cob, @args);
       }
+    },
+
+    beforeAction => sub {
+      my ($cob, $actionName, $callback) = @_;
+
+      $cob->before($actionName, $callback);
+    },
+
+    onAction => sub {
+      my ($cob, $actionName, $callback) = @_;
+
+      $cob->on($actionName, $callback);
     }
 
   };

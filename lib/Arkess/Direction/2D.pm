@@ -1,5 +1,5 @@
-package Arkess::Direction;
-#FIXME: delete in favor of Arkess::Direction::[2D|3D]
+package Arkess::Direction::2D;
+
 use strict;
 use base qw(Exporter);
 
@@ -43,7 +43,7 @@ sub rotate {
   }
 
   if (!$clockwise) {
-    $direction = Arkess::Direction::reverse($direction);
+    $direction = Arkess::Direction::2D::reverse($direction);
   }
   return $direction;
 }

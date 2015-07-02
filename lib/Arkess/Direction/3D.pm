@@ -1,5 +1,5 @@
-package Arkess::Direction;
-#FIXME: delete in favor of Arkess::Direction::[2D|3D]
+package Arkess::Direction::3D;
+
 use strict;
 use base qw(Exporter);
 
@@ -7,8 +7,8 @@ use constant NORTH => 'north';
 use constant SOUTH => 'south';
 use constant EAST  => 'east';
 use constant WEST  => 'west';
-use constant UP    => 'north';
-use constant DOWN  => 'south';
+use constant UP    => 'up';
+use constant DOWN  => 'down';
 use constant LEFT  => 'west';
 use constant RIGHT => 'east';
 
@@ -21,6 +21,8 @@ sub reverse {
   return NORTH if $direction eq SOUTH;
   return WEST if $direction eq EAST;
   return EAST if $direction eq WEST;
+  return DOWN if $direction eq UP;
+  return UP if $direction eq DOWN;
 }
 
 sub rotate {
@@ -38,12 +40,10 @@ sub rotate {
   elsif ($direction eq EAST) {
     $direction = SOUTH;
   }
-  else {
-    die "No such 2D direction '$direction'";
-  }
+  # rotations for UP and DOWN are the same
 
   if (!$clockwise) {
-    $direction = Arkess::Direction::reverse($direction);
+    $direction = Arkess::Direction::3D::reverse($direction);
   }
   return $direction;
 }

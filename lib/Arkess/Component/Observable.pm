@@ -106,6 +106,20 @@ sub exportMethods {
       $self->_registerRuntimeEvents($cob, $bus);
     },
 
+    # Unregister an event from being observed
+    dontObserve => sub {
+      my ($cob, $event) = @_;
+
+      
+    },
+
+    # Reregister observation for an event
+    observe => sub {
+      my ($cob, $event) = @_;
+
+
+    },
+
     # Register a callback for an event
     on => sub {
       my ($cob, $event, $callback) = @_;

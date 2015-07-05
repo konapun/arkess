@@ -13,6 +13,7 @@ sub requires {
     'Arkess::Component::InventoryHolder',
     'Arkess::Component::Mortal',
     'Arkess::Component::Conversable',
+    'Arkess::Component::Audible'
 #    'AutumnDay::Character::Component::HungerMove'
   ];
 }
@@ -20,6 +21,7 @@ sub requires {
 sub afterInstall {
   my ($self, $cob) = @_;
 
+  $cob->addSound('scream', 'assets/sounds/DeanScream.ogg');
   my $direction = UP;
   $cob->before('move', sub {
     $direction = shift;
@@ -228,6 +230,7 @@ sub afterInstall {
   # Events
   $cob->on('move', sub {
     print "MOVING!\n";
+    $cob->playSound('scream');
   });
 }
 

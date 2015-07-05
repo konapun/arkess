@@ -24,7 +24,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
-  $self->{unwrapped} = {};
+  $self->{unwrapped} = Cobsy::Core::Hash->new();
   $self->{eventBus} = $eventBus;
 }
 
@@ -110,7 +110,7 @@ sub exportMethods {
     dontObserve => sub {
       my ($cob, $event) = @_;
 
-      
+
     },
 
     # Reregister observation for an event

@@ -3,20 +3,24 @@
 use strict;
 use lib '../lib';
 use Arkess;
-use Arkess::Direction;
-use Arkess::Runtime::InteractiveFiction;
-use AutumnDay::Core;
 
-my $game = Arkess::Runtime::InteractiveFiction->new();
+my $obj = Arkess::Object->new({
+  'Test::Named' => 'named',
+  'Arkess::Component::Observable',
+});
+my $obj2 = $obj->extend({
+  'Test::Aged'  => 120,
+  'Arkess::Component::Observable',
+});
+my $obj3 = $obj2->extend({
+  'Test::Weighted'  => 100,
+#  'Arkess::Component::Observable',
+});
 
-my $kid = AutumnDay::Character::Kid::create();
-my $map = AutumnDay::Map->new();
-
-$kid->setPosition($map->getSpawnPoint());
-
-my $terminal = $game->createController($kid);
-$terminal->autobind();
-$terminal->process('alias exit quit');
-$game->run();
-
+my $cnt = 1;
+$obj2->on('getName', sub {
+  print "Getting name ($cnt)\n";
+  $cnt++;
+});
+$obj2->getName();
 print "DONE\n";

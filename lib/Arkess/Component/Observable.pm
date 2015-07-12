@@ -36,7 +36,6 @@ sub beforeInstall {
     $self->{unwrapped} = $owner->_getUnwrapped();
   }
   else {
-    my $get = $owner->methods->get('get');
     $self->{unwrapped} = $owner->methods; #->clone($owner); # FIXME
   }
 }

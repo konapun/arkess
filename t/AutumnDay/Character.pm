@@ -230,7 +230,7 @@ sub afterInstall {
   # Events
   $cob->on('move', sub {
     print "MOVING!\n";
-    $cob->playSound('scream');
+#    $cob->playSound('scream');
   });
 }
 

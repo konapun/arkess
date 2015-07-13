@@ -24,7 +24,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
-  $self->{unwrapped} = Cobsy::Core::Hash->new();
+  $self->{wrapped} = {}; # don't rewrap methods that are already wrapped or they'll be called multiple times per trigger
   $self->{eventBus} = $eventBus;
 }
 
@@ -33,10 +33,10 @@ sub beforeInstall {
 
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
     $self->{events} = $owner->_getEvents();
-    $self->{unwrapped} = $owner->_getUnwrapped();
+    $self->{wrapped} = $owner->_getWrapped();
   }
   else {
-    $self->{unwrapped} = $owner->methods; #->clone($owner); # FIXME
+    $self->{wrapped} = Cobsy::Core::Hash->new();
   }
 }
 
@@ -44,11 +44,12 @@ sub afterInstall {
   my ($self, $owner) = @_;
 
   # Decorate all the owner's methods with a version which executes callbacks after the original method is called.
-  $self->{unwrapped}->each(sub {
+  $owner->methods->each(sub {
     my ($key, $val) = @_;
 
-    return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
+    return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on' || $self->{wrapped}->has($key); # Ignore decorating keys that would cause infinite callbacks
     $owner->methods->set($key, sub {
+
       my ($cob, @args) = @_;
       my $wantarray = wantarray;
 
@@ -63,13 +64,8 @@ sub afterInstall {
       $owner->trigger($key, $wantarray ? @return : $return[0]);
       return $wantarray ? @return : $return[0];
     });
+    $self->{wrapped}->set($key, 1);
   });
-
-  # DEBUG
-  # use Data::Dumper;
-  # print "----\n";
-  # print Dumper($self->{unwrapped}->keys());
-  # print "----\n";
 
   $owner->on('setRuntime', sub {
     $self->_registerRuntimeEvents($owner, shift->getEventBus());
@@ -150,8 +146,8 @@ sub exportMethods {
       return $self->{events};
     },
 
-    _getUnwrapped => sub {
-      return $self->{unwrapped};
+    _getWrapped => sub {
+      return $self->{wrapped};
     }
 
   };

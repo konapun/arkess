@@ -24,7 +24,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
-  $self->{wrapped} = {}; # don't rewrap methods that are already wrapped or they'll be called multiple times per trigger
+  $self->{wrapped} = Cobsy::Core::Hash->new(); # don't rewrap methods that are already wrapped or they'll be called multiple times per trigger
   $self->{eventBus} = $eventBus;
 }
 
@@ -34,9 +34,6 @@ sub beforeInstall {
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
     $self->{events} = $owner->_getEvents();
     $self->{wrapped} = $owner->_getWrapped();
-  }
-  else {
-    $self->{wrapped} = Cobsy::Core::Hash->new();
   }
 }
 
@@ -49,7 +46,6 @@ sub afterInstall {
 
     return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on' || $self->{wrapped}->has($key); # Ignore decorating keys that would cause infinite callbacks
     $owner->methods->set($key, sub {
-
       my ($cob, @args) = @_;
       my $wantarray = wantarray;
 

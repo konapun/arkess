@@ -21,6 +21,7 @@ sub requires {
 sub afterInstall {
   my ($self, $cob) = @_;
 
+print  "Installing Character ($self) into $cob\n";
   $cob->addSound('scream', 'assets/sounds/DeanScream.ogg');
   my $direction = UP;
   $cob->before('move', sub {
@@ -229,7 +230,7 @@ sub afterInstall {
 
   # Events
   $cob->on('move', sub {
-    print "MOVING!\n";
+    print "MOVING (in component Character for $self)!\n";
 #    $cob->playSound('scream');
   });
 }

@@ -10,7 +10,8 @@ my $obj = Arkess::Object->new({
 });
 my $obj2 = $obj->extend({
   'Test::Aged'  => 120,
-  'Arkess::Component::Observable',
+#  'Test::NameConflict' => 'obj2', # FIXME: a name conflict will make it so a rewrap doesn't occur. This is incorrect behavior
+  'Arkess::Component::Observable'
 });
 my $obj3 = $obj2->extend({
   'Test::Weighted'  => 100,
@@ -19,7 +20,9 @@ my $obj3 = $obj2->extend({
 
 my $cnt = 1;
 $obj2->on('getName', sub {
-  print "Getting name ($cnt)\n";
+  my $name = shift;
+
+  print "Getting name ($cnt): $name\n";
   $cnt++;
 });
 $obj2->getName();

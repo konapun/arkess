@@ -6,7 +6,7 @@ use base qw(Arkess::Component);
 sub exportMethods {
   return {
 
-    # Alias for hasAttribute
+    # Alias for hasAttribute for cases when "is" is more semantically accurate
     is => sub {
       my ($cob, $key) = @_;
 

@@ -10,7 +10,8 @@ sub requires {
     'Arkess::Component::Describable' => "(no description)",
     'Arkess::Component::Item' => [],
     'Arkess::Component::Actioned' => [],
-    'Arkess::Component::Usable' => sub { print "I don't know how to use that!" }
+    'Arkess::Component::Usable' => sub { print "I don't know how to use that!" },
+    'AutumnDay::Component::Takeable'
   };
 }
 

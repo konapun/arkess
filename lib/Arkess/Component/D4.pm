@@ -32,8 +32,10 @@ sub afterInstall {
   my $scheme = $self->{scheme};
   if (!$self->{controller}) { # Automatically attach a controller if one has not been explicitly set
     $cob->on('setRuntime', sub {
+      print "Received setRuntime event\n";
       my $runtime = $cob->getRuntime();
       my $controller = $runtime->createController();
+      print  "CREATING CONTROLLER: $controller\n";
       $controller->setPlayer($cob);
       $self->{controller} = $controller;
       if ($scheme == 1) {

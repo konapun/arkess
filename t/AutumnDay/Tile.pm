@@ -11,4 +11,20 @@ sub requires {
   ];
 }
 
+sub initialize {
+  my $self = shift;
+
+  $self->{layout} = {
+    above => [],
+    below => [],
+    # TODO
+  };
+}
+sub exportMethods {
+  return {
+    setLayout => sub {
+      print "TODO\n";
+    }
+  }
+}
 1;

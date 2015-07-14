@@ -13,7 +13,8 @@ sub requires {
     'Arkess::Component::InventoryHolder',
     'Arkess::Component::Mortal',
     'Arkess::Component::Conversable',
-    'Arkess::Component::Audible'
+    'Arkess::Component::Audible',
+    'Arkess::Component::Describable'
 #    'AutumnDay::Character::Component::HungerMove'
   ];
 }
@@ -21,7 +22,11 @@ sub requires {
 sub afterInstall {
   my ($self, $cob) = @_;
 
-print  "Installing Character ($self) into $cob\n";
+  $cob->setName('self');
+  $cob->setDescription(
+    'long',
+    'short'
+  );
   $cob->addSound('scream', 'assets/sounds/DeanScream.ogg');
   my $direction = UP;
   $cob->before('move', sub {
@@ -86,7 +91,7 @@ print  "Installing Character ($self) into $cob\n";
     my ($self, $object) = @_;
 
     my $found = $cob->callAction('_find', $object);
-    if ($found) {
+    if ($found && $found->is('takeable')) {
       my $location = $found->getPosition();
       $location->removeEntity($found);
       $cob->addToInventory($found);
@@ -226,6 +231,7 @@ print  "Installing Character ($self) into $cob\n";
     }
 
     return $tile if ($tile->hasAttribute('named') && lc $tile->getName() eq $object);# Last, check the tile itself
+    return $cob if $object eq 'self'; # maybe inspecting self
   });
 
   # Events

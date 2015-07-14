@@ -168,6 +168,7 @@ sub create {
     'Arkess::Component::Describable' => [
       'A black plastic cup'
     ],
+  #  'AutumnDay::Component::LiquidHolder',
     'Arkess::Component::Usable' => sub {
       print "You use the cup\n";
     },
@@ -204,6 +205,8 @@ sub create {
   $kitchen->addEntity($refrigerator);
   $bedroom1->addEntity($bed);
   $bedroom2->addEntity($tv);
+
+  $livingRoom->addEntity($fixture->extend( 'AutumnDay::Item::Chest' ));
 
   # Add events
   $entryway->on('addEntity', sub {

@@ -1,4 +1,4 @@
-package AutumnDay::Item::Food;
+package AutumnDay::Compnent::Edible;
 
 use strict;
 use base qw(Arkess::Component);
@@ -22,4 +22,19 @@ sub exportAttributes {
   }
 }
 
+sub exportMethods {
+  my $self = shift;
+
+  return {
+    getCalories => sub {
+      return $self->{calories};
+    },
+
+    eat => sub {
+      my $cob = shift;
+
+      print "TODO: EATING\n";
+    }
+  }
+}
 1;

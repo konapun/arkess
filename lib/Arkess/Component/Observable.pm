@@ -19,7 +19,7 @@ sub setPriority { # Set a high number so this component can wrap everything else
 # (Optionally) Make runtime event bus's events observable from the Cobsy object
 sub initialize {
   my ($self, $eventBus) = @_;
-
+  print "INIT OBSERVABLE\n";
   $self->{events} = {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
@@ -36,7 +36,7 @@ sub beforeInstall {
     $self->{unwrapped} = $self->_updateUnwrapped($owner);
   }
   else {
-    $self->{unwrapped} = $owner->methods;
+    $self->{unwrapped} = $owner->methods->clone();
   }
 }
 
@@ -159,7 +159,9 @@ sub _updateUnwrapped {
     my ($key, $sub) = @_;
 
     if (!$old->has($key)) {
-      $old->set($key, $sub);
+      $old->set($key, sub {
+        $sub->call(@_);
+      });
     }
   });
 

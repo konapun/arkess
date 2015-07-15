@@ -14,6 +14,10 @@ my $obj2 = $obj1->extend({
 #  'Test::Named' => 'named2', # FIXME: this breaks the getName trigger
   'Arkess::Component::Observable',
 });
+my $obj3 = $obj2->extend({
+  'Test::Weighted' => 100,
+  'Arkess::Component::Observable'
+});
 
 my $cnt = 1;
 $obj2->on('getName', sub {
@@ -24,3 +28,7 @@ $obj2->on('getName', sub {
 });
 $obj2->getName();
 print "DONE\n";
+
+my $unwrapped = $obj2->_getUnwrapped();
+print "Calling unwrapped version. Shouldn't print\n";
+$unwrapped->get('getName')->call();

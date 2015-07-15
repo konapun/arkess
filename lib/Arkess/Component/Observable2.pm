@@ -1,3 +1,4 @@
+
 package Arkess::Component::Observable2;
 
 use strict;
@@ -23,7 +24,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
-  $self->{unwrapped} = {};
+  $self->{wrapped} = Cobsy::Core::Hash->new(); # don't rewrap methods that are already wrapped or they'll be called multiple times per trigger
   $self->{eventBus} = $eventBus;
 }
 
@@ -32,10 +33,7 @@ sub beforeInstall {
 
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
     $self->{events} = $owner->_getEvents();
-    $self->{unwrapped} = $self->_merge($owner->_getUnwrapped(), $owner->methods);
-  }
-  else {
-    $self->{unwrapped} = $owner->methods->clone($owner); # FIXME
+    $self->{wrapped} = $owner->_getWrapped();
   }
 }
 
@@ -43,10 +41,10 @@ sub afterInstall {
   my ($self, $owner) = @_;
 
   # Decorate all the owner's methods with a version which executes callbacks after the original method is called.
-  $self->{unwrapped}->each(sub {
+  $owner->methods->each(sub {
     my ($key, $val) = @_;
 
-    return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
+    return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on' || $self->{wrapped}->has($key); # Ignore decorating keys that would cause infinite callbacks
     $owner->methods->set($key, sub {
       my ($cob, @args) = @_;
       my $wantarray = wantarray;
@@ -62,6 +60,7 @@ sub afterInstall {
       $owner->trigger($key, $wantarray ? @return : $return[0]);
       return $wantarray ? @return : $return[0];
     });
+    $self->{wrapped}->set($key, 1);
   });
 
   $owner->on('setRuntime', sub {
@@ -98,6 +97,20 @@ sub exportMethods {
       $self->_registerRuntimeEvents($cob, $bus);
     },
 
+    # Unregister an event from being observed
+    dontObserve => sub {
+      my ($cob, $event) = @_;
+
+
+    },
+
+    # Reregister observation for an event
+    observe => sub {
+      my ($cob, $event) = @_;
+
+
+    },
+
     # Register a callback for an event
     on => sub {
       my ($cob, $event, $callback) = @_;
@@ -129,8 +142,8 @@ sub exportMethods {
       return $self->{events};
     },
 
-    _getUnwrapped => sub {
-      return $self->{unwrapped};
+    _getWrapped => sub {
+      return $self->{wrapped};
     }
 
   };
@@ -144,21 +157,6 @@ sub _registerRuntimeEvents {
       $cob->trigger($event, @_);
     });
   }
-}
-
-sub _merge {
-  my ($self, $unwrapped, $all) = @_;
-
-  $all->each(sub {
-    my ($methodName, $sub) = @_;
-
-    if (!$unwrapped->has($methodName) || $unwrapped->get($methodName) ne $sub) {
-      die "DOING IT ($methodName)\n";
-      #$unwrapped->set($methodName, $sub);
-    }
-  });
-
-  return $unwrapped;
 }
 
 1;

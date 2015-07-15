@@ -24,7 +24,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
-  $self->{wrapped} = Cobsy::Core::Hash->new(); # don't rewrap methods that are already wrapped or they'll be called multiple times per trigger
+  $self->{unwrapped} = {};
   $self->{eventBus} = $eventBus;
 }
 
@@ -33,7 +33,10 @@ sub beforeInstall {
 
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
     $self->{events} = $owner->_getEvents();
-    $self->{wrapped} = $owner->_getWrapped();
+    $self->{unwrapped} = $self->_updateUnwrapped($owner);
+  }
+  else {
+    $self->{unwrapped} = $owner->methods;
   }
 }
 
@@ -41,10 +44,10 @@ sub afterInstall {
   my ($self, $owner) = @_;
 
   # Decorate all the owner's methods with a version which executes callbacks after the original method is called.
-  $owner->methods->each(sub {
+  $self->{unwrapped}->each(sub {
     my ($key, $val) = @_;
 
-    return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on' || $self->{wrapped}->has($key); # Ignore decorating keys that would cause infinite callbacks
+    return if $key eq 'trigger' || $key eq 'triggerBefore' || $key eq 'before' || $key eq 'on'; # Ignore decorating keys that would cause infinite callbacks
     $owner->methods->set($key, sub {
       my ($cob, @args) = @_;
       my $wantarray = wantarray;
@@ -60,7 +63,6 @@ sub afterInstall {
       $owner->trigger($key, $wantarray ? @return : $return[0]);
       return $wantarray ? @return : $return[0];
     });
-    $self->{wrapped}->set($key, 1);
   });
 
   $owner->on('setRuntime', sub {
@@ -142,11 +144,26 @@ sub exportMethods {
       return $self->{events};
     },
 
-    _getWrapped => sub {
-      return $self->{wrapped};
+    _getUnwrapped => sub {
+      return $self->{unwrapped};
     }
 
   };
+}
+
+sub _updateUnwrapped {
+  my ($self, $cob) = @_;
+
+  my $old = $cob->_getUnwrapped();
+  $cob->methods->each(sub {
+    my ($key, $sub) = @_;
+
+    if (!$old->has($key)) {
+      $old->set($key, $sub);
+    }
+  });
+
+  return $old;
 }
 
 sub _registerRuntimeEvents {

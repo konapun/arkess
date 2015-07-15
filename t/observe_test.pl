@@ -10,8 +10,8 @@ my $obj1 = Arkess::Object->new({
 });
 my $obj2 = $obj1->extend({
   'Test::Aged'  => 120,
-#  'Test::NameConflict' => 'obj2', # FIXME: a name conflict will make it so a rewrap doesn't occur. This is incorrect behavior
-  'Test::Named' => 'named2', # FIXME: this breaks the getName trigger
+  'Test::NameConflict' => 'obj2', # FIXME: a name conflict will make it so a rewrap doesn't occur. This is incorrect behavior
+#  'Test::Named' => 'named2', # FIXME: this breaks the getName trigger
   'Arkess::Component::Observable',
 });
 

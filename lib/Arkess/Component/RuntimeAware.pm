@@ -12,7 +12,6 @@ sub requires {
 sub initialize {
   my ($self, $runtime) = @_;
 
-print "INIT RUNTIMEAWARE\n";
   $self->{runtime} = $runtime;
   $self->{deferred} = []; # Callbacks to run once the runtime is available
 }

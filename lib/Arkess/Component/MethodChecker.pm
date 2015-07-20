@@ -5,6 +5,10 @@ use base qw(Arkess::Component);
 
 sub exportMethods {
   return {
+    can => sub {
+      return shift->hasMethod(@_);
+    },
+
     hasMethod => sub {
       my ($cob, $key) = @_;
 

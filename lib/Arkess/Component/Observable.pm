@@ -24,6 +24,7 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
+  $self->{ignored} = {}; # events to stop observing
   $self->{unwrapped} = {};
   $self->{eventBus} = $eventBus;
 }
@@ -53,14 +54,15 @@ sub afterInstall {
       my $wantarray = wantarray;
 
       my @return;
-      $owner->triggerBefore($key, @args);
+      my %ignored = %{$self->{ignored}};
+      $owner->triggerBefore($key, @args) unless exists $ignored{$key};
       if (!$wantarray) { # Make sure to return the wrapped sub's value in the same context it's being asked for
         $return[0] = $val->call(@args);
       }
       else {
         @return = $val->call(@args);
       }
-      $owner->trigger($key, $wantarray ? @return : $return[0]);
+      $owner->trigger($key, $wantarray ? @return : $return[0]) unless exists $ignored{$key};
       return $wantarray ? @return : $return[0];
     });
   });
@@ -103,14 +105,15 @@ sub exportMethods {
     dontObserve => sub {
       my ($cob, $event) = @_;
 
-
+      $self->{ignored}->{$event} = 1;
     },
 
     # Reregister observation for an event
     observe => sub {
       my ($cob, $event) = @_;
 
-
+      my %ignored = %{$self->{ignored}};
+      delete $ignored{$event};
     },
 
     # Register a callback for an event

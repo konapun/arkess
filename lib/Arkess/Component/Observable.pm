@@ -1,4 +1,3 @@
-
 package Arkess::Component::Observable;
 
 use strict;
@@ -54,7 +53,7 @@ sub afterInstall {
       my $wantarray = wantarray;
 
       my @return;
-      my %ignored = %{$self->{ignored}};
+      my %ignored = %{$self->{ignored}}; # FIXME: empty
       $owner->triggerBefore($key, @args) unless exists $ignored{$key};
       if (!$wantarray) { # Make sure to return the wrapped sub's value in the same context it's being asked for
         $return[0] = $val->call(@args);
@@ -103,7 +102,7 @@ sub exportMethods {
 
     # Unregister an event from being observed
     dontObserve => sub {
-      my ($cob, $event) = @_;
+      my ($cob, $event, $etc) = @_;
 
       $self->{ignored}->{$event} = 1;
     },
@@ -163,7 +162,8 @@ sub _updateUnwrapped {
 
     if (!$old->has($key)) {
       $old->set($key, sub {
-        $sub->call(@_);
+        my ($obj, @args) = @_;
+        $sub->call(@args);
       });
     }
   });

@@ -32,3 +32,9 @@ print "DONE\n";
 my $unwrapped = $obj2->_getUnwrapped();
 print "Calling unwrapped version. Shouldn't print\n";
 $unwrapped->get('getName')->call();
+print "Done (getName should't have printeted before this)\n";
+
+print "Testing unregistering an event\n";
+$obj2->dontObserve('getName');
+$obj2->setName('testName');
+print "Name: " . $obj2->getName() . "\n";

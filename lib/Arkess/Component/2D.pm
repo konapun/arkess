@@ -12,14 +12,13 @@ sub requires {
 sub initialize {
   my ($self, $width, $height) = @_;
 
-  # FIXME: component this gets intalled into might already have these set (if it's being reinstalled)
   $self->{width} = defined $width ? $width : 100;
   $self->{height} = defined $height ? $height : 100;
 }
 
 sub beforeInstall {
   my ($self, $cob) = @_;
-
+  
   if ($cob->can('getWidth') && $cob->can('getHeight')) { # Don't overwrite these
     $self->{width} = $cob->getWidth();
     $self->{height} = $cob->getHeight();

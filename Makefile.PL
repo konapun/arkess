@@ -30,7 +30,8 @@ WriteMakefile(
     'Curses' => '1.32', # need curses.h provided by libncurses5-dev on Ubuntu
     'Curses::UI' => '1.32',
     'Scalar::Util::Numeric' => '0.40',
-    'State::Machine' => '0.07'
+    'State::Machine' => '0.07',
+    'Digest::MD5' => '2.54'
   },
   EXE_FILES => {
     # TODO

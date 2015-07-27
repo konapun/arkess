@@ -13,14 +13,27 @@ sub requires {
 sub initialize {
   my ($self, $x, $y, $direction) = @_;
 
-  $self->{x} = defined $x ? $x : 0;
-  $self->{y} = defined $y ? $y : 0;
+  $self->{x} = defined($x) ? $x : -1;
+  $self->{y} = defined($y) ? $y : -1;
+  print "Initializing with (" . $self->{x} . ", " . $self->{y} . ")\n";
   $self->{direction} = defined $direction ? $direction : Arkess::Direction::DOWN;
+}
+
+sub beforeInstall {
+  my ($self, $cob) = @_;
+
+  my ($x, $y) = $cob->getCoordinates();
+  if ($self->{x} < 0) {
+    $self->{x} = $x;
+  }
+  if ($self->{y} < 0) {
+    $self->{y} = $y;
+  }
 }
 
 sub afterInstall {
   my ($self, $cob) = @_;
-  
+
   $cob->setCoordinates($self->{x}, $self->{y});
 }
 

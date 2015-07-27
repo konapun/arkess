@@ -8,13 +8,13 @@ use base qw(Arkess::Component);
 
 sub requires {
   my ($self, $requires) = @_;
-  
+
   return [
     'Arkess::Component::Observable',
     'Arkess::Component::Mobile',
 # FIXME: these shouldn't reset image dimensions
-#    'Arkess::Component::Positioned', # To get/set (x, y)
-#    'Arkess::Component::2D' # To get width/height
+    'Arkess::Component::Positioned', # To get/set (x, y)
+    'Arkess::Component::2D' # To get width/height
   ];
 }
 
@@ -42,6 +42,12 @@ sub afterInstall {
   }
   else {
     $self->_configureController($self->{controller});
+  }
+}
+
+sub exportAttributes {
+  return {
+    pointAndClickable => 1
   }
 }
 

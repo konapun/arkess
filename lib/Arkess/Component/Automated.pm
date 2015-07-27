@@ -133,8 +133,8 @@ sub exportMethods {
         return unless $direction;
         my $lagDistanceX = $lagDistance;
         my $lagDistanceY = $lagDistance;
-        $lagDistanceX = 0 if $direction eq 'up' || $direction eq 'down';
-        $lagDistanceY = 0 if $direction eq 'left' || $direction eq 'right';
+        $lagDistanceX = 0 if $direction eq Arkess::Direction::UP || $direction eq Arkess::Direction::DOWN;
+        $lagDistanceY = 0 if $direction eq Arkess::Direction::LEFT || $direction eq Arkess::Direction::RIGHT;
         my ($x, $y) = $toFollow->getCoordinates();
         my ($x2, $y2) = $cob->getCoordinates();
         my ($distanceX, $distanceY) = $cob->getDistanceFrom($toFollow, 1);
@@ -143,16 +143,16 @@ sub exportMethods {
         }
         else { # follow normally
           if ($x2+$lagDistanceX < $x) {
-            $cob->move('right');
+            $cob->move(Arkess::Direction::RIGHT);
           }
           elsif ($x2-$lagDistanceX > $x) {
-            $cob->move('left');
+            $cob->move(Arkess::Direction::LEFT);
           }
           if ($y2+$lagDistanceY < $y) {
-            $cob->move('down');
+            $cob->move(Arkess::Direction::DOWN);
           }
           elsif ($y2-$lagDistanceY > $y) {
-            $cob->move('up');
+            $cob->move(Arkess::Direction::UP);
           }
         }
       });

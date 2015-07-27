@@ -26,7 +26,7 @@ my $player = $game->createEntity({
   'Arkess::Component::CoordinateZIndex' => []
 });
 print "MOVING\n";
-$player->move('left');
+$player->move(Arkess::Direction::LEFT);
 print "Moved\n";
 my $partyMember = $game->createEntity({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden.png', [8, 1], 200],
@@ -63,10 +63,10 @@ my $textbox = $game->createEntity({
 #});
 
 $partyMember->addAnimationSequences({
-  up    => [[0, 6], [0, 7]],
-  down  => [[0, 4], [0, 5]],
-  left  => [[0, 0], [0, 1]],
-  right => [[0, 2], [0, 3]]
+  Arkess::Direction::UP    => [[0, 6], [0, 7]],
+  Arkess::Direction::DOWN  => [[0, 4], [0, 5]],
+  Arkess::Direction::LEFT  => [[0, 0], [0, 1]],
+  Arkess::Direction::RIGHT => [[0, 2], [0, 3]]
 });
 $partyMember->on('move', sub {
   my ($direction, $units) = @_;
@@ -76,10 +76,10 @@ $partyMember->on('move', sub {
 $partyMember->follow($player);
 
 $partyMember2->addAnimationSequences({
-  up    => [[0, 6], [0, 7]],
-  down  => [[0, 4], [0, 5]],
-  left  => [[0, 0], [0, 1]],
-  right => [[0, 2], [0, 3]]
+  Arkess::Direction::UP    => [[0, 6], [0, 7]],
+  Arkess::Direction::DOWN  => [[0, 4], [0, 5]],
+  Arkess::Direction::LEFT  => [[0, 0], [0, 1]],
+  Arkess::Direction::RIGHT => [[0, 2], [0, 3]]
 });
 $partyMember2->on('move', sub {
   my ($direction, $units) = @_;
@@ -89,10 +89,10 @@ $partyMember2->on('move', sub {
 $partyMember2->follow($partyMember);
 
 $partyMember3->addAnimationSequences({
-  up    => [[0, 4], [0, 5]],
-  down  => [[0, 0], [0, 1]],
-  left  => [[0, 6], [0, 7]],
-  right => [[0, 2], [0, 3]]
+  Arkess::Direction::UP    => [[0, 4], [0, 5]],
+  Arkess::Direction::DOWN  => [[0, 0], [0, 1]],
+  Arkess::Direction::LEFT  => [[0, 6], [0, 7]],
+  Arkess::Direction::RIGHT => [[0, 2], [0, 3]]
 });
 $partyMember3->on('move', sub {
   my ($direction, $units) = @_;
@@ -106,10 +106,10 @@ $player->setZIndex(2);
 #$partyMember2->setZIndex(2);
 #$partyMember3->setZIndex(1);
 $player->addAnimationSequences({
-  up    => [[3, 0], [3, 1], [3, 2],  [3, 3],  [3, 4],  [3, 5],  [3, 6],  [3, 7]],
-  down  => [[3, 8], [3, 9], [3, 10], [3, 11], [3, 12], [3, 13], [3, 14], [3, 15]],
-  left  => [[2, 0], [2, 1], [2, 2],  [2, 3],  [2, 4],  [2, 5],  [2, 6],  [2, 7]],
-  right => [[2, 8], [2, 9], [2, 10], [2, 11], [2, 12], [2, 13], [2, 14], [2, 15]]
+  Arkess::Direction::UP    => [[3, 0], [3, 1], [3, 2],  [3, 3],  [3, 4],  [3, 5],  [3, 6],  [3, 7]],
+  Arkess::Direction::DOWN  => [[3, 8], [3, 9], [3, 10], [3, 11], [3, 12], [3, 13], [3, 14], [3, 15]],
+  Arkess::Direction::LEFT  => [[2, 0], [2, 1], [2, 2],  [2, 3],  [2, 4],  [2, 5],  [2, 6],  [2, 7]],
+  Arkess::Direction::RIGHT => [[2, 8], [2, 9], [2, 10], [2, 11], [2, 12], [2, 13], [2, 14], [2, 15]]
 });
 $player->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   print "Advancing page\n";

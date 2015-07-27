@@ -4,7 +4,7 @@ use strict;
 use Arkess::Event;
 use Arkess::IO::Keyboard;
 use Arkess::IO::Keyboard::EventType;
-use Arkess::Direction;
+use Arkess::Direction::2D;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -75,16 +75,16 @@ sub _configureController {
 
   $controller->bind({
     Arkess::IO::Keyboard::KB_W => sub {
-      $self->{direction} = 'up';
+      $self->{direction} = Arkess::Direction::2D::UP;
     },
     Arkess::IO::Keyboard::KB_A => sub {
-      $self->{direction} = 'left';
+      $self->{direction} = Arkess::Direction::2D::LEFT;
     },
     Arkess::IO::Keyboard::KB_S => sub {
-      $self->{direction} = 'down';
+      $self->{direction} = Arkess::Direction::2D::DOWN;
     },
     Arkess::IO::Keyboard::KB_D => sub {
-      $self->{direction} = 'right';
+      $self->{direction} = Arkess::Direction::2D::RIGHT;
     }
   });
 
@@ -98,16 +98,16 @@ sub _configureController2 {
 
   $controller->bind({
     Arkess::IO::Keyboard::KB_UP => sub {
-      $self->{direction} = 'up';
+      $self->{direction} = Arkess::Direction::2D::UP;
     },
     Arkess::IO::Keyboard::KB_LEFT => sub {
-      $self->{direction} = 'left';
+      $self->{direction} = Arkess::Direction::2D::LEFT;
     },
     Arkess::IO::Keyboard::KB_DOWN => sub {
-      $self->{direction} = 'down';
+      $self->{direction} = Arkess::Direction::2D::DOWN;
     },
     Arkess::IO::Keyboard::KB_RIGHT => sub {
-      $self->{direction} = 'right';
+      $self->{direction} = Arkess::Direction::2D::RIGHT;
     }
   });
 

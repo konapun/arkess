@@ -1,7 +1,7 @@
 package Arkess::Component::Mobile;
 
 use strict;
-use Arkess::Direction;
+use Arkess::Direction::2D;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -41,16 +41,16 @@ sub exportMethods {
 
       my ($x, $y) = $cob->getCoordinates();
       $units = $self->{units} unless defined $units;
-      if ($direction eq Arkess::Direction::RIGHT) {
+      if ($direction eq Arkess::Direction::2D::RIGHT) {
         $cob->setCoordinates($x+$units, $y);
       }
-      elsif ($direction eq Arkess::Direction::LEFT) {
+      elsif ($direction eq Arkess::Direction::2D::LEFT) {
         $cob->setCoordinates($x-$units, $y);
       }
-      elsif ($direction eq Arkess::Direction::UP) {
+      elsif ($direction eq Arkess::Direction::2D::UP) {
         $cob->setCoordinates($x, $y-$units);
       }
-      elsif ($direction eq Arkess::Direction::DOWN) {
+      elsif ($direction eq Arkess::Direction::2D::DOWN) {
         $cob->setCoordinates($x, $y+$units);
       }
       else {

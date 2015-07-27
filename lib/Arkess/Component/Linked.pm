@@ -7,11 +7,15 @@ use base qw(Arkess::Component);
 sub initialize {
   my $self = shift;
 
+  my $up = Arkess::Direction::UP;
+  my $down = Arkess::Direction::DOWN;
+  my $left = Arkess::Direction::LEFT;
+  my $right = Arkess::Direction::RIGHT;
   $self->{links} = {
-    up    => undef,
-    down  => undef,
-    left  => undef,
-    right => undef
+    $up    => undef,
+    $down  => undef,
+    $left  => undef,
+    $right => undef
   };
 }
 

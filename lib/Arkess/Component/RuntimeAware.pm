@@ -30,7 +30,6 @@ sub exportMethods {
     setRuntime => sub {
       my ($cob, $runtime) = @_;
       $self->{runtime} = $runtime;
-      print "set\n";
     },
 
     hasRuntime => sub {

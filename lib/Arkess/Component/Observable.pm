@@ -141,11 +141,12 @@ sub exportMethods {
       $self->{events}->{before}->trigger($event, @args);
     },
 
-    # Allow this component to add new events when installing rathe rthan overwriting
+    # Allow this component to add new events when installing rather than overwriting
     _getEvents => sub {
       return $self->{events};
     },
 
+    # Every install will rewrap the unwrapped versions, so this private method will return the undecorated versions
     _getUnwrapped => sub {
       return $self->{unwrapped};
     }

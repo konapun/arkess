@@ -40,7 +40,7 @@ sub afterInstall {
   my $runtime = $self->{runtime};
   if (!$runtime) { # Automatically get runtime
     $cob->whenRuntimeAvailable(sub {
-      my $runtime = shift;
+      my $runtime = $cob->getRuntime();
 
       $self->_registerCollisionCheckWithRuntime($cob, $runtime);
     });
@@ -116,7 +116,7 @@ sub _registerCollisionCheckWithRuntime {
 
     foreach my $entity ($runtime->getEntities()) {
       next if $entity == $cob; # Don't check for collisions against self
-      if ($entity->hasAttribute('collidable')) {
+      if ($entity->attributes->has('collidable')) { # FIXME: "is" should work
         my $compareTag = $entity->getCollisionTag();
         my ($x2, $y2) = $entity->getCoordinates();
         my ($width2, $height2) = $entity->getDimensions();

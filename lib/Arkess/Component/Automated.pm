@@ -96,9 +96,9 @@ sub exportMethods {
     moveTo => sub {
       my ($cob, $x, $y, $cb) = @_;
 
-      my $event;
+      my $event; # Need to keep track of this so it can be unregistered
       $cb ||= sub{}; # NOP
-      return $cob->on(Arkess::Event::BEFORE_RENDER, sub { # Return event which can be unregistered
+      $event = $cob->on(Arkess::Event::BEFORE_RENDER, sub { # Return event which can be unregistered
         my ($cobX, $cobY) = $cob->getCoordinates();
 
         if ($cobX < $x) {
@@ -120,6 +120,7 @@ sub exportMethods {
           $cb->();
         }
       });
+      return $event;
     },
 
     follow => sub {

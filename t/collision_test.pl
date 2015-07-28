@@ -14,18 +14,18 @@ my $game = Arkess::Runtime->new({
 
 my $collider1 = Arkess::Object->new({
   'Arkess::Component::Collidable' => undef,
-  'Arkess::Component::Rectangle' => undef,
+  'Arkess::Component::2D::Rectangle' => undef,
   'Arkess::Component::D4' => undef
 });
 my $collider2 = Arkess::Object->new({ # TODO: Fix clone
   'Arkess::Component::D4' => [undef, 2],
   'Arkess::Component::Collidable' => [],
-  'Arkess::Component::Rectangle' => undef,
+  'Arkess::Component::2D::Rectangle' => undef,
 });
 my $collider3 = Arkess::Object->new({
   'Arkess::Component::D4' => [undef, 2],
   'Arkess::Component::Collidable' => [],
-  'Arkess::Component::Rectangle' => undef,
+  'Arkess::Component::2D::Rectangle' => undef,
 });
 
 $collider1->setColor([0,255,0,255]);

@@ -42,3 +42,8 @@ print "Name: " . $obj2->getName() . "\n";
 print "Testing reregistering an event\n";
 $obj2->observe('getName');
 print "Name: " . $obj2->getName() . "\n";
+
+$obj2->whenRuntimeAvailable(sub {
+  print "!!!!!!!!!!!!!!!!!!!Got runtime\n";
+});
+$obj2->setRuntime(Arkess::Runtime->new());

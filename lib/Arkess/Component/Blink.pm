@@ -6,7 +6,8 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Renderable',
-    'Arkess::Component::Timed'
+    'Arkess::Component::Timed',
+    'Arkess::Component::RuntimeAware'
   ];
 }
 
@@ -47,7 +48,7 @@ sub afterInstall {
 sub _registerBlinker {
   my ($self, $cob, $interval) = @_;
 
-  $cob->on('setRuntime', sub {
+  $cob->whenRuntimeAvailable(sub {
     my $handle = $cob->registerTimedEvent(sub {
       $cob->toggleVisibility();
     }, $interval);

@@ -51,7 +51,9 @@ sub exportMethods {
       return $self->{runtime}->getEntities();
     },
 
-    doOnceRuntimeIsAvailable => sub {
+    # Since this is such a common operation, prefer using this method rather
+    # than using the $cob->on('setRuntime', sub {}) form
+    whenRuntimeAvailable => sub {
       my ($cob, $sub) = @_;
 
       if ($cob->hasRuntime()) {
@@ -70,7 +72,6 @@ sub afterInstall {
 
   $cob->on('setRuntime', sub { # Run deferred callbacks
     foreach my $deferred (@{$self->{deferred}}) {
-      print "DEFERRED\n";
       $deferred->();
     }
   });

@@ -12,9 +12,9 @@ sub requires {
   return [
     'Arkess::Component::Observable',
     'Arkess::Component::Mobile',
-# FIXME: these shouldn't reset image dimensions
     'Arkess::Component::Positioned', # To get/set (x, y)
-    'Arkess::Component::2D' # To get width/height
+    'Arkess::Component::2D', #To get width/height
+    'Arkess::Component::RuntimeAware'
   ];
 }
 
@@ -32,7 +32,7 @@ sub afterInstall {
   my ($self, $cob) = @_;
 
   if (!$self->{controller}) {
-    $cob->on('setRuntime', sub {
+    $cob->whenRuntimeAvailable(sub {
       my $runtime = $cob->getRuntime();
       my $controller = $runtime->createController();
       $controller->setPlayer($cob);

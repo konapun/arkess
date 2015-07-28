@@ -53,6 +53,14 @@ sub exportMethods {
       return $cob->components;
     },
 
+    printComponentList => sub {
+      my $cob = shift;
+
+      my @list  = $cob->getComponentList();
+      print "$_ " foreach @list;
+      print "\n";
+    },
+
     getNumberOfComponents => sub {
       my $cob = shift;
 
@@ -64,6 +72,7 @@ sub exportMethods {
       my $cob = shift;
 
       print $cob->getDebugSymbol() . "($cob): " . $cob->fingerprintComponents() . "_FP (" . $cob->getNumberOfComponents() . " installed)\n";
+      $cob->printComponentList();
     }
 
   };

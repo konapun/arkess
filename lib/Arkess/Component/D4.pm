@@ -10,7 +10,8 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Mobile'
+    'Arkess::Component::Mobile',
+    'Arkess::Component::RuntimeAware'
   ];
 }
 
@@ -31,10 +32,10 @@ sub afterInstall {
 
   my $scheme = $self->{scheme};
   if (!$self->{controller}) { # Automatically attach a controller if one has not been explicitly set
-    $cob->on('setRuntime', sub {
+    $cob->whenRuntimeAvailable(sub {
       my $runtime = $cob->getRuntime();
       my $controller = $runtime->createController();
-      
+
       $controller->setPlayer($cob);
       $self->{controller} = $controller;
       if ($scheme == 1) {

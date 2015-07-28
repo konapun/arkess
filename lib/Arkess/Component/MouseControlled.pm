@@ -9,7 +9,8 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Mobile'
+    'Arkess::Component::Mobile',
+    'Arkess::Component::RuntimeAware'
   ];
 }
 
@@ -28,7 +29,7 @@ sub afterInstall {
   my ($self, $cob) = @_;
 
   if (!$self->{controller}) {
-    $cob->on('setRuntime', sub {
+    $cob->whenRuntimeAvailable(sub {
       my $runtime = $cob->getRuntime();
       my $controller = $runtime->createController();
       $controller->setPlayer($cob);

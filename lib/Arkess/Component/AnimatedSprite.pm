@@ -11,7 +11,8 @@ sub requires {
     'Arkess::Component::2D',
     'Arkess::Component::Renderable',
     'Arkess::Component::Timed',
-    'Arkess::Component::Observable'
+    'Arkess::Component::Observable',
+    'Arkess::Component::RuntimeAware'
   ];
 }
 
@@ -100,7 +101,7 @@ sub afterInstall {
   my ($self, $cob) = @_;
 
   $cob->setDimensions($self->{width}, $self->{height});
-  $cob->on('setRuntime', sub {
+  $cob->whenRuntimeAvailable(sub {
     $cob->registerTimedEvent(sub {
       return unless $self->{activeSequence};
       $self->{frame}++;

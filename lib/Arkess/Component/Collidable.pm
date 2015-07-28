@@ -9,6 +9,7 @@ sub requires {
     'Arkess::Component::Observable',
     'Arkess::Component::Positioned',
     'Arkess::Component::2D',
+    'Arkess::Component::RuntimeAware',
     'Arkess::Component::Renderable' # needed to get screen coordinates to check for collisions (or maybe use non-screen coords instead?)
   ];
 }
@@ -38,7 +39,7 @@ sub afterInstall {
 
   my $runtime = $self->{runtime};
   if (!$runtime) { # Automatically get runtime
-    $cob->on('setRuntime', sub {
+    $cob->whenRuntimeAvailable(sub {
       my $runtime = shift;
 
       $self->_registerCollisionCheckWithRuntime($cob, $runtime);

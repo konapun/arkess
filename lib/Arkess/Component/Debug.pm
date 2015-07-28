@@ -41,16 +41,29 @@ sub exportMethods {
     fingerprintComponents => sub {
       my $cob = shift;
 
-      my @components = keys %{$cob->{components}}; # FIXME: Cobsy doesn't expose these publicly
+      my @components = $cob->components;
       my @sorted = sort {$a cmp $b} @components;
       my $componentString = join(' ', @sorted);
       return unpack('L', md5($componentString));
     },
 
+    getComponentList => sub {
+      my $cob = shift;
+
+      return $cob->components;
+    },
+
+    getNumberOfComponents => sub {
+      my $cob = shift;
+
+      my @components = $cob->getComponentList();
+      return scalar(@components);
+    },
+
     _debug => sub {
       my $cob = shift;
 
-      print $cob->getDebugSymbol() . "($cob): " . $cob->fingerprintComponents() . "_FP\n"; 
+      print $cob->getDebugSymbol() . "($cob): " . $cob->fingerprintComponents() . "_FP (" . $cob->getNumberOfComponents() . " installed)\n";
     }
 
   };

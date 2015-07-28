@@ -1,4 +1,3 @@
-
 package Arkess::Component::Observable2;
 
 use strict;

@@ -23,7 +23,6 @@ sub initialize {
     before => Arkess::Event::Bus->new(),
     after  => Arkess::Event::Bus->new()
   };
-  $self->{ignored} = {}; # events to stop observing
   $self->{unwrapped} = {};
   $self->{eventBus} = $eventBus;
 }
@@ -53,15 +52,14 @@ sub afterInstall {
       my $wantarray = wantarray;
 
       my @return;
-      my %ignored = %{$self->{ignored}}; # FIXME: empty
-      $owner->triggerBefore($key, @args) unless exists $ignored{$key};
+      $owner->triggerBefore($key, @args);
       if (!$wantarray) { # Make sure to return the wrapped sub's value in the same context it's being asked for
         $return[0] = $val->call(@args);
       }
       else {
         @return = $val->call(@args);
       }
-      $owner->trigger($key, $wantarray ? @return : $return[0]) unless exists $ignored{$key};
+      $owner->trigger($key, $wantarray ? @return : $return[0]);
       return $wantarray ? @return : $return[0];
     });
   });
@@ -73,7 +71,8 @@ sub afterInstall {
 
 sub exportAttributes {
   return {
-    observable => 1
+    observable => 1,
+    observableIgnores => {}
   };
 }
 
@@ -104,15 +103,16 @@ sub exportMethods {
     dontObserve => sub {
       my ($cob, $event, $etc) = @_;
 
-      $self->{ignored}->{$event} = 1;
+      $cob->attributes->get('observableIgnores')->{$event} = 1;
     },
 
     # Reregister observation for an event
     observe => sub {
       my ($cob, $event) = @_;
 
-      my %ignored = %{$self->{ignored}};
+      my %ignored = %{$cob->attributes->get('observableIgnores')};
       delete $ignored{$event};
+      $cob->attributes->set('observableIgnores', {%ignored});
     },
 
     # Register a callback for an event
@@ -132,13 +132,15 @@ sub exportMethods {
     trigger => sub {
       my ($cob, $event, @args) = @_;
 
-      $self->{events}->{after}->trigger($event, @args);
+      my %ignored = %{$cob->attributes->get('observableIgnores')};
+      return $self->{events}->{after}->trigger($event, @args) unless exists $ignored{$event};
     },
 
     triggerBefore => sub {
       my ($cob, $event, @args) = @_;
 
-      $self->{events}->{before}->trigger($event, @args);
+      my %ignored = %{$cob->attributes->get('observableIgnores')};
+      return $self->{events}->{before}->trigger($event, @args) unless exists $ignored{$event};
     },
 
     # Allow this component to add new events when installing rather than overwriting

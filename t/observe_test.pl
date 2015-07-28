@@ -38,3 +38,7 @@ print "Testing unregistering an event\n";
 $obj2->dontObserve('getName');
 $obj2->setName('testName');
 print "Name: " . $obj2->getName() . "\n";
+
+print "Testing reregistering an event\n";
+$obj2->observe('getName');
+print "Name: " . $obj2->getName() . "\n";

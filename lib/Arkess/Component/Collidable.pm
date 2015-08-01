@@ -37,9 +37,6 @@ sub setPriority {
 sub finalize {
   my ($self, $cob) = @_;
 
-  # Set up collision boundaries based on object size
-  # TODO
-  
   # Set up collision checks
   my $runtime = $self->{runtime};
   if (!$runtime) { # Automatically get runtime
@@ -65,6 +62,10 @@ sub exportMethods {
 
   return {
 
+    isColliding => sub {
+      return $self->{colliding};
+    },
+    
     # Set a callback to be triggered each time a collision happens
     onCollide => sub {
       my ($cob, $callback, $collisionTag) = @_;
@@ -143,6 +144,7 @@ sub _registerCollisionCheckWithRuntime {
         }
         else { # no collision between $self and $entity
           if ($entity->{colliding}) { # was colliding but is no longer; trigger uncollide
+          print "Was colliding but now not\n";
             foreach my $callback (@{$entity->{uncollisionEvents}->{ALL}}) {
               $callback->($self);
             }

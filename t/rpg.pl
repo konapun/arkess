@@ -15,7 +15,7 @@ my $background = $game->createEntity({
 });
 my $player = $game->createEntity({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/link.png', [16, 4], 200],
-#  'Arkess::Component::Collidable' => 'player', # Collision tag for player
+  'Arkess::Component::Collidable' => 'player', # Collision tag for player
   'Arkess::Component::D4'         => [],
   'Arkess::Component::CameraFollow' => [$background, 'scroll'],
   'Arkess::Component::Audible' => {
@@ -25,18 +25,20 @@ my $player = $game->createEntity({
   },
   'Arkess::Component::CoordinateZIndex' => []
 });
-print "MOVING\n";
 $player->move(Arkess::Direction::LEFT);
-print "Moved\n";
+
 my $partyMember = $game->createEntity({
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden.png', [8, 1], 200],
   'Arkess::Component::Automated' => [],
+#  'Arkess::Component::Collidable' => 'player2',
   'Arkess::Component::CoordinateZIndex' => []
 });
 my $partyMember2 = $partyMember->extend({
+#  'Arkess::Component::Collidable' => 'player3',
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/maiden2.png', [8, 1], 200],
 });
 my $partyMember3 = $partyMember->extend({
+  'Arkess::Component::Collidable' => 'player4',
   'Arkess::Component::AnimatedSprite' => ['./assets/characters/zelda.png', [8, 1], 200],
 });
 $game->addEntity($partyMember2);
@@ -58,6 +60,24 @@ my $textbox = $game->createEntity({
 #  'RPG::Component::House' => [20, 20]
 #});
 
+my $collisionEvent;
+$player->onCollide(sub {
+  $collisionEvent = $player->before('move', sub {
+    my $direction = shift;
+
+    print "Calling collisoin event\n";
+    $player->mobilize();
+    $player->dontObserve('move');
+    $player->move(Arkess::Direction::reverse($direction));
+    $player->observe('move');
+    $player->immobilize();
+  });
+});
+$player->onUncollide(sub { # FIXME: This should unregister the collision event but it doesn't...
+  $collisionEvent->unregister();
+  $player->mobilize();
+});
+
 #$player->onCollideWith('house', sub {
 #  print "Player collided with house!\n";
 #});
@@ -73,7 +93,7 @@ $partyMember->on('move', sub {
 
   $partyMember->setSequence($direction) if $direction;
 });
-$partyMember->follow($player);
+#$partyMember->follow($player);
 
 $partyMember2->addAnimationSequences({
   Arkess::Direction::UP    => [[0, 6], [0, 7]],
@@ -148,6 +168,11 @@ $player->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keybo
   print "Pressed space\n";
   $partyMember->playAutomation('cycleSquare');
 });
+
+$player->setCoordinates(0, 0);
+$partyMember->setCoordinates(0, 40);
+$partyMember2->setCoordinates(0, 60);
+$partyMember3->setCoordinates(0, 80);
 
 $game->setWindowOptions({
   title  => 'Sample RPG',

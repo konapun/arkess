@@ -14,6 +14,7 @@ sub initialize {
   my ($self, $units) = @_;
 
   $self->{units} = defined $units ? $units : 1; # How many units to move on strafe or move
+  $self->{mobile} = 1; # player can move
 }
 
 sub setPriority {
@@ -35,10 +36,23 @@ sub exportMethods {
       return $self->{units};
     },
 
+    immobilize => sub {
+      $self->{mobile} = 0;
+    },
+
+    mobilize => sub {
+      $self->{mobile} = 1;
+    },
+
+    isMobile => sub {
+      return $self->{mobile};
+    },
+
     # Move while changing position
     move => sub {
       my ($cob, $direction, $units) = @_;
 
+      return unless $cob->isMobile();
       my ($x, $y) = $cob->getCoordinates();
       $units = $self->{units} unless defined $units;
       if ($direction eq Arkess::Direction::2D::RIGHT) {

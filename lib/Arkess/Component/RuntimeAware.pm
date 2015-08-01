@@ -67,7 +67,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->on('setRuntime', sub { # Run deferred callbacks

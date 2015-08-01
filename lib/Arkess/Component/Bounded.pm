@@ -17,7 +17,7 @@ sub initialize {
   $self->{provider} = $boundsProvider;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   my $provider = $self->{provider};

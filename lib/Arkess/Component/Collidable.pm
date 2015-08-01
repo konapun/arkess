@@ -34,9 +34,13 @@ sub setPriority {
   return 2;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
+  # Set up collision boundaries based on object size
+  # TODO
+  
+  # Set up collision checks
   my $runtime = $self->{runtime};
   if (!$runtime) { # Automatically get runtime
     $cob->whenRuntimeAvailable(sub {

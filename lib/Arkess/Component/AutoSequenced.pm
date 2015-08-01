@@ -17,7 +17,7 @@ sub initialize {
   $self->{sequences} = $sequences; # If any, else can be assigned through AnimatedSprite's methods
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->on('move', sub {

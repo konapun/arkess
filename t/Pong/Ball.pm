@@ -25,7 +25,7 @@ sub initialize {
   $self->{angle} = 0;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->setCollisionTag('ball');

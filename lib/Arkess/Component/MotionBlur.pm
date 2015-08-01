@@ -9,7 +9,7 @@ sub requires {
   ];
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->on('move', sub {

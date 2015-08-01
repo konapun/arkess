@@ -9,7 +9,7 @@ sub requires {
   ];
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
 }

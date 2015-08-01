@@ -44,7 +44,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->nullifyMissingFrom($self->{initFrom}) if defined $self->{initFrom};

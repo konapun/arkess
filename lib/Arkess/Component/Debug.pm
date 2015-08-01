@@ -12,7 +12,7 @@ sub initialize {
   $self->{active} = defined $active ? $active : 1; # on by default
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $DEBUG_SYMBOL++;

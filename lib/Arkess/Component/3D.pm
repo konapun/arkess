@@ -53,7 +53,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->setWidth($self->{x}) if defined $self->{x};

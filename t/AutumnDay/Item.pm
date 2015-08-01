@@ -19,7 +19,7 @@ sub requires {
 #   return 2;
 # }
 #
-# sub beforeInstall {
+# sub configure {
 #   my ($self, $cob) = @_;
 #
 #   my $oldSub = sub{};

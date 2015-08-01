@@ -24,7 +24,7 @@ sub initialize {
   $self->{color} = $color;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   my ($x, $y, $width, $height) = @{$self->{dimensions}};

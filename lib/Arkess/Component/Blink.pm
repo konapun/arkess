@@ -39,7 +39,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $self->_registerBlinker($cob, $self->{interval}) if $self->{runImmediately};

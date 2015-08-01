@@ -109,7 +109,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   my %initActions = %{$self->{initActions}};

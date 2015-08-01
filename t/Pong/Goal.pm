@@ -18,7 +18,7 @@ sub initialize {
   $self->{direction} = $direction;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   if ($direction eq Arkess::Direction::LEFT) {

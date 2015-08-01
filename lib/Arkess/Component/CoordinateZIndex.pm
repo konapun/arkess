@@ -17,7 +17,7 @@ sub initialize {
   $self->{orientation} = $orientation; # FIXME
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   my $baseIndex = $cob->getZIndex();

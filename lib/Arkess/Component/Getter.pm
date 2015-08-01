@@ -3,7 +3,7 @@ package Arkess::Component::Getter;
 use strict;
 use base qw(Arkess::Component);
 
-sub afterInstall {
+sub finalize {
   my ($self, $owner) = @_;
 
   $self->{owner} = $owner;

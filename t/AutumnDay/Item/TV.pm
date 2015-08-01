@@ -9,7 +9,7 @@ sub requires {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   my $status = $self->{on} ? 'on' : 'off';

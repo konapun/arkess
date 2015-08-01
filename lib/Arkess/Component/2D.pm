@@ -16,7 +16,7 @@ sub initialize {
   $self->{height} = defined $height ? $height : 100;
 }
 
-sub beforeInstall {
+sub configure {
   my ($self, $cob) = @_;
   
   if ($cob->can('getWidth') && $cob->can('getHeight')) { # Don't overwrite these

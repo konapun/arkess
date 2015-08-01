@@ -28,7 +28,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   # Set event that checks for occlusion. When an occlusion is detected, trigger

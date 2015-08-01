@@ -18,7 +18,7 @@ sub initialize {
   $self->{imgComponent} = $image;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->installComponent($self->{imgComponent});

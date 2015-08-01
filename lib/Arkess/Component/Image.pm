@@ -70,7 +70,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->setDimensions($self->{width}, $self->{height}); # via Arkess::Component::2D

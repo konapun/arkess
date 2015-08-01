@@ -33,7 +33,7 @@ sub setPriority {
   return -1; # Needs to be lower than renderable
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   my $transition = $self->{transition};

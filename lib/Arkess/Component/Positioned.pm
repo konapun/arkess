@@ -19,7 +19,7 @@ sub initialize {
   $self->{direction} = defined $direction ? $direction : Arkess::Direction::DOWN;
 }
 
-sub beforeInstall {
+sub configure {
   my ($self, $cob) = @_;
 
   my ($x, $y) = $cob->getCoordinates();
@@ -31,7 +31,7 @@ sub beforeInstall {
   }
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->setCoordinates($self->{x}, $self->{y});

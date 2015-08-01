@@ -15,7 +15,7 @@ sub initialize {
 
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->setCollisionTag('warpPoint');

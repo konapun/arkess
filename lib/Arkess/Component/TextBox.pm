@@ -21,7 +21,7 @@ sub initialize {
 
   $textScreens = [] unless defined $textScreens;
   $self->{pages} = ref $textScreens eq 'ARRAY' ? $textScreens : [$textScreens];
-  $self->{currentPage} = -1; # -1 because it will automatically be incremented to 0 on afterInstall
+  $self->{currentPage} = -1; # -1 because it will automatically be incremented to 0 on finalize
 }
 
 sub exportMethods {
@@ -55,7 +55,7 @@ sub exportMethods {
   };
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->displayNextPage();

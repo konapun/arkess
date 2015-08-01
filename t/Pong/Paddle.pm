@@ -98,7 +98,7 @@ sub exportMethods {
   }
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $self->{controller}->setPlayer($cob);

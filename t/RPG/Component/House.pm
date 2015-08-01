@@ -20,7 +20,7 @@ sub initialize {
   $self->{y} = $y;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   $cob->setCoordinates($self->{x}, $self->{y});

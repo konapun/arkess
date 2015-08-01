@@ -27,7 +27,7 @@ sub initialize {
   $self->{eventBus} = $eventBus;
 }
 
-sub beforeInstall {
+sub configure {
   my ($self, $owner) = @_;
 
   if ($owner->hasAttribute('observable')) { # Don't want to overwrite previously registered events
@@ -36,7 +36,7 @@ sub beforeInstall {
   }
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $owner) = @_;
 
   # Decorate all the owner's methods with a version which executes callbacks after the original method is called.

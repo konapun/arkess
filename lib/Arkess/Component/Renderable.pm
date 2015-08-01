@@ -110,7 +110,7 @@ sub exportMethods {
   }
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   if ($cob->hasMethod('getCoordinates')) {

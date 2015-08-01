@@ -26,7 +26,7 @@ sub setPriority {
   return 2; # need a higher priority than Observable so we can rely on the runtime being set for us to register with
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   if (!$self->{controller}) {

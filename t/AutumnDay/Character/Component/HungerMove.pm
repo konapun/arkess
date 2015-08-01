@@ -17,7 +17,7 @@ sub initialize {
   $self->{movesPerUnit} = $movesPerUnit || 2;
 }
 
-sub afterInstall {
+sub finalize {
   my ($self, $cob) = @_;
 
   my $currentMoves = 0;

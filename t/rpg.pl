@@ -63,20 +63,20 @@ my $textbox = $game->createEntity({
 my $collisionEvent;
 $player->onCollide(sub {
   $collisionEvent = $player->before('move', sub {
-    my $direction = shift;
+    my ($moveCallback, @args) = @_;
 
-    print "Calling collisoin event\n";
-    $player->mobilize();
-    $player->dontObserve('move');
-    $player->move(Arkess::Direction::reverse($direction));
-    $player->observe('move');
     $player->immobilize();
+    $player->trigger('move');
+  });
+  $player->on('move', sub {
+    $collisionEvent->unregister();
+    $player->mobilize();
   });
 });
-$player->onUncollide(sub { # FIXME: This should unregister the collision event but it doesn't...
-  $collisionEvent->unregister();
-  $player->mobilize();
-});
+# $player->onUncollide(sub { # FIXME: This should unregister the collision event but it doesn't...
+#   $collisionEvent->unregister();
+#   $player->mobilize();
+# });
 
 #$player->onCollideWith('house', sub {
 #  print "Player collided with house!\n";

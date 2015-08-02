@@ -115,13 +115,14 @@ sub exportMethods {
       $cob->attributes->set('observableIgnores', {%ignored});
     },
 
-    # Register a callback for an event
+    # Method modifier: called after a method
     on => sub {
       my ($cob, $event, $callback) = @_;
 
       return $self->{events}->{after}->bind($event, $callback);
     },
 
+    # Method modifier: called before a method
     before => sub {
       my ($cob, $event, $callback) = @_;
 

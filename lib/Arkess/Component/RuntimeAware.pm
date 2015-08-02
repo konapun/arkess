@@ -57,7 +57,7 @@ sub exportMethods {
       my ($cob, $sub) = @_;
 
       if ($cob->hasRuntime()) {
-        return $sub->();
+        return $sub->($cob->getRuntime());
       }
       else {
         push(@{$self->{deferred}}, $sub);
@@ -71,8 +71,9 @@ sub finalize {
   my ($self, $cob) = @_;
 
   $cob->on('setRuntime', sub { # Run deferred callbacks
+    my $runtime = $cob->getRuntime();
     foreach my $deferred (@{$self->{deferred}}) {
-      $deferred->();
+      $deferred->($runtime);
     }
   });
 }

@@ -38,17 +38,11 @@ sub finalize {
   my ($self, $cob) = @_;
 
   # Set up collision checks
-  my $runtime = $self->{runtime};
-  if (!$runtime) { # Automatically get runtime
-    $cob->whenRuntimeAvailable(sub {
-      my $runtime = $cob->getRuntime();
-
-      $self->_registerCollisionCheckWithRuntime($cob, $runtime);
-    });
-  }
-  else {
+  $cob->whenRuntimeAvailable(sub {
+    my $runtime = shift;
+    
     $self->_registerCollisionCheckWithRuntime($cob, $runtime);
-  }
+  });
 }
 
 sub exportAttributes {
@@ -65,7 +59,7 @@ sub exportMethods {
     isColliding => sub {
       return $self->{colliding};
     },
-    
+
     # Set a callback to be triggered each time a collision happens
     onCollide => sub {
       my ($cob, $callback, $collisionTag) = @_;

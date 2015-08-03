@@ -1,6 +1,7 @@
-package Arkess::Component::PointAndClick;
+package Arkess::Component::Clickable;
 
 use strict;
+use Arkess::Event::Bus;
 use Arkess::IO::Mouse;
 use Arkess::IO::Mouse::EventType;
 use Arkess::Direction;
@@ -22,6 +23,7 @@ sub initialize {
   my ($self, $controller) = @_;
 
   $self->{controller} = $controller;
+  $self->{clickEvents} = Arkess::Event::Bus->new();
 }
 
 sub setPriority {
@@ -47,7 +49,7 @@ sub finalize {
 
 sub exportAttributes {
   return {
-    pointAndClickable => 1
+    clickable => 1
   }
 }
 
@@ -58,6 +60,10 @@ sub exportMethods {
 
     getController => sub {
       return $self->{controller};
+    },
+
+    onClick => sub {
+
     }
 
   };

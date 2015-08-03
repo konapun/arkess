@@ -6,6 +6,7 @@ use Arkess::IO::Mouse::EventType;
 use Arkess::Direction;
 use base qw(Arkess::Component);
 
+# FIXME: Write in terms of clickable
 sub requires {
   return [
     'Arkess::Component::Observable',

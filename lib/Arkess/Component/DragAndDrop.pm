@@ -1,66 +1,25 @@
 package Arkess::Component::DragAndDrop;
 
 use strict;
-use Arkess::IO::Mouse;
-use Arkess::IO::Mouse::EventType;
-use Arkess::Direction;
 use base qw(Arkess::Component);
 
-# FIXME: Write in terms of clickable
 sub requires {
   return [
-    'Arkess::Component::Observable',
-    'Arkess::Component::Positioned', # To get/set (x, y)
-    'Arkess::Component::2D', # To get width/height
-    'Arkess::Component::RuntimeAware'
+    'Arkess::Component::Clickable'
   ];
 }
 
 sub initialize {
-  my ($self, $controller) = @_;
+  my $self = shift;
 
-  $self->{controller} = $controller;
   $self->{dragging} = 0;
-}
-
-sub setPriority {
-  return 2; # need a higher priority than Observable so we can rely on the runtime being set for us to register with
 }
 
 sub finalize {
   my ($self, $cob) = @_;
 
-  if (!$self->{controller}) {
-    $cob->whenRuntimeAvailable(sub {
-      my $runtime = $cob->getRuntime();
-      my $controller = $runtime->createController();
-      $controller->setPlayer($cob);
-      $self->{controller} = $controller;
-      $self->_configureController($controller);
-    });
-  }
-  else {
-    $self->_configureController($controller);
-  }
-}
-
-sub exportMethods {
-  my $self = shift;
-
-  return {
-
-    getController => sub {
-      return $self->{controller};
-    }
-
-  };
-}
-
-sub _configureController {
-  my ($self, $controller) = @_;
-
-  $controller->bind(Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
-    my ($cob, $event) = @_;
+  $cob->onClick(sub {
+    my $event = shift;
 
     # Check to see if click is on a cob with drag and drop enabled
     my $clickX = $event->button_x;
@@ -73,9 +32,11 @@ sub _configureController {
       $self->{dragging} = 1;
     }
   });
-
-  $controller->bind(Arkess::IO::Mouse::EventType::MOVE, sub {
-    my ($cob, $event) = @_;
+  $cob->onUnclick(sub {
+    $self->{dragging} = 0;
+  });
+  $cob->onMouseMove(sub {
+    my $event = shift;
 
     if ($self->{dragging}) {
       my $clickX = $event->button_x;
@@ -83,12 +44,6 @@ sub _configureController {
       my ($width, $height) = $cob->getDimensions();
 
       $cob->setCoordinates($clickX+$width/2, $clickY+$height/2);
-    }
-  });
-
-  $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, sub {
-    if ($self->{dragging}) {
-      $self->{dragging} = 0;
     }
   });
 }

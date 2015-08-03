@@ -4,7 +4,6 @@ use strict;
 use Arkess::Event::Bus;
 use Arkess::IO::Mouse;
 use Arkess::IO::Mouse::EventType;
-use Arkess::Direction;
 use base qw(Arkess::Component);
 
 sub requires {
@@ -12,8 +11,6 @@ sub requires {
 
   return [
     'Arkess::Component::Observable',
-    'Arkess::Component::Mobile',
-    'Arkess::Component::Positioned', # To get/set (x, y)
     'Arkess::Component::2D', #To get width/height
     'Arkess::Component::RuntimeAware'
   ];
@@ -23,11 +20,7 @@ sub initialize {
   my ($self, $controller) = @_;
 
   $self->{controller} = $controller;
-  $self->{clickEvents} = Arkess::Event::Bus->new();
-}
-
-sub setPriority {
-  return 2; # need a higher priority than Observable so we can rely on the runtime being set for us to register with
+  $self->{events} = Arkess::Event::Bus->new();
 }
 
 sub finalize {
@@ -63,7 +56,21 @@ sub exportMethods {
     },
 
     onClick => sub {
+      my ($cob, $sub) = @_;
 
+      return $self->{events}->bind('click', $sub);
+    },
+
+    onUnclick => sub {
+      my ($cob, $sub) = @_;
+
+      return $self->{events}->bind('unclick', $sub);
+    },
+
+    onMouseMove => sub {
+      my ($cob, $sub) = @_;
+
+      return $self->{events}->bind('mousemove', $sub);
     }
 
   };
@@ -75,14 +82,17 @@ sub _configureController {
   $controller->bind(Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
     my ($cob, $event) = @_;
 
-    # Check to see if click is on a cob with drag and drop enabled
-    my $clickX = $event->button_x;
-    my $clickY = $event->button_y;
-    my ($x, $y) = $cob->getCoordinates();
-    my ($width, $height) = $cob->getDimensions();
-    my ($imgX, $imgY) = ($clickX - $width/2, $clickY - $height/2); # Place image center at click point
+    $self->{events}->trigger('click', $event);
+  });
+  $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, sub {
+    my ($cob, $event) = @_;
 
-    $cob->setCoordinates($imgX, $imgY);
+    $self->{events}->trigger('unclick', $event);
+  });
+  $controller->bind(Arkess::IO::Mouse::EventType::MOVE, sub {
+    my ($cob, $event) = @_;
+
+    $self->{events}->trigger('mousemove', $event);
   });
 }
 
@@ -90,5 +100,5 @@ sub _configureController {
 
 __END__
 =head1 NAME
-Arkess::Component::PointAndClick - A component to allow a cob to be moved with
-the mouse
+Arkess::Component::Clickable - A component that allows an object to respond to
+clicks

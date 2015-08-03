@@ -10,4 +10,9 @@ sub requires {
   ];
 }
 
+sub finalize {
+  my ($self, $cob) = @_;
+
+  
+}
 1;

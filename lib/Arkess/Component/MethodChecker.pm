@@ -5,7 +5,8 @@ use base qw(Arkess::Component);
 
 sub exportMethods {
   return {
-    can => sub {
+
+    canCall => sub {
       return shift->hasMethod(@_);
     },
 
@@ -14,7 +15,8 @@ sub exportMethods {
 
       return $cob->methods->has($key);
     }
-  }
+
+  };
 }
 
 1;

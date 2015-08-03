@@ -93,7 +93,7 @@ sub exportMethods {
       foreach my $contained (@{$self->{entities}}) {
         if ($contained eq $entity) {
           my $found = splice(@{$self->{entities}}, $index, 1);
-          $found->setPosition(undef) if $entity->is('entityPositioned');
+          $found->setPosition(undef) if $entity->hasAttribute('entityPositioned');
         }
         $index++;
       }

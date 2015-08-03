@@ -26,10 +26,10 @@ $bgAnimations->setCoordinates(0, 0);
 my $fighter1 = $game->createEntity({
   'Arkess::Component::Image' => './assets/characters/ryu1.png',
   'Arkess::Component::Mobile' => [1],
-  'Arkess::Component::PointAndClick' => [],
+#  'Arkess::Component::PointAndClick' => [],
   'Arkess::Component::D4' => [],
 #  'Arkess::Component::AnimatedSprite' => [],
-#  'Arkess::Component::DragAndDrop' => [],
+  'Arkess::Component::DragAndDrop' => [],
 #  'Arkess::Component::Observable' => []
 });
 #$fighter1->on('move', sub {

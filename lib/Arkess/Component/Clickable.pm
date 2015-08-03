@@ -26,7 +26,7 @@ sub initialize {
 sub finalize {
   my ($self, $cob) = @_;
 
-  if (!$self->{controller}) {
+  if (!$self->{controller}) { # automatically find controller
     $cob->whenRuntimeAvailable(sub {
       my $runtime = $cob->getRuntime();
       my $controller = $runtime->createController();

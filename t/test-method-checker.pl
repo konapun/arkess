@@ -6,6 +6,7 @@ use Arkess;
 
 my $obj1 = Arkess::Object->new({
   'Test::Named' => 'named',
+  'Arkess::Component::Deactivatable' => [],
   'Arkess::Component::Observable' => [],
   'Arkess::Component::MethodChecker' => []
 });
@@ -26,3 +27,9 @@ if ($obj1->canCall('getName')) {
 else {
   print "can not working\n";
 }
+
+print "Getting name (active): " . $obj1->getName() . "\n";
+$obj1->deactivate('getName');
+print "Getting name (inactive): " . $obj1->getName() . "\n";
+$obj1->activate('getName');
+print "Getting name (active): " . $obj1->getName() . "\n";

@@ -82,20 +82,28 @@ sub _configureController {
   $controller->bind(Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
     my ($cob, $event) = @_;
 
-    $self->{events}->trigger('click', $event);
+    $self->{events}->trigger('click', $event) if $self->_withinBounds($cob, $event);
   });
   $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, sub {
     my ($cob, $event) = @_;
 
-    $self->{events}->trigger('unclick', $event);
+    $self->{events}->trigger('unclick', $event) if $self->_withinBounds($cob, $event);
   });
   $controller->bind(Arkess::IO::Mouse::EventType::MOVE, sub {
     my ($cob, $event) = @_;
 
-    $self->{events}->trigger('mousemove', $event);
+    $self->{events}->trigger('mousemove', $event) if $self->_withinBounds($cob, $event);
   });
 }
 
+sub _withinBounds {
+  my ($self, $cob, $event) = @_;
+
+  my ($clickX, $clickY) = ($event->button_x, $event->button_y);
+  my ($x, $y) = $cob->getCoordinates();
+  my ($width, $height) = $cob->getDimensions();
+  return ($clickX > $x && $clickX < $x + $width) && ($clickY > $y && $clickY < $y + $height);
+}
 1;
 
 __END__

@@ -11,12 +11,12 @@ use Arkess::Runtime;
 my $game = Arkess::Runtime->new();
 
 my $frame = $game->createEntity({
-  'ClickQuest::UI::Frame'
+  'ClickQuest::UI::Frame' => [700, 500]
 });
 
 $game->setWindowOptions({
   title  => 'Click Quest',
-  width  => 1000,
-  height => 700
+  width  => $frame->getWidth(),
+  height => $frame->getHeight()
 });
 $game->run();

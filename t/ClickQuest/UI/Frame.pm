@@ -6,20 +6,30 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Renderable',
-    'Arkess::Component::Container'
+    'Arkess::Component::Container',
+    'Arkess::Component::2D'
   ]
 }
 
 sub initialize {
-  print "INIT!\n";
+  my ($self, $width, $height);
+
+  $self->{width} = $width;
+  $self->{height} = $height;
 }
 
 sub finalize {
   my ($self, $cob) = @_;
 
-  $cob->setZIndex(999);
+  $self->{width} = 700;
+  $self->{height} = 500;
+  $cob->setZIndex(1);
+  $cob->setCoordinates(0, 0);
+  $cob->setDimensions($self->{width}, $self->{height});
+
+  my $padding = 100;
   $cob->addToContainer(Arkess::Object->new({
-    'ClickQuest::UI::ClickCanvas' => [50, 50, 200, 200]
+    'ClickQuest::UI::ClickCanvas' => [$padding, $padding, $self->{width} - 2*$padding, $self->{height} - 2*$padding]
   }));
 }
 

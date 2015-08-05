@@ -71,6 +71,12 @@ sub exportMethods {
       my ($cob, $sub) = @_;
 
       return $self->{events}->bind('mousemove', $sub);
+    },
+
+    onDrag => sub {
+      my ($cob, $sub) = @_;
+
+      return $self->{events}->bind('drag', $sub);
     }
 
   };
@@ -79,20 +85,28 @@ sub exportMethods {
 sub _configureController {
   my ($self, $controller) = @_;
 
+  my $dragging = 0;
+  my $dragStartEvent = undef;
   $controller->bind(Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
     my ($cob, $event) = @_;
 
+    $dragging = 1;
+    $dragStartEvent = $event;
     $self->{events}->trigger('click', $event) if $self->_withinBounds($cob, $event);
   });
   $controller->bind(Arkess::IO::Mouse::EventType::BTN_UP, sub {
     my ($cob, $event) = @_;
 
+    $dragging = 0;
     $self->{events}->trigger('unclick', $event) if $self->_withinBounds($cob, $event);
   });
   $controller->bind(Arkess::IO::Mouse::EventType::MOVE, sub {
     my ($cob, $event) = @_;
 
-    $self->{events}->trigger('mousemove', $event) if $self->_withinBounds($cob, $event);
+    if ($self->_withinBounds($cob, $event)) {
+      $self->{events}->trigger('mousemove', $event);
+      $self->{events}->trigger('drag', $dragStartEvent, $event) if ($dragging);
+    }
   });
 }
 

@@ -32,7 +32,6 @@ sub exportMethods {
     render => sub {
       my $cob = shift;
 
-      my $padding = 50;
       my $app = $cob->getRenderer();
       $app->draw_rect([$cob->getX(), $cob->getY(), $cob->getWidth(), $cob->getHeight()], [0, 0, 255]);
     }
@@ -50,6 +49,11 @@ sub finalize {
     my $event = shift;
 
     print "GOT CLICK!\n";
+  });
+  $cob->onDrag(sub {
+    my ($eventStart, $eventEnd) = @_;
+
+    print "GOT DRAG!\n";
   });
 }
 

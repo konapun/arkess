@@ -18,6 +18,7 @@ sub initialize {
 sub finalize {
   my ($self, $cob) = @_;
 
+  #FIXME - rewrite using Clickable's onDrag event
   my ($offsetX, $offsetY) = (0, 0);
   $cob->onClick(sub {
     my $event = shift;

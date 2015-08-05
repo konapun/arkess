@@ -104,6 +104,7 @@ sub _withinBounds {
   my ($width, $height) = $cob->getDimensions();
   return ($clickX > $x && $clickX < $x + $width) && ($clickY > $y && $clickY < $y + $height);
 }
+
 1;
 
 __END__

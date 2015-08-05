@@ -18,19 +18,17 @@ sub initialize {
 sub finalize {
   my ($self, $cob) = @_;
 
+  my ($offsetX, $offsetY) = (0, 0);
   $cob->onClick(sub {
     my $event = shift;
 
-    # Check to see if click is on a cob with drag and drop enabled
-    my $clickX = $event->button_x;
-    my $clickY = $event->button_y;
+    # Get click offset
+    my ($clickX, $clickY) = ($event->button_x, $event->button_y);
     my ($x, $y) = $cob->getCoordinates();
-    my ($width, $height) = $cob->getDimensions();
-    print "Clicked ($clickX, $clickY), cob is at ($x, $y) with dimensions ($width, $height)\n";
-    if ($clickX >= $x && $clickX < $x + $width && $clickY >= $y && $clickY < $y + $height) { # click was within bounds
-      print "CLICKED DRAGGABLE!\n";
-      $self->{dragging} = 1;
-    }
+
+    $offsetX = $clickX - $x;
+    $offsetY = $clickY - $y;
+    $self->{dragging} = 1;
   });
   $cob->onUnclick(sub {
     $self->{dragging} = 0;
@@ -41,9 +39,8 @@ sub finalize {
     if ($self->{dragging}) {
       my $clickX = $event->button_x;
       my $clickY = $event->button_y;
-      my ($width, $height) = $cob->getDimensions();
 
-      $cob->setCoordinates($clickX+$width/2, $clickY+$height/2);
+      $cob->setCoordinates($clickX-$offsetX, $clickY-$offsetY);
     }
   });
 }

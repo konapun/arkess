@@ -19,6 +19,7 @@ sub requires {
 sub initialize {
   my ($self, $controller) = @_;
 
+  $self->{bound} = 1; # Bound clicks to object
   $self->{controller} = $controller;
   $self->{events} = Arkess::Event::Bus->new();
 }
@@ -50,6 +51,12 @@ sub exportMethods {
   my $self = shift;
 
   return {
+
+    boundClickToObject => sub {
+      my ($cob, $bound) = @_;
+
+      $self->{bound} = $bound;
+    },
 
     getController => sub {
       return $self->{controller};
@@ -113,6 +120,7 @@ sub _configureController {
 sub _withinBounds {
   my ($self, $cob, $event) = @_;
 
+  return 1 unless $self->{bound};
   my ($clickX, $clickY) = ($event->button_x, $event->button_y);
   my ($x, $y) = $cob->getCoordinates();
   my ($width, $height) = $cob->getDimensions();

@@ -66,11 +66,7 @@ $player->onCollide(sub {
     my ($moveCallback, @args) = @_;
 
     $player->immobilize();
-    $player->trigger('move');
-  });
-  $player->on('move', sub {
-    $collisionEvent->unregister();
-    $player->mobilize();
+    #$player->trigger('move');
   });
 });
 # $player->onUncollide(sub { # FIXME: This should unregister the collision event but it doesn't...

@@ -14,6 +14,7 @@ sub requires {
 sub finalize {
   my ($self, $cob) = @_;
 
+  $cob->boundClickToObject(0);
   $cob->onClick(sub {
     my $event = shift;
 
@@ -23,7 +24,6 @@ sub finalize {
     my ($width, $height) = $cob->getDimensions();
     my ($imgX, $imgY) = ($clickX - $width/2, $clickY - $height/2); # Place image center at click point
 
-    print "GOT CLICK, setting coords\n";
     $cob->setCoordinates($imgX, $imgY);
   });
 }

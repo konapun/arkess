@@ -17,6 +17,7 @@ sub initialize {
   $self->{y} = $y;
   $self->{width} = $width;
   $self->{height} = $height;
+  $self->{color} = [0, 0, 255];
 }
 
 sub configure {
@@ -27,13 +28,15 @@ sub configure {
 }
 
 sub exportMethods {
+  my $self = shift;
+  
   return {
 
     render => sub {
       my $cob = shift;
 
       my $app = $cob->getRenderer();
-      $app->draw_rect([$cob->getX(), $cob->getY(), $cob->getWidth(), $cob->getHeight()], [0, 0, 255]);
+      $app->draw_rect([$cob->getX(), $cob->getY(), $cob->getWidth(), $cob->getHeight()], $self->{color});
     }
 
   };
@@ -48,7 +51,11 @@ sub finalize {
   $cob->onClick(sub {
     my $event = shift;
 
-    print "GOT CLICK!\n";
+    $self->{color} = [
+      int(rand(256)),
+      int(rand(256)),
+      int(rand(256))
+    ];
   });
   $cob->onDrag(sub {
     my ($eventStart, $eventEnd) = @_;

@@ -28,9 +28,25 @@ sub finalize {
   $cob->setDimensions($self->{width}, $self->{height});
 
   my $padding = 100;
-  $cob->addToContainer(Arkess::Object->new({
+  my $canvas = $cob->addToContainer(Arkess::Object->new({
     'ClickQuest::UI::ClickCanvas' => [$padding, $padding, $self->{width} - 2*$padding, $self->{height} - 2*$padding]
   }));
+  my $button = $cob->addToContainer(Arkess::Object->new({
+    'Arkess::Component::UI::Button' => 'test'
+  }));
+  $button->setColor([255,0,255]);
+  $button->onClick(sub {
+    # spawn something on the canvas
+    print "Clicked button!\n";
+  });
+
+  my $oldColor = $button->getColor();
+  $button->onHover(sub {
+    $button->setColor([255,100,255]);
+  });
+  $button->onUnhover(sub {
+    $button->setColor($oldColor);
+  });
 }
 
 sub exportMethods {

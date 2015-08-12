@@ -74,6 +74,18 @@ sub exportMethods {
       return $self->{events}->bind('unclick', $sub);
     },
 
+    onHover => sub {
+      my ($cob, $sub) = @_;
+
+      return $self->{events}->bind('hover', $sub);
+    },
+
+    onUnhover => sub {
+      my ($cob, $sub) = @_;
+
+      return $self->{events}->bind('unhover', $sub);
+    },
+
     onMouseMove => sub {
       my ($cob, $sub) = @_;
 
@@ -93,6 +105,7 @@ sub _configureController {
   my ($self, $controller) = @_;
 
   my $dragging = 0;
+  my $hovering = 0;
   my $dragStartEvent = undef;
   $controller->bind(Arkess::IO::Mouse::EventType::BTN_DOWN, sub {
     my ($cob, $event) = @_;
@@ -113,6 +126,14 @@ sub _configureController {
     if ($self->_withinBounds($cob, $event)) {
       $self->{events}->trigger('mousemove', $event);
       $self->{events}->trigger('drag', $dragStartEvent, $event) if ($dragging);
+      if (!$hovering) {
+        $self->{events}->trigger('hover', $event);
+        $hovering = 1;
+      }
+    }
+    else {
+      $self->{events}->trigger('unhover', $event);
+      $hovering = 0;
     }
   });
 }

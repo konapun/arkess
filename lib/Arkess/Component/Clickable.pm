@@ -12,6 +12,7 @@ sub requires {
   return [
     'Arkess::Component::Observable',
     'Arkess::Component::2D', #To get width/height
+    'Arkess::Component::Deactivatable',
     'Arkess::Component::RuntimeAware'
   ];
 }
@@ -22,6 +23,7 @@ sub initialize {
   $self->{bound} = 1; # Bound clicks to object
   $self->{controller} = $controller;
   $self->{events} = Arkess::Event::Bus->new();
+  $self->{cursorHidden} = 0;
 }
 
 sub finalize {
@@ -52,10 +54,45 @@ sub exportMethods {
 
   return {
 
+    disableMouse => sub {
+      my $cob = shift;
+
+      my $exports = $self->exportMethods();
+      foreach my $key (keys %$exports) {
+        next if $key eq 'disableMouse' || $key eq 'enableMouse';
+        $cob->deactivate($key);
+      }
+    },
+
+    enableMouse => sub {
+      my $cob = shift;
+
+      my $exports = $self->exportMethods();
+      foreach my $key (keys %$exports) {
+        $cob->activate($key);
+      }
+    },
+
     boundClickToObject => sub {
       my ($cob, $bound) = @_;
 
       $self->{bound} = $bound;
+    },
+
+    showCursor => sub {
+      Arkess::IO::Mouse::show_cursor();
+      $self->{cursorHidden} = 0;
+    },
+
+    hideCursor => sub {
+      Arkess::IO::Mouse::hide_cursor();
+      $self->{cursorHidden} = 1;
+    },
+
+    toggleCursor => sub {
+      my $cob = shift;
+
+      $self->{cursorHidden} ? $cob->showCursor() : $cob->hideCursor();
     },
 
     getController => sub {

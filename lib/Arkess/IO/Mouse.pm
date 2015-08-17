@@ -5,6 +5,7 @@ package Arkess::IO::Mouse;
 
 use strict;
 use SDL::Events;
+use SDL::Mouse;
 use base qw(Exporter);
 
 our @EXPORT = qw(
@@ -23,5 +24,13 @@ use constant MOUSE_MCLICK => SDL_BUTTON_MIDDLE;
 # Scroll events
 use constant MOUSE_SCROLLUP   => SDL_BUTTON_WHEELUP;
 use constant MOUSE_SCROLLDOWN => SDL_BUTTON_WHEELDOWN;
+
+sub show_cursor {
+  SDL::Mouse::show_cursor(SDL_ENABLE);
+}
+
+sub hide_cursor {
+  SDL::Mouse::show_cursor(SDL_DISABLE);
+}
 
 1;

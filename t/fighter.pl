@@ -36,12 +36,12 @@ my $fighter1 = $game->createEntity({
 #  die "MOVING!\n";
 #});
 
-$fighter1->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
-  my $interval = $bgAnimations->getAnimationInterval()+10;
-
-  print "Setting interval to $interval\n";
-  $bgAnimations->setAnimationInterval($interval);
-});
+# $fighter1->getController()->bind(Arkess::IO::Keyboard::KB_SPACE, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
+#   my $interval = $bgAnimations->getAnimationInterval()+10;
+#
+#   print "Setting interval to $interval\n";
+#   $bgAnimations->setAnimationInterval($interval);
+# });
 $fighter1->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Keyboard::EventType::KEY_DOWN, sub {
   my $interval = $bgAnimations->getAnimationInterval()-10;
 
@@ -60,14 +60,18 @@ $fighter1->getController()->bind(Arkess::IO::Keyboard::KB_RETURN, Arkess::IO::Ke
 #$fighter1->addAnimationSequence('right', );
 #$fighter1->setAnimationSequence('right');
 
-#my $controller = $game->createController($fighter1, {
-#  Arkess::IO::Keyboard::KB_A => sub {
-#    $fighter1->move(Arkess::Direction::LEFT);
-#  },
-#  Arkess::IO::Keyboard::KB_D => sub {
-#    $fighter1->move(Arkess::Direction::RIGHT);
-#  }
-#});
+my $controller = $game->createController($fighter1, {
+ Arkess::IO::Keyboard::KB_A => sub {
+   $fighter1->move(Arkess::Direction::LEFT);
+ },
+ Arkess::IO::Keyboard::KB_D => sub {
+   $fighter1->move(Arkess::Direction::RIGHT);
+ },
+ Arkess::IO::Keyboard::KB_SPACE => sub {
+   print "TOGGLING CURSOR\n";
+   $fighter1->toggleCursor();
+ }
+});
 
 $game->setWindowOptions({
   title  => 'Fighting Game',

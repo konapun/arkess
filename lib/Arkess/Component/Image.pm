@@ -3,6 +3,7 @@ package Arkess::Component::Image;
 # http://search.cpan.org/~kthakore/SDL_Perl-v2.2.6/lib/SDL/Tutorial/Images.pm
 
 use strict;
+use SDL::Rect;
 use SDLx::Surface;
 use Image::Size;
 use base qw(Arkess::Component);
@@ -18,15 +19,17 @@ sub requires {
 sub initialize {
   my ($self, $src, $opts) = @_;
 
-  if ($src eq 'INIT_SKIP') {
+  unless ($src) {
     $self->{width} = 0;
     $self->{height} = 0;
     return;
   }
 
+  $self->{src} = undef;
   $self->{image} = undef;
   $self->{width} = 0;
   $self->{height} = 0;
+  $self->{clipping} = undef;
   $self->_loadImage($src, $opts);
 }
 
@@ -44,6 +47,20 @@ sub exportMethods {
 
       $self->_loadImage($src, $opts);
       $cob->setDimensions($self->{width}, $self->{height});
+    },
+
+    setImageClipping => sub {
+      my ($self, $rect) = @_;
+
+      $self->{clipping} = SDL::Rect->new(@$rect);
+    },
+
+    getImageSource => sub {
+      return $self->{src};
+    },
+
+    getImageSurface => sub {
+      return $self->{image};
     },
 
     getImageWidth => sub {
@@ -64,7 +81,8 @@ sub exportMethods {
       my $cob = shift;
       my $renderer = $cob->getRenderer();
 
-      $self->{image}->blit($renderer, undef, [$cob->getCoordinates()]);
+      die "Can't render image - no image is loaded" unless $self->{image};
+      $self->{image}->blit($renderer, $self->{clipping}, [$cob->getCoordinates()]);
     }
 
   };
@@ -84,6 +102,7 @@ sub _loadImage {
   die "Unable to read file '$src' for loading" unless -e $src;
 
   my ($width, $height) = imgsize($src);
+  $self->{src} = $src;
   $self->{image} = SDLx::Surface->load($src);
   $self->{width} = $opts->{width} || $width;
   $self->{height} = $opts->{height} || $height;

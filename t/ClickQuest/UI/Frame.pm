@@ -36,6 +36,11 @@ sub finalize {
   }));
   $button->setColor([255,0,255]);
   $button->onClick(sub {
+    my $image = $canvas->addToContainer(Arkess::Object->new({
+      'Arkess::Component::Image' => './assets/characters/ryu1.png'
+    }));
+    $image->setCoordinates(0, 0);
+    
     # spawn something on the canvas
     print "Clicked button!\n";
   });

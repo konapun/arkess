@@ -3,7 +3,6 @@
 use strict;
 use lib '../lib';
 use Arkess;
-use Arkess::Direction;
 use Arkess::Runtime::InteractiveFiction;
 use AutumnDay::Core;
 

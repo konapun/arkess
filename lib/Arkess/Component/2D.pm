@@ -19,7 +19,7 @@ sub initialize {
 sub configure {
   my ($self, $cob) = @_;
 
-  if ($cob->canCall('getWidth') && $cob->canCall('getHeight')) { # Don't overwrite these # FIXME: 'can' isn't working, just like 'is'
+  if ($cob->canCall('getWidth') && $cob->canCall('getHeight')) {
     $self->{width} = $cob->getWidth();
     $self->{height} = $cob->getHeight();
   }

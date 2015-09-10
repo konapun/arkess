@@ -14,7 +14,7 @@ sub new {
     'Arkess::Component::MethodChecker',
     'Arkess::Component::RuntimeAware',
     'Arkess::Component::Destroyable',
-    'Arkess::Component::Debug' # FIXME: remove eventually
+    # 'Arkess::Component::Debug' # FIXME: remove eventually
   ]);
 
   return $base->extend($additional);

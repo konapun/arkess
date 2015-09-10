@@ -16,6 +16,15 @@ sub initialize {
   $self->{abilities} = {};
 }
 
+sub configure {
+  my ($self, $cob) = @_;
+
+  if ($cob->hasAttribute('actioned')) {
+    print "HERE\n";
+    $self->{abilities} = $cob->getActions();
+  }
+}
+
 sub exportAttributes {
   return {
     actioned => 1

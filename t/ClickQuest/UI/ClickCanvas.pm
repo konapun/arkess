@@ -6,7 +6,8 @@ use base qw(Arkess::Component);
 sub requires {
   return [
     'Arkess::Component::Clickable',
-    'Arkess::Component::Renderable'
+    'Arkess::Component::Renderable',
+    'Arkess::Component::Container'
   ];
 }
 
@@ -29,7 +30,7 @@ sub configure {
 
 sub exportMethods {
   my $self = shift;
-  
+
   return {
 
     render => sub {

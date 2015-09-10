@@ -236,8 +236,7 @@ sub finalize {
 
   # Events
   $cob->on('move', sub {
-    print "MOVING (in component Character for $self)!\n";
-#    $cob->playSound('scream');
+#    $cob->playSound('scream'); # FIXME
   });
 }
 

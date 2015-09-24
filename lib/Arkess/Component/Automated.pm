@@ -123,6 +123,35 @@ sub exportMethods {
       return $event;
     },
 
+    moveToPromise => sub {
+      my ($cob, $x, $y) = @_;
+
+      return Arkess::Event::Promise->new(sub {
+        my ($resolve, $reject) = @_;
+
+        my $event;
+        $event = $cob->on(Arkess::Event::BEFORE_RENDER, sub {
+          my ($cobX, $cobY) = $cob->getCoordinates();
+
+          if ($cobX < $x) {
+            $cob->move(Arkess::Direction::RIGHT);
+          }
+          elsif ($cobX > $x) {
+            $cob->move(Arkess::Direction::LEFT);
+          }
+          if ($cobY < $y) {
+            $cob->move(Arkess::Direction::DOWN);
+          }
+          elsif ($cobY > $y) {
+            $cob->move(Arkess::Direction::UP);
+          }
+
+          ($cobX, $cobY) = $cob->getCoordinates();
+          if ($cobX == $x )
+        });
+      });
+    },
+
     follow => sub {
       my ($cob, $toFollow, $lagDistance, $warpDistance) = @_;
 

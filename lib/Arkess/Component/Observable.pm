@@ -3,6 +3,8 @@ package Arkess::Component::Observable;
 use strict;
 use Arkess::Event;
 use Arkess::Event::Bus;
+use Arkess::Event::Promise;
+
 use base qw(Arkess::Component);
 
 sub requires {
@@ -120,6 +122,21 @@ sub exportMethods {
       my ($cob, $event, $callback) = @_;
 
       return $self->{events}->{after}->bind($event, $callback);
+    },
+
+    # Same as `on`, but returns a promise
+    pon => sub {
+      my ($cob, $event, $callback) = @_;
+
+      return Arkess::Event::Promise->new(sub {
+        my ($resolve, $reject) = @_;
+
+        $cob->on($event, sub {
+          my $ret = $callback->(@_);
+
+          $resolve->($ret);
+        });
+      });
     },
 
     # Method modifier: called before a method

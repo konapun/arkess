@@ -238,6 +238,12 @@ sub finalize {
   $cob->on('move', sub {
 #    $cob->playSound('scream'); # FIXME
   });
+
+  $cob->pon('move', sub {
+    print "Moving...\n";
+  })->then(sub {
+    print "MOVED!\n";
+  })
 }
 
 1;

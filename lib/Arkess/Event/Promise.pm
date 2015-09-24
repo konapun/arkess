@@ -3,76 +3,149 @@ package Arkess::Event::Promise;
 use strict;
 
 use constant PENDING => 0;
-use constant FULFILLED => 1;
+use constant RESOLVED => 1;
 use constant REJECTED => 2;
 
-# Create a promise from a function that takes two parameters:
-#  resolve: A function which marks this promise as resolved
-#  reject: A function that marks this promise as rejected
 sub new {
   my $package = shift;
-  my $sub = shift;
+  my $fn = shift;
 
-  my $self = bless {
-    sub    => $sub,
-    state  => PENDING,
-    accept => [],
-    reject => []
-  }, $package;
-
-  print "HERE\n";
-  $sub->(sub { $self->resolve() }, sub { $self->reject() });
-  return $self;
-}
-
-sub all {
-
-}
-
-sub race {
-
-}
-
-sub reject {
-  my ($self, $reason) = @_;
-
-  $self->{state} = REJECTED;
-  foreach my $reject (@{$self->{reject}}) {
-    $reject->($reason);
-  }
+  return Arkess::Event::Promise::_instantiatePromiseWithState($package, PENDING, $fn);
 }
 
 sub resolve {
-  my ($self, $value) = @_;
+  my $package = shift;
+  my $value = shift;
 
-  $self->{state} = FULFILLED;
-  foreach my $accept (@{$self->{accept}}) {
-    $accept->($value);
+  return Arkess::Event::Promise::_instantiatePromiseWithState($package, RESOLVED, $value);
+}
+
+sub reject {
+  my $package = shift;
+  my $reason = shift;
+
+  return Arkess::Event::Promise::_instantiatePromiseWithState($package, REJECTED, $reason);
+}
+
+sub _instantiatePromiseWithState {
+  my ($package, $state, $val) = @_;
+
+  my $fn = undef;
+  if (ref $val eq 'CODE') {
+    $fn = $val;
+    $val = undef;
   }
+
+  my $self = bless {
+    state    => $state,
+    deferred => undef,
+    value    => $val
+  }, $package;
+
+  if ($fn) {
+    $fn->(
+      sub {
+        $self->_resolve(@_);
+      },
+      sub {
+        $self->_reject(@_);
+      }
+    );
+  }
+
+  return $self;
 }
 
 sub then {
-  my ($self, $onFulfilled, $onRejected) = @_;
+  my ($self, $onResolved, $onRejected) = @_;
 
-  push(@{$self->{accept}}, $onFulfilled) if $onFulfilled;
-  push(@{$self->{reject}}, $onRejected) if $onRejected;
   return Arkess::Event::Promise->new(sub {
     my ($resolve, $reject) = @_;
 
-    print "TODO\n";
+    $self->_handle({
+      onResolved => $onResolved,
+      onRejected => $onRejected,
+      resolve    => $resolve,
+      reject     => $reject
+    });
   });
 }
 
 sub catch {
   my ($self, $sub) = @_;
 
+  return $self->then(undef, $sub);
+}
 
+sub done {
+  my ($self, $sub) = @_;
+
+  die "TODO";
+}
+
+sub _resolve {
+  my ($self, $value) = @_;
+
+  if (ref $value) {
+    $value->then(sub {
+      $self->_resolve(@_);
+    });
+    return;
+  }
+
+  $self->{state} = RESOLVED;
+  $self->{value} = $value;
+  if ($self->{deferred}) {
+    $self->_handle($self->{deferred});
+  }
+}
+
+sub _reject {
+  my ($self, $reason) = @_;
+
+  $self->{state} = REJECTED;
+  $self->{value} = $reason;
+  if ($self->{deferred}) {
+    $self->_handle($self->{deferred});
+  }
+}
+
+sub _handle {
+  my ($self, $handler) = @_;
+
+  my $state = $self->{state};
+  if ($state eq PENDING) {
+    $self->{deferred} = $handler;
+    return;
+  }
+
+  my $handlerCallback;
+  my $value = $self->{value};
+  if ($state eq RESOLVED) {
+    $handlerCallback = $handler->{onResolved};
+  }
+  else {
+    $handlerCallback = $handler->{onRejected};
+  }
+
+  unless ($handlerCallback) {
+    if ($state eq RESOLVED) {
+      $handler->{resolve}->($value);
+    }
+    else {
+      $handler->{reject}->($value);
+    }
+
+    return;
+  }
+
+  my $ret = $handlerCallback->($value);
+  $handler->{resolve}->($ret);
 }
 
 1;
 
 __END__
 =head1 NAME
-Arkess::Event::Promise - A chainable unit representing a delayed computation
-conforming to Mozilla's API (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
-This is a Promises/A+ implementation.
+Arkess::Event::Promise - A partial Promises/A+ implementation adapted from this
+article: http://www.mattgreer.org/articles/promises-in-wicked-detail/#chaining-promises
